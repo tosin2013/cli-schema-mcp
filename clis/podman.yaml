@@ -14,7 +14,7 @@ maintainers:
   - "community"
 obtain:
   version_url: "https://api.github.com/repos/containers/podman/releases?per_page=20"
-  version_match: "v{version}\\.(\\d+)"
+  version_match: "v({version}\\.\\d+)"
   artifact_url: "https://github.com/containers/podman/releases/download/v{resolved}/podman-remote-static-linux_amd64.tar.gz"
   checksum_url: "https://github.com/containers/podman/releases/download/v{resolved}/shasums"
   format: "tar.gz"

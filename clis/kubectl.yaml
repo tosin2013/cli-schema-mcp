@@ -17,7 +17,7 @@ maintainers:
 obtain:
   version_url: "https://dl.k8s.io/release/stable-{version}.txt"
   version_match: "v(\\d+\\.\\d+\\.\\d+)"
-  artifact_url: "https://dl.k8s.io/release/{resolved}/bin/linux/amd64/kubectl"
-  checksum_url: "https://dl.k8s.io/release/{resolved}/bin/linux/amd64/kubectl.sha256"
+  artifact_url: "https://dl.k8s.io/release/v{resolved}/bin/linux/amd64/kubectl"
+  checksum_url: "https://dl.k8s.io/release/v{resolved}/bin/linux/amd64/kubectl.sha256"
   format: "raw"
   binary: "kubectl"
