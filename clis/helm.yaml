@@ -9,6 +9,7 @@ versions:
 version_command: "helm version --short"
 version_parse: "v{version}"
 upstream_repo: "https://github.com/helm/helm"
+docs_url: "https://helm.sh/docs/"
 maintainers:
   - "community"
   - "tosin2013"
