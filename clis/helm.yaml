@@ -4,8 +4,8 @@ description: "The Kubernetes package manager (CNCF graduated)"
 binary: helm
 adapter: cobra
 versions:
-  - "3.16"
-  - "3.17"
+  - "3.21"
+  - "3.22"
 version_command: "helm version --short"
 version_parse: "v{version}"
 upstream_repo: "https://github.com/helm/helm"
@@ -13,7 +13,7 @@ maintainers:
   - "community"
 obtain:
   version_url: "https://api.github.com/repos/helm/helm/releases?per_page=10"
-  version_match: "\"v({version}\\.\\d+)\""
+  version_match: "v({version}\\.\\d+)[^-]"
   artifact_url: "https://get.helm.sh/helm-v{resolved}-linux-amd64.tar.gz"
   checksum_url: "https://get.helm.sh/helm-v{resolved}-linux-amd64.tar.gz.sha256sum"
   format: "tar.gz"
