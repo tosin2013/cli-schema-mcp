@@ -1,9 +1,12 @@
-# Contributing to Template MCP Server
+# Contributing to cli-schema-mcp
 
-Thank you for your interest in contributing! This guide explains the process for contributing to this project.
+Thank you for your interest in contributing! This guide explains how to contribute to this project.
+The primary contribution surface is **adding new CLI schemas** via a YAML config file — no Python
+code required for Cobra-based CLIs.
 
 ## Table of Contents
 
+- [Adding a New CLI (primary contribution)](#adding-a-new-cli-primary-contribution)
 - [Getting Started](#getting-started)
 - [Development Workflow](#development-workflow)
 - [Commit Conventions](#commit-conventions)
@@ -14,14 +17,139 @@ Thank you for your interest in contributing! This guide explains the process for
 - [Testing Requirements](#testing-requirements)
 - [Getting Help](#getting-help)
 
+## Adding a New CLI (primary contribution)
+
+Adding a CLI to the schema registry requires **only a YAML config file** — no Python code changes
+for Cobra-based CLIs.
+
+### Step 1: Open an issue
+
+Use the [New CLI Schema Request](.github/ISSUE_TEMPLATE/new-cli-request.yml) issue template to
+describe the CLI and confirm CI binary availability.
+
+### Step 2: Create `clis/<name>.yaml`
+
+```yaml
+name: tkn
+display_name: "Tekton CLI"
+description: "CLI for Tekton Pipelines"
+binary: tkn
+adapter: cobra            # cobra | help-parser | custom
+versions:
+  - "0.37"
+  - "0.38"
+  - "0.39"
+version_command: "tkn version"
+version_parse: "Client version: {version}"
+upstream_repo: "https://github.com/tektoncd/cli"
+maintainers:
+  - "your-github-username"
+```
+
+#### YAML field reference
+
+| Field | Required | Description |
+|---|---|---|
+| `name` | Yes | Binary name (used as schema directory name) |
+| `display_name` | No | Human-readable name |
+| `description` | No | One-line description |
+| `binary` | Yes | The actual binary name in PATH |
+| `adapter` | Yes | `cobra`, `help-parser`, or `custom` |
+| `versions` | Yes | List of version strings to extract |
+| `version_command` | Yes | Shell command to print the version |
+| `version_parse` | Yes | Regex or `{version}` template to extract semver from output |
+| `upstream_repo` | No | GitHub URL of the CLI project |
+| `maintainers` | No | GitHub usernames of schema maintainers |
+| `help_flag` | help-parser only | Flag to show help (default: `--help`) |
+| `flag_regex` | help-parser only | Regex to parse flag lines from `--help` output |
+| `subcommand_regex` | help-parser only | Regex to parse subcommand lines |
+| `extraction_script` | custom only | Path to custom extraction script |
+| `obtain` | Yes | Download instruction block — see below |
+
+#### The `obtain` block (required)
+
+Every registration must include exactly one `obtain` block. CI uses it to download, verify,
+and run the CLI binary without any hand-extracted binary or per-CLI code.
+
+```yaml
+obtain:
+  artifact_url: "https://mirror.openshift.com/pub/openshift-v4/clients/ocp/latest-{version}/openshift-client-linux.tar.gz"
+  checksum_url: "https://mirror.openshift.com/pub/openshift-v4/clients/ocp/latest-{version}/sha256sum.txt"
+  format: "tar.gz"
+  binary: "oc"
+```
+
+| Field | Required | Description |
+|---|---|---|
+| `artifact_url` | Yes | Download URL. Must contain `{version}` or `{resolved}`. |
+| `checksum_url` | Yes | URL of the SHA-256 checksum. Same tokens as `artifact_url`. |
+| `format` | Yes | Archive format: `raw`, `tar.gz`, or `zip`. |
+| `binary` | Yes | Installed filename for `raw`, or archive member path otherwise. |
+| `version_url` | No | URL to fetch for the resolved patch tag (fill `{version}` first). |
+| `version_match` | Required with `version_url` | Regex with one capture group for `{resolved}`. |
+
+**Token substitution**: `{version}` is replaced with the declared version string (e.g. `4.22`).
+`{resolved}` is replaced with the first capture group from `version_match`, or equals `{version}`
+when `version_url` is omitted.
+
+**Checksum**: The file at `checksum_url` must be a bare 64-hex SHA-256 digest, or a `sha256sum`
+listing. The artifact is not unpacked or executed unless the digest matches.
+
+**Example with version pointer** (kubectl):
+
+```yaml
+obtain:
+  version_url: "https://dl.k8s.io/release/stable-{version}.txt"
+  version_match: "v(\\d+\\.\\d+\\.\\d+)"
+  artifact_url: "https://dl.k8s.io/release/{resolved}/bin/linux/amd64/kubectl"
+  checksum_url: "https://dl.k8s.io/release/{resolved}/bin/linux/amd64/kubectl.sha256"
+  format: "raw"
+  binary: "kubectl"
+```
+
+#### Adapter selection
+
+- **`cobra`**: Use for any CLI built with the Go [Cobra](https://github.com/spf13/cobra) framework
+  (oc, kubectl, helm, tkn, argocd, operator-sdk, etc.). Extraction is fully automatic.
+- **`help-parser`**: Use for CLIs that do not implement Cobra `__complete` (for example ansible-navigator). Podman does implement it and uses the `cobra` adapter.
+  Requires `flag_regex` and `subcommand_regex` to be configured.
+- **`custom`**: For CLIs with non-standard help formats. Point to a Python script via `extraction_script`.
+
+### Step 3: Run the extractor locally
+
+```bash
+# Install dev dependencies
+uv pip install -e ".[dev]"
+
+# Run extraction (binary must be in PATH)
+python -m extractor tkn 0.38
+
+# Verify output
+cat schemas/tkn/0.38.json | python -m json.tool | head -40
+```
+
+Compare the output against `tkn pipeline --help` to verify flag accuracy.
+
+### Step 4: Submit a PR
+
+Include both the `clis/tkn.yaml` config and the extracted `schemas/tkn/*.json` files.
+CI will validate the YAML schema, run an extraction smoke test, and check JSON integrity.
+
+### What maintainers review
+
+- Flag names match the actual binary output
+- Flag types, shorthands, and defaults are correct
+- All declared versions have extracted schema files
+- YAML config is complete (all required fields present)
+
 ## Getting Started
 
 1. **Fork the repository** on GitHub.
 
 2. **Clone your fork:**
    ```bash
-   git clone https://github.com/<your-username>/template-mcp-server.git
-   cd template-mcp-server
+   git clone https://github.com/<your-username>/cli-schema-mcp.git
+   cd cli-schema-mcp
    ```
 
 3. **Set up the development environment:**

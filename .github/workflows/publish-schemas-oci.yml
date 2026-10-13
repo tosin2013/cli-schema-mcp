@@ -1,0 +1,36 @@
+name: Publish schemas OCI
+
+on:
+  push:
+    tags:
+      - "v*"
+
+permissions:
+  contents: read
+  packages: write
+
+jobs:
+  publish:
+    name: Publish schema registry
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Install oras
+        uses: oras-project/setup-oras@v1
+
+      - name: Log in to GHCR
+        run: |
+          echo "${{ secrets.GITHUB_TOKEN }}" | oras login ghcr.io \
+            -u "${{ github.actor }}" \
+            --password-stdin
+
+      - name: Package and push schemas
+        run: |
+          owner="$(echo "${GITHUB_REPOSITORY_OWNER}" | tr '[:upper:]' '[:lower:]')"
+          tag="${GITHUB_REF_NAME}"
+          tar -czf /tmp/schemas.tar.gz -C schemas .
+          oras push \
+            "ghcr.io/${owner}/cli-schema-mcp-schemas:${tag}" \
+            /tmp/schemas.tar.gz:application/vnd.cli-schema-mcp.schemas.v1.tar+gzip

@@ -1,0 +1,67 @@
+name: Extract schemas
+
+on:
+  push:
+    paths:
+      - "clis/**"
+  pull_request:
+    paths:
+      - "clis/**"
+
+permissions:
+  contents: write
+
+concurrency:
+  group: extract-schemas-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  extract:
+    name: Extract CLI schemas
+    runs-on: ubuntu-latest
+    timeout-minutes: 90
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Install uv
+        uses: astral-sh/setup-uv@v3
+        with:
+          version: "latest"
+
+      - name: Set up Python
+        run: uv venv --python 3.12 && uv pip install -e ".[dev]"
+
+      - name: Refresh CLI schemas
+        id: refresh
+        run: |
+          source .venv/bin/activate
+          python -m extractor.refresh --base ${{ github.event.before || 'HEAD~1' }} --head HEAD
+
+      - name: Commit updated schemas
+        if: >
+          github.event_name == 'push' &&
+          github.event.repository.fork == false
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add schemas/
+          if git diff --cached --quiet; then
+            echo "Schemas already match the extractor output"
+          else
+            git commit -m "chore: update extracted CLI schemas"
+            git push
+          fi
+
+      - name: Reject fork pull request with catalog differences
+        if: >
+          github.event_name == 'pull_request' &&
+          github.event.pull_request.head.repo.fork == true
+        run: |
+          source .venv/bin/activate
+          python -m extractor.refresh \
+            --base ${{ github.event.pull_request.base.sha }} \
+            --head HEAD \
+            --no-push

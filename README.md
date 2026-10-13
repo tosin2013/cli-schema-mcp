@@ -1,32 +1,37 @@
-# Template MCP Server
+# cli-schema-mcp
 
-[![Python 3.12+](https://img.shields.io/badge/python-3.12,3.13-blue.svg)](https://www.python.org/downloads/)
-[![Tests](https://github.com/redhat-data-and-ai/template-mcp-server/actions/workflows/test.yml/badge.svg)](https://github.com/redhat-data-and-ai/template-mcp-server/actions/workflows/test.yml)
-[![Coverage](https://codecov.io/gh/redhat-data-and-ai/template-mcp-server/branch/main/graph/badge.svg)](https://codecov.io/gh/redhat-data-and-ai/template-mcp-server)
+[![Python 3.12+](https://img.shields.io/badge/python-3.12%2B-blue.svg)](https://www.python.org/downloads/)
+[![Tests](https://github.com/tosin2013/cli-schema-mcp/actions/workflows/test.yml/badge.svg)](https://github.com/tosin2013/cli-schema-mcp/actions/workflows/test.yml)
 [![License: Apache 2.0](https://img.shields.io/badge/License-Apache%202.0-blue.svg)](https://opensource.org/licenses/Apache-2.0)
-[![Open in GitHub Codespaces](https://github.com/codespaces/badge.svg)](https://codespaces.new/redhat-data-and-ai/template-mcp-server)
 
-A production-ready template for developing Model Context Protocol (MCP) servers using Python and FastMCP. This server provides a foundation for creating MCP-compliant servers with comprehensive examples of tools, structured logging, configuration management, and containerized deployment.
+A vendor-neutral, community-maintained MCP server that provides version-pinned CLI flag schemas to AI agents. When the schema server is active, `validate_command` rejects hallucinated flags for supported CLI tools and versions — the AI never gets a chance to suggest a flag that isn't in the schema.
 
-The template includes three example MCP tools: a multiply calculator, a code review prompt generator, and a Red Hat logo tool. It demonstrates best practices for MCP server development including proper error handling, health checks, multiple transport protocols (HTTP, SSE, streamable-HTTP), SSL support, and comprehensive development tooling.
+## Supported CLIs
 
-## Features
+| CLI | Versions | Adapter |
+|-----|----------|---------|
+| `oc` (OpenShift CLI) | 4.18 – 4.22 | Cobra |
+| `kubectl` | 1.31 – 1.35 | Cobra |
+| `kustomize` | 5.3 – 5.5 | Cobra |
+| `podman` | 5.2 – 5.4 | Cobra |
 
-- **FastMCP + FastAPI** with multiple transport protocols (HTTP, SSE, streamable-HTTP)
-- **Three example tools**: multiply calculator, code review prompt, Red Hat logo
-- **Pydantic configuration** via environment variables
-- **Structured JSON logging** with structlog
-- **SSL/TLS support** for secure deployments
-- **Container-ready** with Red Hat UBI base image
-- **OpenShift deployment** manifests included
-- **Full CI/CD** with GitHub Actions (tests, linting, security, releases)
-- **OAuth integration** with PostgreSQL token storage
+Adding a new CLI requires only a YAML config file — no Python code changes.
+
+## MCP Tools
+
+| Tool | Description |
+|------|-------------|
+| `get_flags` | Return all flags for a CLI command and version |
+| `list_subcommands` | List available subcommands for a CLI |
+| `validate_command` | Reject commands with hallucinated flags |
+| `detect_version` | Identify the CLI version from output |
+| `list_supported` | List all supported CLIs and versions |
 
 ## Quick Start
 
 ```bash
-git clone https://github.com/redhat-data-and-ai/template-mcp-server
-cd template-mcp-server
+git clone https://github.com/tosin2013/cli-schema-mcp
+cd cli-schema-mcp
 make install        # creates venv, installs deps + pre-commit hooks
 make local          # starts server on localhost:5001
 ```
@@ -41,112 +46,95 @@ curl http://localhost:5001/health
 <summary>Manual setup (without Make)</summary>
 
 ```bash
-# Create venv and install
 uv venv && source .venv/bin/activate
 uv pip install -e ".[dev]"
 pre-commit install
-
-# Configure and run
 cp .env.example .env
-template-mcp-server
-
-# Verify
+cli-schema-mcp
 curl http://localhost:5001/health
 ```
 
 </details>
 
-## How to Use This Template
+## Adding a New CLI
 
-### Option 1: GitHub Template (Recommended)
+Create `clis/<name>.yaml` with one `obtain` block — no Python changes needed:
 
-1. Click the **"Use this template"** button at the top of the repository page.
-2. Name your new repository (e.g., `my-mcp-server`).
-3. Clone your new repository and follow the [rename checklist](#rename-checklist) below.
-
-### Option 2: Manual Clone
-
-```bash
-git clone https://github.com/redhat-data-and-ai/template-mcp-server.git my-mcp-server
-cd my-mcp-server
-rm -rf .git
-git init
+```yaml
+name: tkn
+display_name: "Tekton CLI"
+binary: tkn
+adapter: cobra
+versions:
+  - "0.37"
+  - "0.38"
+version_command: "tkn version"
+version_parse: "Client version: {version}"
+upstream_repo: "https://github.com/tektoncd/cli"
+maintainers:
+  - "your-github-username"
+obtain:
+  artifact_url: "https://github.com/tektoncd/cli/releases/download/v{version}/tkn_Linux_x86_64.tar.gz"
+  checksum_url: "https://github.com/tektoncd/cli/releases/download/v{version}/checksums.txt"
+  format: "tar.gz"
+  binary: "tkn"
 ```
 
-### Rename Checklist
+When a `clis/` file is added or modified in a PR, CI automatically downloads each declared
+version, verifies its SHA-256 checksum, extracts the schema, and commits the catalog — no
+manual extraction step required.
 
-After creating your project, replace all references to `template-mcp-server` and `template_mcp_server` with your project name. The following files require updates:
+See [CONTRIBUTING.md](CONTRIBUTING.md) for the full field reference and the `obtain` block
+documentation.
 
-| File / Directory          | What to Change                                                                                                                |
-| ------------------------- | ----------------------------------------------------------------------------------------------------------------------------- |
-| `template_mcp_server/`  | Rename the package directory (e.g.,`my_mcp_server/`)                                                                        |
-| `pyproject.toml`        | `name`, `project.scripts` entry, `[project.urls]`, `[tool.coverage.run] source`                                       |
-| `Makefile`              | References in `lint`, `local`, and deployment targets                                                                     |
-| `Containerfile`         | `COPY` source path and `CMD` module path                                                                                  |
-| `compose.yaml`          | `container_name`, service name, healthcheck URL                                                                             |
-| `deployment/openshift/` | App labels, image names, route hostnames in all manifests (`deployment.yaml`, `route.yaml`, `kustomization.yaml`, etc.) |
-| `.github/workflows/`    | Workflow names and paths                                                                                                      |
-| `README.md`             | Title, description, clone URL, and all badge URLs (tests, coverage, Codespaces)                                               |
-| `.env.example`          | Adjust defaults if your server uses a different port or protocol                                                              |
+## Schema Extraction
 
-### Verify Rename
-
-Run this to catch any leftover references:
+Schemas are pre-extracted at contribution time, not at query time. The MCP server itself
+never downloads or runs a CLI binary.
 
 ```bash
-grep -rn "template.mcp" --include="*.py" --include="*.yaml" --include="*.yml" --include="*.toml" --include="*.md" .
-```
+# Refresh schemas for changed registrations locally
+python -m extractor.refresh --base HEAD --head WORKTREE
 
-The output should be empty (or only match this README section itself).
+# Extract a single CLI version (binary must be in PATH)
+python -m extractor oc 4.22
+```
 
 ## Configuration
 
-| Variable                      | Default       | Description                                                          |
-| ----------------------------- | ------------- | -------------------------------------------------------------------- |
-| `MCP_HOST`                  | `localhost` | Server bind address                                                  |
-| `MCP_PORT`                  | `5001`      | Server port (1024-65535)                                             |
-| `MCP_TRANSPORT_PROTOCOL`    | `http`      | Transport protocol (`http`, `sse`, `streamable-http`)          |
-| `MCP_SSL_KEYFILE`           | `None`      | SSL private key file path                                            |
-| `MCP_SSL_CERTFILE`          | `None`      | SSL certificate file path                                            |
-| `ENABLE_AUTH`               | `False`*    | Enable OAuth authentication (see [Auth Guide](docs/authentication.md)) |
-| `USE_EXTERNAL_BROWSER_AUTH` | `False`     | Browser-based OAuth for local dev                                    |
-| `PYTHON_LOG_LEVEL`          | `INFO`      | Logging level                                                        |
+| Variable | Default | Description |
+|----------|---------|-------------|
+| `MCP_HOST` | `localhost` | Server bind address |
+| `MCP_PORT` | `5001` | Server port |
+| `MCP_TRANSPORT_PROTOCOL` | `http` | `http`, `sse`, or `streamable-http` |
+| `ENABLE_AUTH` | `False` | Enable OAuth authentication |
 
-*\* `ENABLE_AUTH` defaults to `False` in `.env.example` but `True` in code. Always copy `.env.example` to `.env` to start with auth disabled.*
+See [docs/authentication.md](docs/authentication.md) for OAuth setup.
 
 ## Documentation
 
-| Guide                                 | Description                                                |
-| ------------------------------------- | ---------------------------------------------------------- |
-| [Architecture](docs/architecture.md)     | System diagrams, code structure, key components, MCP tools |
-| [Development](docs/development.md)       | Setup, running locally, testing, code quality              |
-| [Deployment](docs/deployment.md)         | Podman, OpenShift, container configuration                 |
-| [CI/CD](docs/ci-cd.md)                   | Workflows, pipeline features, running CI locally           |
-| [Contributing](CONTRIBUTING.md)          | Development workflow, commit conventions, PR process       |
-| [Security](SECURITY.md)                  | Vulnerability reporting policy                             |
-| [Changelog](CHANGELOG.md)                | Release history                                            |
-| [Authentication](docs/authentication.md) | OAuth setup, auth modes, troubleshooting                   |
-| [Tutorial](docs/tutorial.md)             | Your First Tool in 5 Minutes                               |
-| [Examples](examples/)                    | FastMCP and LangGraph client examples                      |
+| Guide | Description |
+|-------|-------------|
+| [Contributing](CONTRIBUTING.md) | Adding CLIs, development workflow, PR process |
+| [Development](docs/development.md) | Setup, running locally, testing |
+| [Deployment](docs/deployment.md) | Podman, OpenShift, container configuration |
+| [Authentication](docs/authentication.md) | OAuth setup and troubleshooting |
 
 ## Contributing
 
-See [CONTRIBUTING.md](CONTRIBUTING.md) for detailed guidelines.
-
 ```bash
-# Fork, clone, and set up
-git clone https://github.com/<your-username>/template-mcp-server.git
-cd template-mcp-server
+git clone https://github.com/tosin2013/cli-schema-mcp.git
+cd cli-schema-mcp
 make install
 
-# Create a branch, make changes, verify
-git checkout -b feat/your-feature
-make lint && make test && make pre-commit
-
-# Commit and open a PR
-git commit -m "feat: your descriptive message"
-git push origin feat/your-feature
+git checkout -b feat/add-my-cli
+# Add clis/my-cli.yaml
+make lint && make test
+git commit -m "feat: add my-cli schema"
+git push origin feat/add-my-cli
 ```
+
+Open a PR — CI will extract the schema automatically.
 
 ## License
 

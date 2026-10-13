@@ -1,0 +1,21 @@
+name: podman
+display_name: "Podman"
+description: "A daemonless container engine for OCI containers"
+binary: podman
+adapter: cobra
+versions:
+  - "5.2"
+  - "5.3"
+  - "5.4"
+version_command: "podman version"
+version_parse: "Version:\\s+{version}"
+upstream_repo: "https://github.com/containers/podman"
+maintainers:
+  - "community"
+obtain:
+  version_url: "https://api.github.com/repos/containers/podman/releases?per_page=20"
+  version_match: "v{version}\\.(\\d+)"
+  artifact_url: "https://github.com/containers/podman/releases/download/v{resolved}/podman-remote-static-linux_amd64.tar.gz"
+  checksum_url: "https://github.com/containers/podman/releases/download/v{resolved}/shasums"
+  format: "tar.gz"
+  binary: "bin/podman-remote-static-linux_amd64"

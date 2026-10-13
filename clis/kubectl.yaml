@@ -1,0 +1,23 @@
+name: kubectl
+display_name: "Kubernetes CLI"
+description: "The Kubernetes command-line tool for managing Kubernetes clusters"
+binary: kubectl
+adapter: cobra
+versions:
+  - "1.31"
+  - "1.32"
+  - "1.33"
+  - "1.34"
+  - "1.35"
+version_command: "kubectl version --client --short"
+version_parse: "Client Version: v{version}"
+upstream_repo: "https://github.com/kubernetes/kubectl"
+maintainers:
+  - "community"
+obtain:
+  version_url: "https://dl.k8s.io/release/stable-{version}.txt"
+  version_match: "v(\\d+\\.\\d+\\.\\d+)"
+  artifact_url: "https://dl.k8s.io/release/{resolved}/bin/linux/amd64/kubectl"
+  checksum_url: "https://dl.k8s.io/release/{resolved}/bin/linux/amd64/kubectl.sha256"
+  format: "raw"
+  binary: "kubectl"

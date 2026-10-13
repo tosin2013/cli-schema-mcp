@@ -1,0 +1,86 @@
+name: "New CLI Schema Request"
+description: "Request support for a new CLI tool in the schema registry"
+title: "[CLI]: "
+labels: ["new-cli", "good first issue"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Thanks for requesting a new CLI! Adding a new tool requires only a `clis/<name>.yaml` config file
+        for Cobra-based CLIs, or a config with regex patterns for other CLIs.
+
+  - type: input
+    id: cli-name
+    attributes:
+      label: CLI name
+      description: The binary name (e.g. `tkn`, `argocd`, `flux`)
+      placeholder: tkn
+    validations:
+      required: true
+
+  - type: input
+    id: upstream-repo
+    attributes:
+      label: Upstream repository URL
+      description: Where the CLI source code lives
+      placeholder: https://github.com/tektoncd/cli
+    validations:
+      required: true
+
+  - type: dropdown
+    id: framework
+    attributes:
+      label: CLI framework
+      description: What framework is the CLI built with?
+      options:
+        - Cobra (Go) — fully automatic extraction
+        - urfave/cli (Go)
+        - argparse (Python)
+        - click (Python)
+        - Other / Unknown
+    validations:
+      required: true
+
+  - type: textarea
+    id: versions
+    attributes:
+      label: Versions to support
+      description: List the versions you want in the registry, one per line or comma-separated
+      placeholder: |
+        0.37
+        0.38
+        0.39
+    validations:
+      required: true
+
+  - type: textarea
+    id: why
+    attributes:
+      label: Why does this CLI matter?
+      description: How is this CLI used with AI tools? What hallucination problem does it solve?
+      placeholder: tkn is used with Tekton Pipelines. AI tools frequently hallucinate pipeline run flags...
+
+  - type: dropdown
+    id: binary-ci
+    attributes:
+      label: Can you provide the binary in CI?
+      description: GitHub Actions needs to download or install the binary to extract schemas.
+        If yes, note the install method (brew, curl, release asset, etc.) in comments.
+      options:
+        - "Yes — I know how to install it in GitHub Actions"
+        - "No — I'll need help with CI setup"
+        - "Unknown"
+    validations:
+      required: true
+
+  - type: dropdown
+    id: pr-willing
+    attributes:
+      label: Willing to submit a PR?
+      description: For Cobra CLIs, a PR is just adding one YAML file.
+      options:
+        - "Yes — I'll open a PR"
+        - "No — I'm requesting someone else add it"
+        - "Maybe — I need guidance first"
+    validations:
+      required: true

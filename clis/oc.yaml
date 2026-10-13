@@ -1,0 +1,21 @@
+name: oc
+display_name: "OpenShift CLI"
+description: "The OpenShift command-line interface for managing OpenShift clusters"
+binary: oc
+adapter: cobra
+versions:
+  - "4.18"
+  - "4.19"
+  - "4.20"
+  - "4.21"
+  - "4.22"
+version_command: "oc version --client"
+version_parse: "Client Version: {version}"
+upstream_repo: "https://github.com/openshift/oc"
+maintainers:
+  - "tosin2013"
+obtain:
+  artifact_url: "https://mirror.openshift.com/pub/openshift-v4/clients/ocp/latest-{version}/openshift-client-linux.tar.gz"
+  checksum_url: "https://mirror.openshift.com/pub/openshift-v4/clients/ocp/latest-{version}/sha256sum.txt"
+  format: "tar.gz"
+  binary: "oc"

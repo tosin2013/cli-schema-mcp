@@ -81,13 +81,11 @@ The server configuration is managed through environment variables:
 | `MCP_SSL_CERTFILE`          | `None`                  | SSL certificate file path                                                 |
 | `PYTHON_LOG_LEVEL`          | `INFO`                  | Logging level (`DEBUG`, `INFO`, `WARNING`, `ERROR`, `CRITICAL`) |
 | `ENVIRONMENT`               | `development`           | Deployment environment identifier                                         |
-| `ENABLE_AUTH`               | `True`*                 | Enable OAuth authentication (see[Auth Guide](authentication.md))             |
+| `ENABLE_AUTH`               | `False`                 | Enable OAuth authentication (see[Auth Guide](authentication.md))             |
 | `USE_EXTERNAL_BROWSER_AUTH` | `False`                 | Browser-based OAuth for local dev                                         |
 | `COMPATIBLE_WITH_CURSOR`    | `False`                 | Cursor IDE OAuth2 compatibility mode                                      |
 | `CORS_ENABLED`              | `False`                 | Enable CORS middleware                                                    |
 | `CORS_ORIGINS`              | `["*"]`                 | Allowed CORS origins                                                      |
-
-*\* `ENABLE_AUTH` defaults to `True` in code but `False` in `.env.example`. Always copy `.env.example` to `.env`.*
 
 See the [Authentication Guide](authentication.md) for the full list of `SSO_*` and `POSTGRES_*` variables.
 

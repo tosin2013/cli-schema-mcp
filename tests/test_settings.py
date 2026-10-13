@@ -6,7 +6,7 @@ from unittest.mock import patch
 import pytest
 from pydantic import ValidationError
 
-from template_mcp_server.src.settings import Settings, parse_sso_scopes, validate_config
+from cli_schema_mcp.src.settings import Settings, parse_sso_scopes, validate_config
 
 
 class TestSettings:
@@ -23,6 +23,7 @@ class TestSettings:
         assert settings.PYTHON_LOG_LEVEL == "INFO"
         assert settings.MCP_SSL_KEYFILE is None
         assert settings.MCP_SSL_CERTFILE is None
+        assert settings.SCHEMA_REGISTRY_PATH == "schemas"
 
     def test_custom_settings_from_env(self):
         """Test that settings can be overridden from environment variables."""
@@ -34,6 +35,7 @@ class TestSettings:
             "PYTHON_LOG_LEVEL": "DEBUG",
             "MCP_SSL_KEYFILE": "/path/to/key.pem",
             "MCP_SSL_CERTFILE": "/path/to/cert.pem",
+            "SCHEMA_REGISTRY_PATH": "/var/schemas",
         }
 
         # Act
@@ -47,6 +49,7 @@ class TestSettings:
         assert settings.PYTHON_LOG_LEVEL == "DEBUG"
         assert settings.MCP_SSL_KEYFILE == "/path/to/key.pem"
         assert settings.MCP_SSL_CERTFILE == "/path/to/cert.pem"
+        assert settings.SCHEMA_REGISTRY_PATH == "/var/schemas"
 
     def test_port_validation(self):
         """Test port validation constraints."""
@@ -127,6 +130,14 @@ class TestSettings:
                 ValidationError, match="SSO_SCOPES must contain at least one"
             ):
                 Settings()
+
+    def test_enable_auth_defaults_false_when_unset(self):
+        """Auth stays off when ENABLE_AUTH is not set in the environment."""
+        env = os.environ.copy()
+        env.pop("ENABLE_AUTH", None)
+        with patch.dict(os.environ, env, clear=True):
+            settings = Settings()
+        assert settings.ENABLE_AUTH is False
 
     def test_model_validator_allows_empty_scopes_when_auth_disabled(self):
         """Settings init allows empty SSO_SCOPES when auth is disabled."""

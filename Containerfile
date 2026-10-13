@@ -23,7 +23,9 @@ USER default
 # copy source code and files
 # --------------------------------------------------------------------------------------------------
 
-COPY template_mcp_server /app/template_mcp_server
+COPY cli_schema_mcp /app/cli_schema_mcp
+COPY schemas /app/schemas
+COPY clis /app/clis
 
 # --------------------------------------------------------------------------------------------------
 # Set PYTHONPATH to include /app
@@ -37,4 +39,4 @@ EXPOSE 5001
 # add entrypoint for the container
 # --------------------------------------------------------------------------------------------------
 
-CMD ["/app/.venv/bin/python", "-m", "template_mcp_server.src.main"]
+CMD ["/app/.venv/bin/python", "-m", "cli_schema_mcp.src.main"]

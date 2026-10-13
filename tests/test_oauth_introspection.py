@@ -3,7 +3,7 @@ from unittest.mock import Mock, patch
 
 import httpx
 
-from template_mcp_server.src.oauth.introspection import (
+from cli_schema_mcp.src.oauth.introspection import (
     Rfc7662Introspector,
     TokenInfoIntrospector,
     create_token_introspector,
@@ -11,7 +11,7 @@ from template_mcp_server.src.oauth.introspection import (
 
 
 class TestRfc7662Introspector:
-    @patch("template_mcp_server.src.oauth.introspection.httpx.post")
+    @patch("cli_schema_mcp.src.oauth.introspection.httpx.post")
     def test_introspect_success(self, mock_post):
         mock_response = Mock()
         mock_response.raise_for_status.return_value = None
@@ -37,7 +37,7 @@ class TestRfc7662Introspector:
         )
         assert result == {"active": True, "sub": "user123"}
 
-    @patch("template_mcp_server.src.oauth.introspection.httpx.post")
+    @patch("cli_schema_mcp.src.oauth.introspection.httpx.post")
     def test_introspect_http_error(self, mock_post):
         mock_post.side_effect = httpx.HTTPError("Connection failed")
 
@@ -69,7 +69,7 @@ class TestTokenInfoNormalizeResponse:
 
 
 class TestTokenInfoIntrospector:
-    @patch("template_mcp_server.src.oauth.introspection.httpx.get")
+    @patch("cli_schema_mcp.src.oauth.introspection.httpx.get")
     def test_introspect_success(self, mock_get):
         mock_response = Mock()
         mock_response.raise_for_status.return_value = None
@@ -96,7 +96,7 @@ class TestTokenInfoIntrospector:
         assert result["sub"] == "123"
         assert isinstance(result["exp"], int)
 
-    @patch("template_mcp_server.src.oauth.introspection.httpx.get")
+    @patch("cli_schema_mcp.src.oauth.introspection.httpx.get")
     def test_introspect_audience_mismatch(self, mock_get):
         mock_response = Mock()
         mock_response.raise_for_status.return_value = None
@@ -117,7 +117,7 @@ class TestTokenInfoIntrospector:
         assert result["active"] is False
         assert result["error"] == "audience_mismatch"
 
-    @patch("template_mcp_server.src.oauth.introspection.httpx.get")
+    @patch("cli_schema_mcp.src.oauth.introspection.httpx.get")
     def test_introspect_http_error(self, mock_get):
         mock_get.side_effect = httpx.HTTPError("400 Bad Request")
 
@@ -129,7 +129,7 @@ class TestTokenInfoIntrospector:
         assert result["active"] is False
         assert "Introspection failed" in result["error"]
 
-    @patch("template_mcp_server.src.oauth.introspection.httpx.get")
+    @patch("cli_schema_mcp.src.oauth.introspection.httpx.get")
     def test_introspect_unexpected_error(self, mock_get):
         mock_response = Mock()
         mock_response.raise_for_status.return_value = None

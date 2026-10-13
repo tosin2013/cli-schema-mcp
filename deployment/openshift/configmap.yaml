@@ -1,9 +1,9 @@
 apiVersion: v1
 kind: ConfigMap
 metadata:
-  name: template-mcp-server-config
+  name: cli-schema-mcp-config
   labels:
-    app: template-mcp-server
+    app: cli-schema-mcp
     component: mcp-server
 data:
   MCP_PORT: "5001"

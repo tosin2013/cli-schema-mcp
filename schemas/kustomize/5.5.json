@@ -1,0 +1,2057 @@
+{
+  "name": "kustomize",
+  "flags": [
+    {
+      "name": "--help",
+      "shorthand": "-h",
+      "type": "bool",
+      "default": null,
+      "description": "help for kustomize",
+      "deprecated": false
+    },
+    {
+      "name": "--stack-trace",
+      "shorthand": null,
+      "type": "bool",
+      "default": null,
+      "description": "print a stack-trace on error",
+      "deprecated": false
+    }
+  ],
+  "subcommands": [
+    {
+      "name": "build",
+      "flags": [
+        {
+          "name": "--stack-trace",
+          "shorthand": null,
+          "type": "bool",
+          "default": null,
+          "description": "print a stack-trace on error",
+          "deprecated": false
+        },
+        {
+          "name": "--as-current-user",
+          "shorthand": null,
+          "type": "bool",
+          "default": null,
+          "description": "use the uid and gid of the command executor to run the function in the container",
+          "deprecated": false
+        },
+        {
+          "name": "--enable-alpha-plugins",
+          "shorthand": null,
+          "type": "bool",
+          "default": null,
+          "description": "enable kustomize plugins",
+          "deprecated": false
+        },
+        {
+          "name": "--enable-exec",
+          "shorthand": null,
+          "type": "bool",
+          "default": null,
+          "description": "enable support for exec functions (raw executables); do not use for untrusted configs! (Alpha)",
+          "deprecated": false
+        },
+        {
+          "name": "--enable-helm",
+          "shorthand": null,
+          "type": "bool",
+          "default": null,
+          "description": "Enable use of the Helm chart inflator generator.",
+          "deprecated": false
+        },
+        {
+          "name": "--env",
+          "shorthand": "-e",
+          "type": "stringArray",
+          "default": null,
+          "description": "a list of environment variables to be used by functions",
+          "deprecated": false
+        },
+        {
+          "name": "--helm-api-versions",
+          "shorthand": null,
+          "type": "stringArray",
+          "default": null,
+          "description": "Kubernetes api versions used by Helm for Capabilities.APIVersions",
+          "deprecated": false
+        },
+        {
+          "name": "--helm-command",
+          "shorthand": null,
+          "type": "string",
+          "default": "helm",
+          "description": "helm command (path to executable) (default \"helm\")",
+          "deprecated": false
+        },
+        {
+          "name": "--helm-debug",
+          "shorthand": null,
+          "type": "bool",
+          "default": null,
+          "description": "Enable debug output from the Helm chart inflator generator.",
+          "deprecated": false
+        },
+        {
+          "name": "--helm-kube-version",
+          "shorthand": null,
+          "type": "string",
+          "default": null,
+          "description": "Kubernetes version used by Helm for Capabilities.KubeVersion",
+          "deprecated": false
+        },
+        {
+          "name": "--help",
+          "shorthand": "-h",
+          "type": "bool",
+          "default": null,
+          "description": "help for build",
+          "deprecated": false
+        },
+        {
+          "name": "--load-restrictor",
+          "shorthand": null,
+          "type": "string",
+          "default": "LoadRestrictionsRootOnly",
+          "description": "if set to 'LoadRestrictionsNone', local kustomizations may load files from outside their root. This does, however, break the relocatability of the kustomization. (default \"LoadRestrictionsRootOnly\")",
+          "deprecated": false
+        },
+        {
+          "name": "--mount",
+          "shorthand": null,
+          "type": "stringArray",
+          "default": null,
+          "description": "a list of storage options read from the filesystem",
+          "deprecated": false
+        },
+        {
+          "name": "--network",
+          "shorthand": null,
+          "type": "bool",
+          "default": null,
+          "description": "enable network access for functions that declare it",
+          "deprecated": false
+        },
+        {
+          "name": "--network-name",
+          "shorthand": null,
+          "type": "string",
+          "default": "bridge",
+          "description": "the docker network to run the container in (default \"bridge\")",
+          "deprecated": false
+        },
+        {
+          "name": "--output",
+          "shorthand": "-o",
+          "type": "string",
+          "default": null,
+          "description": "If specified, write output to this path.",
+          "deprecated": false
+        }
+      ],
+      "subcommands": []
+    },
+    {
+      "name": "cfg",
+      "flags": [
+        {
+          "name": "--stack-trace",
+          "shorthand": null,
+          "type": "bool",
+          "default": null,
+          "description": "print a stack-trace on error",
+          "deprecated": false
+        },
+        {
+          "name": "--help",
+          "shorthand": "-h",
+          "type": "bool",
+          "default": null,
+          "description": "help for cfg",
+          "deprecated": false
+        }
+      ],
+      "subcommands": [
+        {
+          "name": "cat",
+          "flags": [
+            {
+              "name": "--stack-trace",
+              "shorthand": null,
+              "type": "bool",
+              "default": null,
+              "description": "print a stack-trace on error",
+              "deprecated": false
+            },
+            {
+              "name": "--annotate",
+              "shorthand": null,
+              "type": "bool",
+              "default": null,
+              "description": "annotate resources with their file origins.",
+              "deprecated": false
+            },
+            {
+              "name": "--dest",
+              "shorthand": null,
+              "type": "string",
+              "default": null,
+              "description": "if specified, write output to a file rather than stdout",
+              "deprecated": false
+            },
+            {
+              "name": "--exclude-non-local",
+              "shorthand": null,
+              "type": "bool",
+              "default": null,
+              "description": "if true, exclude non-local-config in the output.",
+              "deprecated": false
+            },
+            {
+              "name": "--format",
+              "shorthand": null,
+              "type": "bool",
+              "default": "true",
+              "description": "format resource config yaml before printing. (default true)",
+              "deprecated": false
+            },
+            {
+              "name": "--function-config",
+              "shorthand": null,
+              "type": "string",
+              "default": null,
+              "description": "path to function config to put in ResourceList -- only if wrapped in a ResourceList.",
+              "deprecated": false
+            },
+            {
+              "name": "--help",
+              "shorthand": "-h",
+              "type": "bool",
+              "default": null,
+              "description": "help for cat",
+              "deprecated": false
+            },
+            {
+              "name": "--include-local",
+              "shorthand": null,
+              "type": "bool",
+              "default": null,
+              "description": "if true, include local-config in the output.",
+              "deprecated": false
+            },
+            {
+              "name": "--recurse-subpackages",
+              "shorthand": "-R",
+              "type": "bool",
+              "default": "true",
+              "description": "print resources recursively in all the nested subpackages (default true)",
+              "deprecated": false
+            },
+            {
+              "name": "--strip-comments",
+              "shorthand": null,
+              "type": "bool",
+              "default": null,
+              "description": "remove comments from yaml.",
+              "deprecated": false
+            },
+            {
+              "name": "--style",
+              "shorthand": null,
+              "type": "stringArray",
+              "default": null,
+              "description": "yaml styles to apply.  may be 'TaggedStyle', 'DoubleQuotedStyle', 'LiteralStyle', 'FoldedStyle', 'FlowStyle'.",
+              "deprecated": false
+            },
+            {
+              "name": "--wrap-kind",
+              "shorthand": null,
+              "type": "string",
+              "default": null,
+              "description": "if set, wrap the output in this list type kind.",
+              "deprecated": false
+            },
+            {
+              "name": "--wrap-version",
+              "shorthand": null,
+              "type": "string",
+              "default": null,
+              "description": "if set, wrap the output in this list type apiVersion.",
+              "deprecated": false
+            }
+          ],
+          "subcommands": []
+        },
+        {
+          "name": "count",
+          "flags": [
+            {
+              "name": "--stack-trace",
+              "shorthand": null,
+              "type": "bool",
+              "default": null,
+              "description": "print a stack-trace on error",
+              "deprecated": false
+            },
+            {
+              "name": "--help",
+              "shorthand": "-h",
+              "type": "bool",
+              "default": null,
+              "description": "help for count",
+              "deprecated": false
+            },
+            {
+              "name": "--kind",
+              "shorthand": null,
+              "type": "bool",
+              "default": "true",
+              "description": "count resources by kind. (default true)",
+              "deprecated": false
+            },
+            {
+              "name": "--recurse-subpackages",
+              "shorthand": "-R",
+              "type": "bool",
+              "default": "true",
+              "description": "prints count of resources recursively in all the nested subpackages (default true)",
+              "deprecated": false
+            }
+          ],
+          "subcommands": []
+        },
+        {
+          "name": "grep",
+          "flags": [
+            {
+              "name": "--stack-trace",
+              "shorthand": null,
+              "type": "bool",
+              "default": null,
+              "description": "print a stack-trace on error",
+              "deprecated": false
+            },
+            {
+              "name": "--annotate",
+              "shorthand": null,
+              "type": "bool",
+              "default": "true",
+              "description": "annotate resources with their file origins. (default true)",
+              "deprecated": false
+            },
+            {
+              "name": "--help",
+              "shorthand": "-h",
+              "type": "bool",
+              "default": null,
+              "description": "help for grep",
+              "deprecated": false
+            },
+            {
+              "name": "--invert-match",
+              "shorthand": null,
+              "type": "bool",
+              "default": null,
+              "description": "Selected Resources are those not matching any of the specified patterns..",
+              "deprecated": false
+            },
+            {
+              "name": "--recurse-subpackages",
+              "shorthand": "-R",
+              "type": "bool",
+              "default": "true",
+              "description": "also print resources recursively in all the nested subpackages (default true)",
+              "deprecated": false
+            }
+          ],
+          "subcommands": []
+        },
+        {
+          "name": "tree",
+          "flags": [
+            {
+              "name": "--stack-trace",
+              "shorthand": null,
+              "type": "bool",
+              "default": null,
+              "description": "print a stack-trace on error",
+              "deprecated": false
+            },
+            {
+              "name": "--all",
+              "shorthand": null,
+              "type": "bool",
+              "default": null,
+              "description": "print all field infos",
+              "deprecated": false
+            },
+            {
+              "name": "--args",
+              "shorthand": null,
+              "type": "bool",
+              "default": null,
+              "description": "print args field",
+              "deprecated": false
+            },
+            {
+              "name": "--command",
+              "shorthand": null,
+              "type": "bool",
+              "default": null,
+              "description": "print command field",
+              "deprecated": false
+            },
+            {
+              "name": "--env",
+              "shorthand": null,
+              "type": "bool",
+              "default": null,
+              "description": "print env field",
+              "deprecated": false
+            },
+            {
+              "name": "--exclude-non-local",
+              "shorthand": null,
+              "type": "bool",
+              "default": null,
+              "description": "if true, exclude non-local-config in the output.",
+              "deprecated": false
+            },
+            {
+              "name": "--field",
+              "shorthand": null,
+              "type": "stringArray",
+              "default": null,
+              "description": "print field",
+              "deprecated": false
+            },
+            {
+              "name": "--graph-structure",
+              "shorthand": null,
+              "type": "string",
+              "default": null,
+              "description": "Graph structure to use for printing the tree.  may be any of: owners,directory",
+              "deprecated": false
+            },
+            {
+              "name": "--help",
+              "shorthand": "-h",
+              "type": "bool",
+              "default": null,
+              "description": "help for tree",
+              "deprecated": false
+            },
+            {
+              "name": "--image",
+              "shorthand": null,
+              "type": "bool",
+              "default": null,
+              "description": "print image field",
+              "deprecated": false
+            },
+            {
+              "name": "--include-local",
+              "shorthand": null,
+              "type": "bool",
+              "default": null,
+              "description": "if true, include local-config in the output.",
+              "deprecated": false
+            },
+            {
+              "name": "--name",
+              "shorthand": null,
+              "type": "bool",
+              "default": null,
+              "description": "print name field",
+              "deprecated": false
+            },
+            {
+              "name": "--ports",
+              "shorthand": null,
+              "type": "bool",
+              "default": null,
+              "description": "print ports field",
+              "deprecated": false
+            },
+            {
+              "name": "--replicas",
+              "shorthand": null,
+              "type": "bool",
+              "default": null,
+              "description": "print replicas field",
+              "deprecated": false
+            },
+            {
+              "name": "--resources",
+              "shorthand": null,
+              "type": "bool",
+              "default": null,
+              "description": "print resources field",
+              "deprecated": false
+            }
+          ],
+          "subcommands": []
+        }
+      ]
+    },
+    {
+      "name": "completion",
+      "flags": [
+        {
+          "name": "--stack-trace",
+          "shorthand": null,
+          "type": "bool",
+          "default": null,
+          "description": "print a stack-trace on error",
+          "deprecated": false
+        },
+        {
+          "name": "--help",
+          "shorthand": "-h",
+          "type": "bool",
+          "default": null,
+          "description": "help for completion",
+          "deprecated": false
+        }
+      ],
+      "subcommands": [
+        {
+          "name": "bash",
+          "flags": [
+            {
+              "name": "--stack-trace",
+              "shorthand": null,
+              "type": "bool",
+              "default": null,
+              "description": "print a stack-trace on error",
+              "deprecated": false
+            },
+            {
+              "name": "--help",
+              "shorthand": "-h",
+              "type": "bool",
+              "default": null,
+              "description": "help for completion",
+              "deprecated": false
+            }
+          ],
+          "subcommands": []
+        },
+        {
+          "name": "zsh",
+          "flags": [
+            {
+              "name": "--stack-trace",
+              "shorthand": null,
+              "type": "bool",
+              "default": null,
+              "description": "print a stack-trace on error",
+              "deprecated": false
+            },
+            {
+              "name": "--help",
+              "shorthand": "-h",
+              "type": "bool",
+              "default": null,
+              "description": "help for completion",
+              "deprecated": false
+            }
+          ],
+          "subcommands": []
+        },
+        {
+          "name": "fish",
+          "flags": [
+            {
+              "name": "--stack-trace",
+              "shorthand": null,
+              "type": "bool",
+              "default": null,
+              "description": "print a stack-trace on error",
+              "deprecated": false
+            },
+            {
+              "name": "--help",
+              "shorthand": "-h",
+              "type": "bool",
+              "default": null,
+              "description": "help for completion",
+              "deprecated": false
+            }
+          ],
+          "subcommands": []
+        },
+        {
+          "name": "powershell",
+          "flags": [
+            {
+              "name": "--stack-trace",
+              "shorthand": null,
+              "type": "bool",
+              "default": null,
+              "description": "print a stack-trace on error",
+              "deprecated": false
+            },
+            {
+              "name": "--help",
+              "shorthand": "-h",
+              "type": "bool",
+              "default": null,
+              "description": "help for completion",
+              "deprecated": false
+            }
+          ],
+          "subcommands": []
+        }
+      ]
+    },
+    {
+      "name": "create",
+      "flags": [
+        {
+          "name": "--stack-trace",
+          "shorthand": null,
+          "type": "bool",
+          "default": null,
+          "description": "print a stack-trace on error",
+          "deprecated": false
+        },
+        {
+          "name": "--annotations",
+          "shorthand": null,
+          "type": "string",
+          "default": null,
+          "description": "Add one or more common annotations.",
+          "deprecated": false
+        },
+        {
+          "name": "--autodetect",
+          "shorthand": null,
+          "type": "bool",
+          "default": null,
+          "description": "Search for kubernetes resources in the current directory to be added to the kustomization file.",
+          "deprecated": false
+        },
+        {
+          "name": "--help",
+          "shorthand": "-h",
+          "type": "bool",
+          "default": null,
+          "description": "help for create",
+          "deprecated": false
+        },
+        {
+          "name": "--labels",
+          "shorthand": null,
+          "type": "string",
+          "default": null,
+          "description": "Add one or more common labels.",
+          "deprecated": false
+        },
+        {
+          "name": "--nameprefix",
+          "shorthand": null,
+          "type": "string",
+          "default": null,
+          "description": "Sets the value of the namePrefix field in the kustomization file.",
+          "deprecated": false
+        },
+        {
+          "name": "--namespace",
+          "shorthand": null,
+          "type": "string",
+          "default": null,
+          "description": "Set the value of the namespace field in the kustomization file.",
+          "deprecated": false
+        },
+        {
+          "name": "--namesuffix",
+          "shorthand": null,
+          "type": "string",
+          "default": null,
+          "description": "Sets the value of the nameSuffix field in the kustomization file.",
+          "deprecated": false
+        },
+        {
+          "name": "--recursive",
+          "shorthand": null,
+          "type": "bool",
+          "default": null,
+          "description": "Enable recursive directory searching for resource auto-detection.",
+          "deprecated": false
+        },
+        {
+          "name": "--resources",
+          "shorthand": null,
+          "type": "string",
+          "default": null,
+          "description": "Name of a file containing a file to add to the kustomization file.",
+          "deprecated": false
+        }
+      ],
+      "subcommands": []
+    },
+    {
+      "name": "edit",
+      "flags": [
+        {
+          "name": "--stack-trace",
+          "shorthand": null,
+          "type": "bool",
+          "default": null,
+          "description": "print a stack-trace on error",
+          "deprecated": false
+        },
+        {
+          "name": "--help",
+          "shorthand": "-h",
+          "type": "bool",
+          "default": null,
+          "description": "help for edit",
+          "deprecated": false
+        }
+      ],
+      "subcommands": [
+        {
+          "name": "add",
+          "flags": [
+            {
+              "name": "--stack-trace",
+              "shorthand": null,
+              "type": "bool",
+              "default": null,
+              "description": "print a stack-trace on error",
+              "deprecated": false
+            },
+            {
+              "name": "--help",
+              "shorthand": "-h",
+              "type": "bool",
+              "default": null,
+              "description": "help for add",
+              "deprecated": false
+            }
+          ],
+          "subcommands": [
+            {
+              "name": "annotation",
+              "flags": [
+                {
+                  "name": "--stack-trace",
+                  "shorthand": null,
+                  "type": "bool",
+                  "default": null,
+                  "description": "print a stack-trace on error",
+                  "deprecated": false
+                },
+                {
+                  "name": "--force",
+                  "shorthand": "-f",
+                  "type": "bool",
+                  "default": null,
+                  "description": "overwrite commonAnnotation if it already exists",
+                  "deprecated": false
+                },
+                {
+                  "name": "--help",
+                  "shorthand": "-h",
+                  "type": "bool",
+                  "default": null,
+                  "description": "help for annotation",
+                  "deprecated": false
+                }
+              ],
+              "subcommands": []
+            },
+            {
+              "name": "base",
+              "flags": [
+                {
+                  "name": "--stack-trace",
+                  "shorthand": null,
+                  "type": "bool",
+                  "default": null,
+                  "description": "print a stack-trace on error",
+                  "deprecated": false
+                },
+                {
+                  "name": "--help",
+                  "shorthand": "-h",
+                  "type": "bool",
+                  "default": null,
+                  "description": "help for base",
+                  "deprecated": false
+                }
+              ],
+              "subcommands": []
+            },
+            {
+              "name": "buildmetadata",
+              "flags": [
+                {
+                  "name": "--stack-trace",
+                  "shorthand": null,
+                  "type": "bool",
+                  "default": null,
+                  "description": "print a stack-trace on error",
+                  "deprecated": false
+                },
+                {
+                  "name": "--help",
+                  "shorthand": "-h",
+                  "type": "bool",
+                  "default": null,
+                  "description": "help for buildmetadata",
+                  "deprecated": false
+                }
+              ],
+              "subcommands": []
+            },
+            {
+              "name": "component",
+              "flags": [
+                {
+                  "name": "--stack-trace",
+                  "shorthand": null,
+                  "type": "bool",
+                  "default": null,
+                  "description": "print a stack-trace on error",
+                  "deprecated": false
+                },
+                {
+                  "name": "--help",
+                  "shorthand": "-h",
+                  "type": "bool",
+                  "default": null,
+                  "description": "help for component",
+                  "deprecated": false
+                }
+              ],
+              "subcommands": []
+            },
+            {
+              "name": "configmap",
+              "flags": [
+                {
+                  "name": "--stack-trace",
+                  "shorthand": null,
+                  "type": "bool",
+                  "default": null,
+                  "description": "print a stack-trace on error",
+                  "deprecated": false
+                },
+                {
+                  "name": "--behavior",
+                  "shorthand": null,
+                  "type": "string",
+                  "default": null,
+                  "description": "Specify the behavior for config map generation, i.e whether to create a new configmap (the default),  to merge with a previously defined one, or to replace an existing one. Merge and replace should be used only  when overriding an existing configmap defined in a base",
+                  "deprecated": false
+                },
+                {
+                  "name": "--disableNameSuffixHash",
+                  "shorthand": null,
+                  "type": "bool",
+                  "default": null,
+                  "description": "Disable the name suffix for the configmap",
+                  "deprecated": false
+                },
+                {
+                  "name": "--from-env-file",
+                  "shorthand": null,
+                  "type": "string",
+                  "default": null,
+                  "description": "Specify the path to a file to read lines of key=val pairs to create a configmap (i.e. a Docker .env file).",
+                  "deprecated": false
+                },
+                {
+                  "name": "--from-file",
+                  "shorthand": null,
+                  "type": "stringArray",
+                  "default": null,
+                  "description": "Key file can be specified using its file path, in which case file basename will be used as configmap key, or optionally with a key and file path, in which case the given key will be used.  Specifying a directory will iterate each named file in the directory whose basename is a valid configmap key.",
+                  "deprecated": false
+                },
+                {
+                  "name": "--from-literal",
+                  "shorthand": null,
+                  "type": "stringArray",
+                  "default": null,
+                  "description": "Specify a key and literal value to insert in configmap (i.e. mykey=somevalue)",
+                  "deprecated": false
+                },
+                {
+                  "name": "--help",
+                  "shorthand": "-h",
+                  "type": "bool",
+                  "default": null,
+                  "description": "help for configmap",
+                  "deprecated": false
+                },
+                {
+                  "name": "--namespace",
+                  "shorthand": null,
+                  "type": "string",
+                  "default": null,
+                  "description": "Specify the namespace of the ConfigMap",
+                  "deprecated": false
+                }
+              ],
+              "subcommands": []
+            },
+            {
+              "name": "generator",
+              "flags": [
+                {
+                  "name": "--stack-trace",
+                  "shorthand": null,
+                  "type": "bool",
+                  "default": null,
+                  "description": "print a stack-trace on error",
+                  "deprecated": false
+                },
+                {
+                  "name": "--help",
+                  "shorthand": "-h",
+                  "type": "bool",
+                  "default": null,
+                  "description": "help for generator",
+                  "deprecated": false
+                }
+              ],
+              "subcommands": []
+            },
+            {
+              "name": "label",
+              "flags": [
+                {
+                  "name": "--stack-trace",
+                  "shorthand": null,
+                  "type": "bool",
+                  "default": null,
+                  "description": "print a stack-trace on error",
+                  "deprecated": false
+                },
+                {
+                  "name": "--force",
+                  "shorthand": "-f",
+                  "type": "bool",
+                  "default": null,
+                  "description": "overwrite commonLabel if it already exists",
+                  "deprecated": false
+                },
+                {
+                  "name": "--help",
+                  "shorthand": "-h",
+                  "type": "bool",
+                  "default": null,
+                  "description": "help for label",
+                  "deprecated": false
+                },
+                {
+                  "name": "--include-templates",
+                  "shorthand": null,
+                  "type": "bool",
+                  "default": null,
+                  "description": "include labels in templates (requires --without-selector)",
+                  "deprecated": false
+                },
+                {
+                  "name": "--without-selector",
+                  "shorthand": null,
+                  "type": "bool",
+                  "default": null,
+                  "description": "using add labels without selector option",
+                  "deprecated": false
+                }
+              ],
+              "subcommands": []
+            },
+            {
+              "name": "patch",
+              "flags": [
+                {
+                  "name": "--stack-trace",
+                  "shorthand": null,
+                  "type": "bool",
+                  "default": null,
+                  "description": "print a stack-trace on error",
+                  "deprecated": false
+                },
+                {
+                  "name": "--annotation-selector",
+                  "shorthand": null,
+                  "type": "string",
+                  "default": null,
+                  "description": "annotationSelector in patch target",
+                  "deprecated": false
+                },
+                {
+                  "name": "--group",
+                  "shorthand": null,
+                  "type": "string",
+                  "default": null,
+                  "description": "API group in patch target",
+                  "deprecated": false
+                },
+                {
+                  "name": "--help",
+                  "shorthand": "-h",
+                  "type": "bool",
+                  "default": null,
+                  "description": "help for patch",
+                  "deprecated": false
+                },
+                {
+                  "name": "--kind",
+                  "shorthand": null,
+                  "type": "string",
+                  "default": null,
+                  "description": "Resource kind in patch target",
+                  "deprecated": false
+                },
+                {
+                  "name": "--label-selector",
+                  "shorthand": null,
+                  "type": "string",
+                  "default": null,
+                  "description": "labelSelector in patch target",
+                  "deprecated": false
+                },
+                {
+                  "name": "--name",
+                  "shorthand": null,
+                  "type": "string",
+                  "default": null,
+                  "description": "Resource name in patch target",
+                  "deprecated": false
+                },
+                {
+                  "name": "--namespace",
+                  "shorthand": null,
+                  "type": "string",
+                  "default": null,
+                  "description": "Resource namespace in patch target",
+                  "deprecated": false
+                },
+                {
+                  "name": "--patch",
+                  "shorthand": null,
+                  "type": "string",
+                  "default": null,
+                  "description": "Literal string of patch content. Cannot be used with --path at the same time.",
+                  "deprecated": false
+                },
+                {
+                  "name": "--path",
+                  "shorthand": null,
+                  "type": "string",
+                  "default": null,
+                  "description": "Path to the patch file. Cannot be used with --patch at the same time.",
+                  "deprecated": false
+                },
+                {
+                  "name": "--version",
+                  "shorthand": null,
+                  "type": "string",
+                  "default": null,
+                  "description": "API version in patch target",
+                  "deprecated": false
+                }
+              ],
+              "subcommands": []
+            },
+            {
+              "name": "resource",
+              "flags": [
+                {
+                  "name": "--stack-trace",
+                  "shorthand": null,
+                  "type": "bool",
+                  "default": null,
+                  "description": "print a stack-trace on error",
+                  "deprecated": false
+                },
+                {
+                  "name": "--help",
+                  "shorthand": "-h",
+                  "type": "bool",
+                  "default": null,
+                  "description": "help for resource",
+                  "deprecated": false
+                },
+                {
+                  "name": "--no-verify",
+                  "shorthand": null,
+                  "type": "bool",
+                  "default": null,
+                  "description": "skip validation for resources",
+                  "deprecated": false
+                }
+              ],
+              "subcommands": []
+            },
+            {
+              "name": "secret",
+              "flags": [
+                {
+                  "name": "--stack-trace",
+                  "shorthand": null,
+                  "type": "bool",
+                  "default": null,
+                  "description": "print a stack-trace on error",
+                  "deprecated": false
+                },
+                {
+                  "name": "--disableNameSuffixHash",
+                  "shorthand": null,
+                  "type": "bool",
+                  "default": null,
+                  "description": "Disable the name suffix for the secret",
+                  "deprecated": false
+                },
+                {
+                  "name": "--from-env-file",
+                  "shorthand": null,
+                  "type": "string",
+                  "default": null,
+                  "description": "Specify the path to a file to read lines of key=val pairs to create a secret (i.e. a Docker .env file).",
+                  "deprecated": false
+                },
+                {
+                  "name": "--from-file",
+                  "shorthand": null,
+                  "type": "stringArray",
+                  "default": null,
+                  "description": "Key file can be specified using its file path, in which case file basename will be used as secret key, or optionally with a key and file path, in which case the given key will be used.  Specifying a directory will iterate each named file in the directory whose basename is a valid secret key.",
+                  "deprecated": false
+                },
+                {
+                  "name": "--from-literal",
+                  "shorthand": null,
+                  "type": "stringArray",
+                  "default": null,
+                  "description": "Specify a key and literal value to insert in secret (i.e. mykey=somevalue)",
+                  "deprecated": false
+                },
+                {
+                  "name": "--help",
+                  "shorthand": "-h",
+                  "type": "bool",
+                  "default": null,
+                  "description": "help for secret",
+                  "deprecated": false
+                },
+                {
+                  "name": "--namespace",
+                  "shorthand": null,
+                  "type": "string",
+                  "default": null,
+                  "description": "Specify the namespace of the secret",
+                  "deprecated": false
+                },
+                {
+                  "name": "--type",
+                  "shorthand": null,
+                  "type": "string",
+                  "default": "Opaque",
+                  "description": "Specify the secret type this can be 'Opaque' (default), or 'kubernetes.io/tls' (default \"Opaque\")",
+                  "deprecated": false
+                }
+              ],
+              "subcommands": []
+            },
+            {
+              "name": "transformer",
+              "flags": [
+                {
+                  "name": "--stack-trace",
+                  "shorthand": null,
+                  "type": "bool",
+                  "default": null,
+                  "description": "print a stack-trace on error",
+                  "deprecated": false
+                },
+                {
+                  "name": "--help",
+                  "shorthand": "-h",
+                  "type": "bool",
+                  "default": null,
+                  "description": "help for transformer",
+                  "deprecated": false
+                }
+              ],
+              "subcommands": []
+            }
+          ]
+        },
+        {
+          "name": "alpha-list-builtin-plugin",
+          "flags": [
+            {
+              "name": "--stack-trace",
+              "shorthand": null,
+              "type": "bool",
+              "default": null,
+              "description": "print a stack-trace on error",
+              "deprecated": false
+            },
+            {
+              "name": "--help",
+              "shorthand": "-h",
+              "type": "bool",
+              "default": null,
+              "description": "help for alpha-list-builtin-plugin",
+              "deprecated": false
+            }
+          ],
+          "subcommands": []
+        },
+        {
+          "name": "fix",
+          "flags": [
+            {
+              "name": "--stack-trace",
+              "shorthand": null,
+              "type": "bool",
+              "default": null,
+              "description": "print a stack-trace on error",
+              "deprecated": false
+            },
+            {
+              "name": "--help",
+              "shorthand": "-h",
+              "type": "bool",
+              "default": null,
+              "description": "help for fix",
+              "deprecated": false
+            },
+            {
+              "name": "--vars",
+              "shorthand": null,
+              "type": "bool",
+              "default": null,
+              "description": "If specified, kustomize will attempt to convert vars to replacements.",
+              "deprecated": false
+            }
+          ],
+          "subcommands": []
+        },
+        {
+          "name": "remove",
+          "flags": [
+            {
+              "name": "--stack-trace",
+              "shorthand": null,
+              "type": "bool",
+              "default": null,
+              "description": "print a stack-trace on error",
+              "deprecated": false
+            },
+            {
+              "name": "--help",
+              "shorthand": "-h",
+              "type": "bool",
+              "default": null,
+              "description": "help for remove",
+              "deprecated": false
+            }
+          ],
+          "subcommands": [
+            {
+              "name": "annotation",
+              "flags": [
+                {
+                  "name": "--stack-trace",
+                  "shorthand": null,
+                  "type": "bool",
+                  "default": null,
+                  "description": "print a stack-trace on error",
+                  "deprecated": false
+                },
+                {
+                  "name": "--help",
+                  "shorthand": "-h",
+                  "type": "bool",
+                  "default": null,
+                  "description": "help for annotation",
+                  "deprecated": false
+                },
+                {
+                  "name": "--ignore-non-existence",
+                  "shorthand": "-i",
+                  "type": "bool",
+                  "default": null,
+                  "description": "ignore error if the given label doesn't exist",
+                  "deprecated": false
+                }
+              ],
+              "subcommands": []
+            },
+            {
+              "name": "buildmetadata",
+              "flags": [
+                {
+                  "name": "--stack-trace",
+                  "shorthand": null,
+                  "type": "bool",
+                  "default": null,
+                  "description": "print a stack-trace on error",
+                  "deprecated": false
+                },
+                {
+                  "name": "--help",
+                  "shorthand": "-h",
+                  "type": "bool",
+                  "default": null,
+                  "description": "help for buildmetadata",
+                  "deprecated": false
+                }
+              ],
+              "subcommands": []
+            },
+            {
+              "name": "configmap",
+              "flags": [
+                {
+                  "name": "--stack-trace",
+                  "shorthand": null,
+                  "type": "bool",
+                  "default": null,
+                  "description": "print a stack-trace on error",
+                  "deprecated": false
+                },
+                {
+                  "name": "--help",
+                  "shorthand": "-h",
+                  "type": "bool",
+                  "default": null,
+                  "description": "help for configmap",
+                  "deprecated": false
+                },
+                {
+                  "name": "--namespace",
+                  "shorthand": null,
+                  "type": "string",
+                  "default": null,
+                  "description": "Namespace to remove ConfigMap(s) from",
+                  "deprecated": false
+                }
+              ],
+              "subcommands": []
+            },
+            {
+              "name": "label",
+              "flags": [
+                {
+                  "name": "--stack-trace",
+                  "shorthand": null,
+                  "type": "bool",
+                  "default": null,
+                  "description": "print a stack-trace on error",
+                  "deprecated": false
+                },
+                {
+                  "name": "--help",
+                  "shorthand": "-h",
+                  "type": "bool",
+                  "default": null,
+                  "description": "help for label",
+                  "deprecated": false
+                },
+                {
+                  "name": "--ignore-non-existence",
+                  "shorthand": "-i",
+                  "type": "bool",
+                  "default": null,
+                  "description": "ignore error if the given label doesn't exist",
+                  "deprecated": false
+                }
+              ],
+              "subcommands": []
+            },
+            {
+              "name": "patch",
+              "flags": [
+                {
+                  "name": "--stack-trace",
+                  "shorthand": null,
+                  "type": "bool",
+                  "default": null,
+                  "description": "print a stack-trace on error",
+                  "deprecated": false
+                },
+                {
+                  "name": "--annotation-selector",
+                  "shorthand": null,
+                  "type": "string",
+                  "default": null,
+                  "description": "annotationSelector in patch target",
+                  "deprecated": false
+                },
+                {
+                  "name": "--group",
+                  "shorthand": null,
+                  "type": "string",
+                  "default": null,
+                  "description": "API group in patch target",
+                  "deprecated": false
+                },
+                {
+                  "name": "--help",
+                  "shorthand": "-h",
+                  "type": "bool",
+                  "default": null,
+                  "description": "help for patch",
+                  "deprecated": false
+                },
+                {
+                  "name": "--kind",
+                  "shorthand": null,
+                  "type": "string",
+                  "default": null,
+                  "description": "Resource kind in patch target",
+                  "deprecated": false
+                },
+                {
+                  "name": "--label-selector",
+                  "shorthand": null,
+                  "type": "string",
+                  "default": null,
+                  "description": "labelSelector in patch target",
+                  "deprecated": false
+                },
+                {
+                  "name": "--name",
+                  "shorthand": null,
+                  "type": "string",
+                  "default": null,
+                  "description": "Resource name in patch target",
+                  "deprecated": false
+                },
+                {
+                  "name": "--namespace",
+                  "shorthand": null,
+                  "type": "string",
+                  "default": null,
+                  "description": "Resource namespace in patch target",
+                  "deprecated": false
+                },
+                {
+                  "name": "--patch",
+                  "shorthand": null,
+                  "type": "string",
+                  "default": null,
+                  "description": "Literal string of patch content. Cannot be used with --path at the same time.",
+                  "deprecated": false
+                },
+                {
+                  "name": "--path",
+                  "shorthand": null,
+                  "type": "string",
+                  "default": null,
+                  "description": "Path to the patch file. Cannot be used with --patch at the same time.",
+                  "deprecated": false
+                },
+                {
+                  "name": "--version",
+                  "shorthand": null,
+                  "type": "string",
+                  "default": null,
+                  "description": "API version in patch target",
+                  "deprecated": false
+                }
+              ],
+              "subcommands": []
+            },
+            {
+              "name": "resource",
+              "flags": [
+                {
+                  "name": "--stack-trace",
+                  "shorthand": null,
+                  "type": "bool",
+                  "default": null,
+                  "description": "print a stack-trace on error",
+                  "deprecated": false
+                },
+                {
+                  "name": "--help",
+                  "shorthand": "-h",
+                  "type": "bool",
+                  "default": null,
+                  "description": "help for resource",
+                  "deprecated": false
+                }
+              ],
+              "subcommands": []
+            },
+            {
+              "name": "secret",
+              "flags": [
+                {
+                  "name": "--stack-trace",
+                  "shorthand": null,
+                  "type": "bool",
+                  "default": null,
+                  "description": "print a stack-trace on error",
+                  "deprecated": false
+                },
+                {
+                  "name": "--help",
+                  "shorthand": "-h",
+                  "type": "bool",
+                  "default": null,
+                  "description": "help for secret",
+                  "deprecated": false
+                },
+                {
+                  "name": "--namespace",
+                  "shorthand": null,
+                  "type": "string",
+                  "default": null,
+                  "description": "Namespace to remove Secret(s) from",
+                  "deprecated": false
+                }
+              ],
+              "subcommands": []
+            },
+            {
+              "name": "transformer",
+              "flags": [
+                {
+                  "name": "--stack-trace",
+                  "shorthand": null,
+                  "type": "bool",
+                  "default": null,
+                  "description": "print a stack-trace on error",
+                  "deprecated": false
+                },
+                {
+                  "name": "--help",
+                  "shorthand": "-h",
+                  "type": "bool",
+                  "default": null,
+                  "description": "help for transformer",
+                  "deprecated": false
+                }
+              ],
+              "subcommands": []
+            }
+          ]
+        },
+        {
+          "name": "set",
+          "flags": [
+            {
+              "name": "--stack-trace",
+              "shorthand": null,
+              "type": "bool",
+              "default": null,
+              "description": "print a stack-trace on error",
+              "deprecated": false
+            },
+            {
+              "name": "--help",
+              "shorthand": "-h",
+              "type": "bool",
+              "default": null,
+              "description": "help for set",
+              "deprecated": false
+            }
+          ],
+          "subcommands": [
+            {
+              "name": "annotation",
+              "flags": [
+                {
+                  "name": "--stack-trace",
+                  "shorthand": null,
+                  "type": "bool",
+                  "default": null,
+                  "description": "print a stack-trace on error",
+                  "deprecated": false
+                },
+                {
+                  "name": "--help",
+                  "shorthand": "-h",
+                  "type": "bool",
+                  "default": null,
+                  "description": "help for annotation",
+                  "deprecated": false
+                }
+              ],
+              "subcommands": []
+            },
+            {
+              "name": "buildmetadata",
+              "flags": [
+                {
+                  "name": "--stack-trace",
+                  "shorthand": null,
+                  "type": "bool",
+                  "default": null,
+                  "description": "print a stack-trace on error",
+                  "deprecated": false
+                },
+                {
+                  "name": "--help",
+                  "shorthand": "-h",
+                  "type": "bool",
+                  "default": null,
+                  "description": "help for buildmetadata",
+                  "deprecated": false
+                }
+              ],
+              "subcommands": []
+            },
+            {
+              "name": "configmap",
+              "flags": [
+                {
+                  "name": "--stack-trace",
+                  "shorthand": null,
+                  "type": "bool",
+                  "default": null,
+                  "description": "print a stack-trace on error",
+                  "deprecated": false
+                },
+                {
+                  "name": "--from-literal",
+                  "shorthand": null,
+                  "type": "stringArray",
+                  "default": null,
+                  "description": "Specify an existing key and a new value to update a ConfigMap (i.e. mykey=newvalue)",
+                  "deprecated": false
+                },
+                {
+                  "name": "--help",
+                  "shorthand": "-h",
+                  "type": "bool",
+                  "default": null,
+                  "description": "help for configmap",
+                  "deprecated": false
+                },
+                {
+                  "name": "--namespace",
+                  "shorthand": null,
+                  "type": "string",
+                  "default": null,
+                  "description": "Current namespace of the target ConfigMap",
+                  "deprecated": false
+                },
+                {
+                  "name": "--new-namespace",
+                  "shorthand": null,
+                  "type": "string",
+                  "default": null,
+                  "description": "New namespace value for the target ConfigMap",
+                  "deprecated": false
+                }
+              ],
+              "subcommands": []
+            },
+            {
+              "name": "image",
+              "flags": [
+                {
+                  "name": "--stack-trace",
+                  "shorthand": null,
+                  "type": "bool",
+                  "default": null,
+                  "description": "print a stack-trace on error",
+                  "deprecated": false
+                },
+                {
+                  "name": "--help",
+                  "shorthand": "-h",
+                  "type": "bool",
+                  "default": null,
+                  "description": "help for image",
+                  "deprecated": false
+                }
+              ],
+              "subcommands": []
+            },
+            {
+              "name": "label",
+              "flags": [
+                {
+                  "name": "--stack-trace",
+                  "shorthand": null,
+                  "type": "bool",
+                  "default": null,
+                  "description": "print a stack-trace on error",
+                  "deprecated": false
+                },
+                {
+                  "name": "--help",
+                  "shorthand": "-h",
+                  "type": "bool",
+                  "default": null,
+                  "description": "help for label",
+                  "deprecated": false
+                }
+              ],
+              "subcommands": []
+            },
+            {
+              "name": "nameprefix",
+              "flags": [
+                {
+                  "name": "--stack-trace",
+                  "shorthand": null,
+                  "type": "bool",
+                  "default": null,
+                  "description": "print a stack-trace on error",
+                  "deprecated": false
+                },
+                {
+                  "name": "--help",
+                  "shorthand": "-h",
+                  "type": "bool",
+                  "default": null,
+                  "description": "help for nameprefix",
+                  "deprecated": false
+                }
+              ],
+              "subcommands": []
+            },
+            {
+              "name": "namespace",
+              "flags": [
+                {
+                  "name": "--stack-trace",
+                  "shorthand": null,
+                  "type": "bool",
+                  "default": null,
+                  "description": "print a stack-trace on error",
+                  "deprecated": false
+                },
+                {
+                  "name": "--help",
+                  "shorthand": "-h",
+                  "type": "bool",
+                  "default": null,
+                  "description": "help for namespace",
+                  "deprecated": false
+                }
+              ],
+              "subcommands": []
+            },
+            {
+              "name": "namesuffix",
+              "flags": [
+                {
+                  "name": "--stack-trace",
+                  "shorthand": null,
+                  "type": "bool",
+                  "default": null,
+                  "description": "print a stack-trace on error",
+                  "deprecated": false
+                },
+                {
+                  "name": "--help",
+                  "shorthand": "-h",
+                  "type": "bool",
+                  "default": null,
+                  "description": "help for namesuffix",
+                  "deprecated": false
+                }
+              ],
+              "subcommands": []
+            },
+            {
+              "name": "replicas",
+              "flags": [
+                {
+                  "name": "--stack-trace",
+                  "shorthand": null,
+                  "type": "bool",
+                  "default": null,
+                  "description": "print a stack-trace on error",
+                  "deprecated": false
+                },
+                {
+                  "name": "--help",
+                  "shorthand": "-h",
+                  "type": "bool",
+                  "default": null,
+                  "description": "help for replicas",
+                  "deprecated": false
+                }
+              ],
+              "subcommands": []
+            },
+            {
+              "name": "secret",
+              "flags": [
+                {
+                  "name": "--stack-trace",
+                  "shorthand": null,
+                  "type": "bool",
+                  "default": null,
+                  "description": "print a stack-trace on error",
+                  "deprecated": false
+                },
+                {
+                  "name": "--from-literal",
+                  "shorthand": null,
+                  "type": "stringArray",
+                  "default": null,
+                  "description": "Specify an existing key and a new value to update a Secret (i.e. mykey=newvalue)",
+                  "deprecated": false
+                },
+                {
+                  "name": "--help",
+                  "shorthand": "-h",
+                  "type": "bool",
+                  "default": null,
+                  "description": "help for secret",
+                  "deprecated": false
+                },
+                {
+                  "name": "--namespace",
+                  "shorthand": null,
+                  "type": "string",
+                  "default": null,
+                  "description": "Current namespace of the target Secret",
+                  "deprecated": false
+                },
+                {
+                  "name": "--new-namespace",
+                  "shorthand": null,
+                  "type": "string",
+                  "default": null,
+                  "description": "New namespace value for the target Secret",
+                  "deprecated": false
+                }
+              ],
+              "subcommands": []
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "fn",
+      "flags": [
+        {
+          "name": "--stack-trace",
+          "shorthand": null,
+          "type": "bool",
+          "default": null,
+          "description": "print a stack-trace on error",
+          "deprecated": false
+        },
+        {
+          "name": "--help",
+          "shorthand": "-h",
+          "type": "bool",
+          "default": null,
+          "description": "help for fn",
+          "deprecated": false
+        }
+      ],
+      "subcommands": [
+        {
+          "name": "run",
+          "flags": [
+            {
+              "name": "--stack-trace",
+              "shorthand": null,
+              "type": "bool",
+              "default": null,
+              "description": "print a stack-trace on error",
+              "deprecated": false
+            },
+            {
+              "name": "--as-current-user",
+              "shorthand": null,
+              "type": "bool",
+              "default": null,
+              "description": "use the uid and gid of the command executor to run the function in the container",
+              "deprecated": false
+            },
+            {
+              "name": "--dry-run",
+              "shorthand": null,
+              "type": "bool",
+              "default": null,
+              "description": "print results to stdout",
+              "deprecated": false
+            },
+            {
+              "name": "--enable-exec",
+              "shorthand": null,
+              "type": "bool",
+              "default": null,
+              "description": "enable support for exec functions -- note: exec functions run arbitrary code -- do not use for untrusted configs!!! (Alpha)",
+              "deprecated": false
+            },
+            {
+              "name": "--env",
+              "shorthand": "-e",
+              "type": "stringArray",
+              "default": null,
+              "description": "a list of environment variables to be used by functions",
+              "deprecated": false
+            },
+            {
+              "name": "--exec-path",
+              "shorthand": null,
+              "type": "string",
+              "default": null,
+              "description": "run an executable as a function. (Alpha)",
+              "deprecated": false
+            },
+            {
+              "name": "--fn-path",
+              "shorthand": null,
+              "type": "stringArray",
+              "default": null,
+              "description": "read functions from these directories instead of the configuration directory.",
+              "deprecated": false
+            },
+            {
+              "name": "--global-scope",
+              "shorthand": null,
+              "type": "bool",
+              "default": null,
+              "description": "set global scope for functions.",
+              "deprecated": false
+            },
+            {
+              "name": "--help",
+              "shorthand": "-h",
+              "type": "bool",
+              "default": null,
+              "description": "help for run",
+              "deprecated": false
+            },
+            {
+              "name": "--image",
+              "shorthand": null,
+              "type": "string",
+              "default": null,
+              "description": "run this image as a function instead of discovering them.",
+              "deprecated": false
+            },
+            {
+              "name": "--include-subpackages",
+              "shorthand": null,
+              "type": "bool",
+              "default": "true",
+              "description": "also print resources from subpackages. (default true)",
+              "deprecated": false
+            },
+            {
+              "name": "--log-steps",
+              "shorthand": null,
+              "type": "bool",
+              "default": null,
+              "description": "log steps to stderr",
+              "deprecated": false
+            },
+            {
+              "name": "--mount",
+              "shorthand": null,
+              "type": "stringArray",
+              "default": null,
+              "description": "a list of storage options read from the filesystem",
+              "deprecated": false
+            },
+            {
+              "name": "--network",
+              "shorthand": null,
+              "type": "bool",
+              "default": null,
+              "description": "enable network access for functions that declare it",
+              "deprecated": false
+            },
+            {
+              "name": "--results-dir",
+              "shorthand": null,
+              "type": "string",
+              "default": null,
+              "description": "write function results to this dir",
+              "deprecated": false
+            }
+          ],
+          "subcommands": []
+        }
+      ]
+    },
+    {
+      "name": "localize",
+      "flags": [
+        {
+          "name": "--stack-trace",
+          "shorthand": null,
+          "type": "bool",
+          "default": null,
+          "description": "print a stack-trace on error",
+          "deprecated": false
+        },
+        {
+          "name": "--help",
+          "shorthand": "-h",
+          "type": "bool",
+          "default": null,
+          "description": "help for localize",
+          "deprecated": false
+        },
+        {
+          "name": "--no-verify",
+          "shorthand": null,
+          "type": "bool",
+          "default": null,
+          "description": "Does not verify that the outputs of kustomize build for target and newDir are the same after localization.",
+          "deprecated": false
+        },
+        {
+          "name": "--scope",
+          "shorthand": null,
+          "type": "string",
+          "default": null,
+          "description": "Path to directory inside of which localize is limited to running.",
+          "deprecated": false
+        }
+      ],
+      "subcommands": []
+    },
+    {
+      "name": "version",
+      "flags": [
+        {
+          "name": "--stack-trace",
+          "shorthand": null,
+          "type": "bool",
+          "default": null,
+          "description": "print a stack-trace on error",
+          "deprecated": false
+        },
+        {
+          "name": "--help",
+          "shorthand": "-h",
+          "type": "bool",
+          "default": null,
+          "description": "help for version",
+          "deprecated": false
+        },
+        {
+          "name": "--output",
+          "shorthand": "-o",
+          "type": "string",
+          "default": null,
+          "description": "One of 'yaml' or 'json'.",
+          "deprecated": false
+        }
+      ],
+      "subcommands": []
+    }
+  ],
+  "version": "5.5"
+}

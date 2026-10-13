@@ -1,0 +1,21 @@
+name: kustomize
+display_name: "Kustomize"
+description: "Kubernetes native configuration management"
+binary: kustomize
+adapter: cobra
+versions:
+  - "5.3"
+  - "5.4"
+  - "5.5"
+version_command: "kustomize version"
+version_parse: "v{version}"
+upstream_repo: "https://github.com/kubernetes-sigs/kustomize"
+maintainers:
+  - "community"
+obtain:
+  version_url: "https://api.github.com/repos/kubernetes-sigs/kustomize/releases?per_page=20"
+  version_match: "kustomize/v{version}\\.(\\d+)"
+  artifact_url: "https://github.com/kubernetes-sigs/kustomize/releases/download/kustomize%2Fv{resolved}/kustomize_v{resolved}_linux_amd64.tar.gz"
+  checksum_url: "https://github.com/kubernetes-sigs/kustomize/releases/download/kustomize%2Fv{resolved}/checksums.txt"
+  format: "tar.gz"
+  binary: "kustomize"

@@ -26,7 +26,7 @@ USE_EXTERNAL_BROWSER_AUTH=False
 
 With auth disabled, all endpoints are accessible without tokens. This is the recommended starting point for development and testing tool logic.
 
-> **Note:** `.env.example` ships with `ENABLE_AUTH=False`. The code default in `settings.py` is `True`, so if you run without a `.env` file, auth will be **on** and you will get 401 errors unless an SSO provider is configured.
+> **Note:** `ENABLE_AUTH` defaults to `False` in `settings.py` and in `.env.example`. Auth stays off unless you set `ENABLE_AUTH=True`.
 
 ## Prerequisites for Authenticated Modes
 
@@ -140,7 +140,7 @@ SSO_INTROSPECTION_URL=https://sso.example.com/realms/myrealm/protocol/openid-con
 
 | Variable                      | Required When | Default   | Description                                     |
 | ----------------------------- | ------------- | --------- | ----------------------------------------------- |
-| `ENABLE_AUTH`               | Always        | `True`  | Master switch for authentication                |
+| `ENABLE_AUTH`               | Always        | `False` | Master switch for authentication                |
 | `USE_EXTERNAL_BROWSER_AUTH` | Auth enabled  | `False` | Enables browser-based OAuth for local dev       |
 | `SSO_CLIENT_ID`             | Auth enabled  | `""`    | OAuth client ID from your provider              |
 | `SSO_CLIENT_SECRET`         | Auth enabled  | `""`    | OAuth client secret from your provider          |
@@ -277,9 +277,9 @@ Auth modes require PostgreSQL for token storage. Ensure PostgreSQL is running:
 podman compose up -d postgres
 ```
 
-### "ENABLE_AUTH defaults to True" surprise
+### Turning authentication on
 
-The code default for `ENABLE_AUTH` is `True`. If you delete or skip the `.env` file, auth activates automatically. Always copy `.env.example` to `.env`:
+The code default for `ENABLE_AUTH` is `False`. Set `ENABLE_AUTH=True` in `.env` when you want OAuth, and configure the `SSO_*` variables. Copy the example file first:
 
 ```bash
 cp .env.example .env

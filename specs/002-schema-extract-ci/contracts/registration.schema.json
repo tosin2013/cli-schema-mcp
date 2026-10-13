@@ -1,0 +1,38 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://cli-schema-mcp.local/contracts/registration.schema.json",
+  "title": "CLI registration",
+  "description": "Contributor-facing registration. The obtain object is the only download instruction. Tokens {version} and {resolved} are the only substitutions.",
+  "type": "object",
+  "required": ["name", "binary", "adapter", "versions", "version_command", "version_parse", "obtain"],
+  "additionalProperties": true,
+  "properties": {
+    "name": { "type": "string", "minLength": 1 },
+    "binary": { "type": "string", "minLength": 1 },
+    "adapter": { "enum": ["cobra", "help-parser", "custom"] },
+    "versions": {
+      "type": "array",
+      "minItems": 1,
+      "items": { "type": "string", "minLength": 1 }
+    },
+    "version_command": { "type": "string" },
+    "version_parse": { "type": "string" },
+    "obtain": {
+      "type": "object",
+      "required": ["artifact_url", "checksum_url", "format", "binary"],
+      "additionalProperties": false,
+      "properties": {
+        "artifact_url": { "type": "string", "minLength": 1 },
+        "checksum_url": { "type": "string", "minLength": 1 },
+        "format": { "enum": ["raw", "tar.gz", "zip"] },
+        "binary": { "type": "string", "minLength": 1 },
+        "version_url": { "type": "string", "minLength": 1 },
+        "version_match": { "type": "string", "minLength": 1 }
+      },
+      "dependentRequired": {
+        "version_url": ["version_match"],
+        "version_match": ["version_url"]
+      }
+    }
+  }
+}
