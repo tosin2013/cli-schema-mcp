@@ -36,6 +36,8 @@ jobs:
 
       - name: Refresh CLI schemas
         id: refresh
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
           source .venv/bin/activate
           python -m extractor.refresh --base ${{ github.event.before || 'HEAD~1' }} --head HEAD

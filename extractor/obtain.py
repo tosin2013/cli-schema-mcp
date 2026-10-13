@@ -4,6 +4,7 @@ from __future__ import annotations
 
 import hashlib
 import io
+import os
 import re
 import stat
 import tarfile
@@ -31,13 +32,21 @@ def _fill_tokens(template: str, version: str, resolved: str) -> str:
     return template.replace("{version}", version).replace("{resolved}", resolved)
 
 
+def _github_headers() -> dict[str, str]:
+    token = os.environ.get("GITHUB_TOKEN")
+    return {"Authorization": f"Bearer {token}"} if token else {}
+
+
 def _fetch_text(url: str) -> str:
-    with urllib.request.urlopen(url, timeout=120) as resp:  # noqa: S310  # nosec B310
+    headers = _github_headers() if "api.github.com" in url else {}
+    req = urllib.request.Request(url, headers=headers)
+    with urllib.request.urlopen(req, timeout=120) as resp:  # noqa: S310  # nosec B310
         return resp.read().decode("utf-8", errors="replace")
 
 
 def _fetch_bytes(url: str) -> bytes:
-    with urllib.request.urlopen(url, timeout=600) as resp:  # noqa: S310  # nosec B310
+    req = urllib.request.Request(url)
+    with urllib.request.urlopen(req, timeout=600) as resp:  # noqa: S310  # nosec B310
         return resp.read()
 
 
