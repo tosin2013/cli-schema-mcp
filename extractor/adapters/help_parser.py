@@ -82,7 +82,11 @@ def _parse_flags(help_text: str, flag_regex: str) -> list[dict[str, Any]]:
         parts = [part.strip() for part in raw.split(",")]
         long = next((part for part in parts if part.startswith("--")), raw)
         short = next(
-            (part for part in parts if part.startswith("-") and not part.startswith("--")),
+            (
+                part
+                for part in parts
+                if part.startswith("-") and not part.startswith("--")
+            ),
             None,
         )
         long_name, inline_default = _split_default(long.strip())
@@ -99,9 +103,7 @@ def _parse_flags(help_text: str, flag_regex: str) -> list[dict[str, Any]]:
                 short = f"-{short}"
         default_match = re.search(r"\(default (.+?)\)", desc)
         default = (
-            default_match.group(1).strip("'\"")
-            if default_match
-            else inline_default
+            default_match.group(1).strip("'\"") if default_match else inline_default
         )
         flags.append(
             {
@@ -163,7 +165,10 @@ def _extract_subcommand(
     try:
         help_text = _run([config.binary, *path, config.help_flag])
     except OSError as exc:
-        print(f"Warning: failed to run {config.binary} {' '.join(path)}: {exc}", file=sys.stderr)
+        print(
+            f"Warning: failed to run {config.binary} {' '.join(path)}: {exc}",
+            file=sys.stderr,
+        )
         help_text = ""
 
     flags = _parse_flags(help_text, config.flag_regex)

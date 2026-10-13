@@ -17,9 +17,7 @@ _MAX_NODES = 8000
 _WORKERS = 8
 
 _KUBE_FLAG = re.compile(r"^\s+(?:-(\w),\s+)?(--[\w.-]+)(?:=(.*))?:\s*$")
-_COBRA_FLAG = re.compile(
-    r"^\s+(?:-(\w),\s+)?(--[\w.-]+)(?:\s+(\S+))?\s{2,}(.*)$"
-)
+_COBRA_FLAG = re.compile(r"^\s+(?:-(\w),\s+)?(--[\w.-]+)(?:\s+(\S+))?\s{2,}(.*)$")
 _COMMAND_SECTION = re.compile(
     r"^(?:Available Commands|.+Commands(?:\s*\([^)]*\))?):\s*$"
 )
@@ -53,7 +51,10 @@ def _completion_items(binary: str, args: list[str]) -> list[tuple[str, str]] | N
         return None
     # Cobra prints completion rows and a ":N" directive on stdout. The
     # human-readable "Completion ended" line is on stderr.
-    if not re.search(r"(?m)^:\d+\s*$", stdout) and "Completion ended with directive" not in stderr:
+    if (
+        not re.search(r"(?m)^:\d+\s*$", stdout)
+        and "Completion ended with directive" not in stderr
+    ):
         return None
     items: list[tuple[str, str]] = []
     for line in stdout.splitlines():
@@ -231,7 +232,9 @@ def _flags_from_completion(
     return flags
 
 
-def _node(name: str, flags: list[dict[str, Any]], subcommands: list[dict[str, Any]]) -> dict[str, Any]:
+def _node(
+    name: str, flags: list[dict[str, Any]], subcommands: list[dict[str, Any]]
+) -> dict[str, Any]:
     return {"name": name, "flags": flags, "subcommands": subcommands}
 
 

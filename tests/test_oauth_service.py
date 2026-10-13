@@ -90,9 +90,7 @@ class TestUtilityFunctions:
     def test_verify_code_challenge_error_handling(self):
         """Test PKCE code challenge verification error handling."""
         # Test with invalid input that causes an exception
-        with patch(
-            "cli_schema_mcp.src.oauth.service.hashlib.sha256"
-        ) as mock_sha256:
+        with patch("cli_schema_mcp.src.oauth.service.hashlib.sha256") as mock_sha256:
             mock_sha256.side_effect = Exception("Hash error")
 
             result = verify_code_challenge("verifier", "challenge")
@@ -113,9 +111,7 @@ class TestStorageService:
     async def test_get_storage_service_initialized(self):
         """Test getting storage service when initialized."""
         mock_storage = Mock()
-        with patch(
-            "cli_schema_mcp.src.oauth.service._storage_service", mock_storage
-        ):
+        with patch("cli_schema_mcp.src.oauth.service._storage_service", mock_storage):
             result = await get_storage_service()
             assert result == mock_storage
 
@@ -129,9 +125,7 @@ class TestStorageService:
             "cli_schema_mcp.src.oauth.service.StorageService"
         ) as mock_storage_class:
             mock_storage_class.return_value = mock_storage
-            with patch(
-                "cli_schema_mcp.src.oauth.service.settings"
-            ) as mock_settings:
+            with patch("cli_schema_mcp.src.oauth.service.settings") as mock_settings:
                 mock_settings.POSTGRES_HOST = "localhost"
                 mock_settings.POSTGRES_PORT = 5432
                 mock_settings.POSTGRES_DB = "testdb"
@@ -158,9 +152,7 @@ class TestStorageService:
     async def test_initialize_storage_missing_config(self):
         """Test storage initialization with missing configuration."""
         with patch("cli_schema_mcp.src.oauth.service._storage_service", None):
-            with patch(
-                "cli_schema_mcp.src.oauth.service.settings"
-            ) as mock_settings:
+            with patch("cli_schema_mcp.src.oauth.service.settings") as mock_settings:
                 mock_settings.POSTGRES_HOST = None
                 mock_settings.POSTGRES_PORT = 5432
                 mock_settings.POSTGRES_DB = "testdb"
@@ -175,9 +167,7 @@ class TestStorageService:
     async def test_initialize_storage_already_initialized(self):
         """Test storage initialization when already initialized."""
         mock_storage = Mock()
-        with patch(
-            "cli_schema_mcp.src.oauth.service._storage_service", mock_storage
-        ):
+        with patch("cli_schema_mcp.src.oauth.service._storage_service", mock_storage):
             result = await initialize_storage()
             assert result == mock_storage
 
@@ -187,9 +177,7 @@ class TestStorageService:
         mock_storage = AsyncMock()
         mock_storage.disconnect = AsyncMock()
 
-        with patch(
-            "cli_schema_mcp.src.oauth.service._storage_service", mock_storage
-        ):
+        with patch("cli_schema_mcp.src.oauth.service._storage_service", mock_storage):
             await cleanup_storage()
             mock_storage.disconnect.assert_called_once()
 

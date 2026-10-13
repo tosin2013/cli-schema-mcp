@@ -2,7 +2,11 @@
 
 from typing import Any
 
-from cli_schema_mcp.src.schema_registry import get_subcommand_node, load_schema, resolve_version
+from cli_schema_mcp.src.schema_registry import (
+    get_subcommand_node,
+    load_schema,
+    resolve_version,
+)
 from cli_schema_mcp.utils.pylogger import get_python_logger
 
 logger = get_python_logger()
@@ -73,7 +77,9 @@ def list_subcommands(
             node = schema
 
         subcommands = [c.get("name", "") for c in node.get("subcommands", [])]
-        logger.info(f"list_subcommands: {tool} {matched} parent='{parent}' → {len(subcommands)} subcommands")
+        logger.info(
+            f"list_subcommands: {tool} {matched} parent='{parent}' → {len(subcommands)} subcommands"
+        )
         return {
             "status": "success",
             "tool": tool,

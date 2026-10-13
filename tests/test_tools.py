@@ -15,22 +15,66 @@ SAMPLE_SCHEMA = {
     "subcommands": [
         {
             "name": "rollout",
-            "flags": [{"name": "--namespace", "shorthand": "-n", "type": "string", "default": None, "description": "Namespace", "deprecated": False}],
+            "flags": [
+                {
+                    "name": "--namespace",
+                    "shorthand": "-n",
+                    "type": "string",
+                    "default": None,
+                    "description": "Namespace",
+                    "deprecated": False,
+                }
+            ],
             "subcommands": [
                 {
                     "name": "restart",
                     "flags": [
-                        {"name": "--dry-run", "shorthand": None, "type": "string", "default": "none", "description": "Must be none, server, or client", "deprecated": False},
-                        {"name": "--filename", "shorthand": "-f", "type": "stringArray", "default": None, "description": "Filename", "deprecated": False},
-                        {"name": "--selector", "shorthand": "-l", "type": "string", "default": None, "description": "Selector", "deprecated": False},
-                        {"name": "--timeout", "shorthand": None, "type": "duration", "default": "0s", "description": "Timeout", "deprecated": False},
+                        {
+                            "name": "--dry-run",
+                            "shorthand": None,
+                            "type": "string",
+                            "default": "none",
+                            "description": "Must be none, server, or client",
+                            "deprecated": False,
+                        },
+                        {
+                            "name": "--filename",
+                            "shorthand": "-f",
+                            "type": "stringArray",
+                            "default": None,
+                            "description": "Filename",
+                            "deprecated": False,
+                        },
+                        {
+                            "name": "--selector",
+                            "shorthand": "-l",
+                            "type": "string",
+                            "default": None,
+                            "description": "Selector",
+                            "deprecated": False,
+                        },
+                        {
+                            "name": "--timeout",
+                            "shorthand": None,
+                            "type": "duration",
+                            "default": "0s",
+                            "description": "Timeout",
+                            "deprecated": False,
+                        },
                     ],
                     "subcommands": [],
                 },
                 {
                     "name": "status",
                     "flags": [
-                        {"name": "--watch", "shorthand": "-w", "type": "bool", "default": "false", "description": "Watch", "deprecated": False},
+                        {
+                            "name": "--watch",
+                            "shorthand": "-w",
+                            "type": "bool",
+                            "default": "false",
+                            "description": "Watch",
+                            "deprecated": False,
+                        },
                     ],
                     "subcommands": [],
                 },
@@ -43,6 +87,7 @@ SAMPLE_SCHEMA = {
 # ---------------------------------------------------------------------------
 # TestListSupportedTool
 # ---------------------------------------------------------------------------
+
 
 class TestListSupportedTool:
     """Tests for list_supported()."""
@@ -57,8 +102,10 @@ class TestListSupportedTool:
         with patch("cli_schema_mcp.src.schema_registry._SCHEMAS_DIR", tmp_path):
             # Clear lru_cache between tests
             import cli_schema_mcp.src.schema_registry as reg
+
             reg.load_schema.cache_clear()
             from cli_schema_mcp.src.tools.list_supported_tool import list_supported
+
             result = list_supported()
 
         assert result["status"] == "success"
@@ -72,6 +119,7 @@ class TestListSupportedTool:
         """list_supported returns empty tools dict when no schemas exist."""
         with patch("cli_schema_mcp.src.schema_registry._SCHEMAS_DIR", tmp_path):
             from cli_schema_mcp.src.tools.list_supported_tool import list_supported
+
             result = list_supported()
 
         assert result["status"] == "success"
@@ -80,8 +128,12 @@ class TestListSupportedTool:
 
     def test_returns_error_on_exception(self):
         """list_supported returns error dict on unexpected exception."""
-        with patch("cli_schema_mcp.src.tools.list_supported_tool.list_tools", side_effect=RuntimeError("boom")):
+        with patch(
+            "cli_schema_mcp.src.tools.list_supported_tool.list_tools",
+            side_effect=RuntimeError("boom"),
+        ):
             from cli_schema_mcp.src.tools.list_supported_tool import list_supported
+
             result = list_supported()
 
         assert result["status"] == "error"
@@ -92,6 +144,7 @@ class TestListSupportedTool:
 # TestGetFlagsTool
 # ---------------------------------------------------------------------------
 
+
 class TestGetFlagsTool:
     """Tests for get_flags()."""
 
@@ -99,12 +152,20 @@ class TestGetFlagsTool:
     def _patched_get_flags(self, schema, version_to_match="4.22"):
         """Patch registry functions for the duration of the get_flags call."""
         import cli_schema_mcp.src.schema_registry as reg
+
         reg.load_schema.cache_clear()
         with (
-            patch("cli_schema_mcp.src.tools.get_flags_tool.resolve_version", return_value=version_to_match),
-            patch("cli_schema_mcp.src.tools.get_flags_tool.load_schema", return_value=schema),
+            patch(
+                "cli_schema_mcp.src.tools.get_flags_tool.resolve_version",
+                return_value=version_to_match,
+            ),
+            patch(
+                "cli_schema_mcp.src.tools.get_flags_tool.load_schema",
+                return_value=schema,
+            ),
         ):
             from cli_schema_mcp.src.tools.get_flags_tool import get_flags
+
             yield get_flags
 
     def test_returns_flags_for_valid_command(self):
@@ -123,8 +184,11 @@ class TestGetFlagsTool:
 
     def test_returns_error_for_missing_tool(self):
         """get_flags returns error when tool has no schema in registry."""
-        with patch("cli_schema_mcp.src.tools.get_flags_tool.resolve_version", return_value=None):
+        with patch(
+            "cli_schema_mcp.src.tools.get_flags_tool.resolve_version", return_value=None
+        ):
             from cli_schema_mcp.src.tools.get_flags_tool import get_flags
+
             result = get_flags("nonexistent", "1.0", "version")
 
         assert result["status"] == "error"
@@ -141,10 +205,16 @@ class TestGetFlagsTool:
     def test_returns_error_on_schema_load_failure(self):
         """get_flags returns error when schema file cannot be loaded."""
         with (
-            patch("cli_schema_mcp.src.tools.get_flags_tool.resolve_version", return_value="4.22"),
-            patch("cli_schema_mcp.src.tools.get_flags_tool.load_schema", return_value=None),
+            patch(
+                "cli_schema_mcp.src.tools.get_flags_tool.resolve_version",
+                return_value="4.22",
+            ),
+            patch(
+                "cli_schema_mcp.src.tools.get_flags_tool.load_schema", return_value=None
+            ),
         ):
             from cli_schema_mcp.src.tools.get_flags_tool import get_flags
+
             result = get_flags("oc", "4.22", "rollout restart")
 
         assert result["status"] == "error"
@@ -186,7 +256,16 @@ class TestGetFlagsTool:
         schema = {
             "name": "tkn",
             "version": "0.37",
-            "flags": [{"name": "--kubeconfig", "shorthand": None, "type": "string", "default": None, "description": "kubeconfig", "deprecated": False}],
+            "flags": [
+                {
+                    "name": "--kubeconfig",
+                    "shorthand": None,
+                    "type": "string",
+                    "default": None,
+                    "description": "kubeconfig",
+                    "deprecated": False,
+                }
+            ],
             "subcommands": [],
         }
         (tool_dir / "0.36.json").write_text(json.dumps({**schema, "version": "0.36"}))
@@ -227,16 +306,24 @@ class TestGetFlagsTool:
 # TestListSubcommandsTool
 # ---------------------------------------------------------------------------
 
+
 class TestListSubcommandsTool:
     """Tests for list_subcommands()."""
 
     @contextmanager
     def _patched(self, schema, matched="4.22"):
         with (
-            patch("cli_schema_mcp.src.tools.list_subcommands_tool.resolve_version", return_value=matched),
-            patch("cli_schema_mcp.src.tools.list_subcommands_tool.load_schema", return_value=schema),
+            patch(
+                "cli_schema_mcp.src.tools.list_subcommands_tool.resolve_version",
+                return_value=matched,
+            ),
+            patch(
+                "cli_schema_mcp.src.tools.list_subcommands_tool.load_schema",
+                return_value=schema,
+            ),
         ):
             from cli_schema_mcp.src.tools.list_subcommands_tool import list_subcommands
+
             yield list_subcommands
 
     def test_returns_top_level_subcommands(self):
@@ -265,8 +352,12 @@ class TestListSubcommandsTool:
 
     def test_returns_error_for_missing_tool(self):
         """list_subcommands returns error when tool not in registry."""
-        with patch("cli_schema_mcp.src.tools.list_subcommands_tool.resolve_version", return_value=None):
+        with patch(
+            "cli_schema_mcp.src.tools.list_subcommands_tool.resolve_version",
+            return_value=None,
+        ):
             from cli_schema_mcp.src.tools.list_subcommands_tool import list_subcommands
+
             result = list_subcommands("ghost", None)
 
         assert result["status"] == "error"
@@ -276,22 +367,34 @@ class TestListSubcommandsTool:
 # TestValidateCommandTool
 # ---------------------------------------------------------------------------
 
+
 class TestValidateCommandTool:
     """Tests for validate_command()."""
 
     @contextmanager
     def _patched(self, schema, matched="4.22"):
         with (
-            patch("cli_schema_mcp.src.tools.validate_command_tool.resolve_version", return_value=matched),
-            patch("cli_schema_mcp.src.tools.validate_command_tool.load_schema", return_value=schema),
+            patch(
+                "cli_schema_mcp.src.tools.validate_command_tool.resolve_version",
+                return_value=matched,
+            ),
+            patch(
+                "cli_schema_mcp.src.tools.validate_command_tool.load_schema",
+                return_value=schema,
+            ),
         ):
             from cli_schema_mcp.src.tools.validate_command_tool import validate_command
+
             yield validate_command
 
     def test_valid_command_returns_valid_true(self):
         """validate_command returns valid=True for a command using only schema flags."""
         with self._patched(SAMPLE_SCHEMA) as fn:
-            result = fn("oc", "4.22", "oc rollout restart deployment/myapp --selector app=frontend")
+            result = fn(
+                "oc",
+                "4.22",
+                "oc rollout restart deployment/myapp --selector app=frontend",
+            )
 
         assert result["status"] == "success"
         assert result["valid"] is True
@@ -310,15 +413,21 @@ class TestValidateCommandTool:
     def test_multiple_invalid_flags_all_reported(self):
         """validate_command reports all invalid flags, not just the first."""
         with self._patched(SAMPLE_SCHEMA) as fn:
-            result = fn("oc", "4.22", "oc rollout restart deployment/myapp --force --delete")
+            result = fn(
+                "oc", "4.22", "oc rollout restart deployment/myapp --force --delete"
+            )
 
         assert result["valid"] is False
         assert len(result["errors"]) == 2
 
     def test_returns_error_for_missing_tool(self):
         """validate_command returns error dict when tool is not in registry."""
-        with patch("cli_schema_mcp.src.tools.validate_command_tool.resolve_version", return_value=None):
+        with patch(
+            "cli_schema_mcp.src.tools.validate_command_tool.resolve_version",
+            return_value=None,
+        ):
             from cli_schema_mcp.src.tools.validate_command_tool import validate_command
+
             result = validate_command("ghost", None, "ghost do something")
 
         assert result["status"] == "error"
@@ -350,6 +459,7 @@ class TestValidateCommandTool:
 # TestDetectVersionTool
 # ---------------------------------------------------------------------------
 
+
 class TestDetectVersionTool:
     """Tests for detect_version()."""
 
@@ -357,6 +467,7 @@ class TestDetectVersionTool:
         """detect_version returns error when CLI config YAML is missing."""
         with patch("cli_schema_mcp.src.tools.detect_version_tool._CLIS_DIR", tmp_path):
             from cli_schema_mcp.src.tools.detect_version_tool import detect_version
+
             result = detect_version("nonexistent")
 
         assert result["status"] == "error"
@@ -365,18 +476,25 @@ class TestDetectVersionTool:
     def test_returns_error_when_binary_not_found(self, tmp_path):
         """detect_version returns error when binary is absent from PATH."""
         cfg = tmp_path / "fakecli.yaml"
-        cfg.write_text("name: fakecli\nbinary: fakecli\nversion_command: fakecli version\nversion_parse: 'v{version}'\nadapter: cobra\nversions: ['1.0']\n")
+        cfg.write_text(
+            "name: fakecli\nbinary: fakecli\nversion_command: fakecli version\nversion_parse: 'v{version}'\nadapter: cobra\nversions: ['1.0']\n"
+        )
         with patch("cli_schema_mcp.src.tools.detect_version_tool._CLIS_DIR", tmp_path):
             from cli_schema_mcp.src.tools.detect_version_tool import detect_version
+
             result = detect_version("fakecli")
 
         assert result["status"] == "error"
-        assert "not found" in result["error"].lower() or "error" in result["message"].lower()
+        assert (
+            "not found" in result["error"].lower()
+            or "error" in result["message"].lower()
+        )
 
     def test_always_returns_dict_with_status(self, tmp_path):
         """detect_version always returns a dict with a status field."""
         with patch("cli_schema_mcp.src.tools.detect_version_tool._CLIS_DIR", tmp_path):
             from cli_schema_mcp.src.tools.detect_version_tool import detect_version
+
             result = detect_version("anything")
 
         assert "status" in result

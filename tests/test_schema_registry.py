@@ -36,14 +36,18 @@ def test_relative_schema_path_is_anchored_to_repo_root(tmp_path, monkeypatch):
 def test_absolute_schema_path_is_used_as_given(monkeypatch):
     """An absolute SCHEMA_REGISTRY_PATH is not rewritten."""
     monkeypatch.setattr(reg, "_SCHEMAS_DIR", None)
-    with patch("cli_schema_mcp.src.settings.settings.SCHEMA_REGISTRY_PATH", "/var/schemas"):
+    with patch(
+        "cli_schema_mcp.src.settings.settings.SCHEMA_REGISTRY_PATH", "/var/schemas"
+    ):
         assert reg._schemas_dir() == Path("/var/schemas")
 
 
 def test_schema_dir_override_wins(tmp_path, monkeypatch):
     """Patching _SCHEMAS_DIR takes precedence over settings."""
     monkeypatch.setattr(reg, "_SCHEMAS_DIR", tmp_path)
-    with patch("cli_schema_mcp.src.settings.settings.SCHEMA_REGISTRY_PATH", "/var/schemas"):
+    with patch(
+        "cli_schema_mcp.src.settings.settings.SCHEMA_REGISTRY_PATH", "/var/schemas"
+    ):
         assert reg._schemas_dir() == tmp_path
 
 

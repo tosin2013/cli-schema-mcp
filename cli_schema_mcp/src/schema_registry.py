@@ -40,9 +40,7 @@ def list_tools() -> dict[str, list[str]]:
     for tool_dir in sorted(base.iterdir()):
         if not tool_dir.is_dir():
             continue
-        versions = sorted(
-            p.stem for p in tool_dir.glob("*.json")
-        )
+        versions = sorted(p.stem for p in tool_dir.glob("*.json"))
         if versions:
             result[tool_dir.name] = versions
     return result

@@ -33,9 +33,7 @@ class TestOAuthControllerHandleCallback:
         # Mock OAuth2Handler
         mock_token = {"access_token": "token123", "refresh_token": "refresh123"}
 
-        with patch(
-            "cli_schema_mcp.src.oauth.controller.OAuth2Handler"
-        ) as mock_handler:
+        with patch("cli_schema_mcp.src.oauth.controller.OAuth2Handler") as mock_handler:
             mock_handler.get_access_token_from_authorization_code_flow.return_value = (
                 mock_token
             )
@@ -77,9 +75,7 @@ class TestOAuthControllerHandleCallback:
         # Missing user_details in session
         mock_request.session = {}
 
-        with patch(
-            "cli_schema_mcp.src.oauth.controller.OAuth2Handler"
-        ) as mock_handler:
+        with patch("cli_schema_mcp.src.oauth.controller.OAuth2Handler") as mock_handler:
             mock_handler.get_access_token_from_authorization_code_flow.return_value = {
                 "access_token": "token"
             }
@@ -147,9 +143,7 @@ class TestOAuthControllerHandleCallback:
         mock_token = {"access_token": "dev_token_123", "refresh_token": "refresh123"}
 
         with (
-            patch(
-                "cli_schema_mcp.src.oauth.controller.OAuth2Handler"
-            ) as mock_handler,
+            patch("cli_schema_mcp.src.oauth.controller.OAuth2Handler") as mock_handler,
             patch(
                 "cli_schema_mcp.src.oauth.controller.api_module", create=True
             ) as mock_api_module,
@@ -1107,9 +1101,7 @@ class TestRefreshTokenGrantEdgeCases:
         }
         oauth_service.validate_client.return_value = {"id": "test_client"}
 
-        with patch(
-            "cli_schema_mcp.src.oauth.controller.OAuth2Handler"
-        ) as mock_handler:
+        with patch("cli_schema_mcp.src.oauth.controller.OAuth2Handler") as mock_handler:
             mock_handler.get_access_token_from_refresh_token.return_value = {
                 "access_token": "new_snowflake_access_token",
                 "refresh_token": "new_snowflake_refresh_token",
@@ -1150,9 +1142,7 @@ class TestRefreshTokenGrantEdgeCases:
         }
         oauth_service.validate_client.return_value = {"id": "test_client"}
 
-        with patch(
-            "cli_schema_mcp.src.oauth.controller.OAuth2Handler"
-        ) as mock_handler:
+        with patch("cli_schema_mcp.src.oauth.controller.OAuth2Handler") as mock_handler:
             mock_handler.get_access_token_from_refresh_token.side_effect = Exception(
                 "Snowflake error"
             )

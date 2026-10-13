@@ -2,7 +2,11 @@
 
 from typing import Any
 
-from cli_schema_mcp.src.schema_registry import get_subcommand_node, load_schema, resolve_version
+from cli_schema_mcp.src.schema_registry import (
+    get_subcommand_node,
+    load_schema,
+    resolve_version,
+)
 from cli_schema_mcp.utils.pylogger import get_python_logger
 
 logger = get_python_logger()
