@@ -97,6 +97,7 @@ def _read_versions_at_revision(
 def _extract_schema(binary_path: Path, config, version: str) -> dict:
     """Run the extractor adapter on the installed binary and return the schema dict."""
     import os
+    import sys
 
     from extractor.adapters import cobra, help_parser
     from extractor.main import extract_custom
@@ -104,7 +105,11 @@ def _extract_schema(binary_path: Path, config, version: str) -> dict:
     adapter = config.adapter
     binary = str(binary_path)
 
-    # temporarily override PATH so the adapter finds our binary
+    # Large CLIs (helm, kubectl) have deep subcommand trees that can exceed the default
+    # recursion limit of 1000 in the cobra adapter's recursive traversal.
+    old_limit = sys.getrecursionlimit()
+    sys.setrecursionlimit(5000)
+
     env_path = str(binary_path.parent) + ":" + os.environ.get("PATH", "")
     old_path = os.environ.get("PATH")
     os.environ["PATH"] = env_path
@@ -118,6 +123,7 @@ def _extract_schema(binary_path: Path, config, version: str) -> dict:
         else:
             raise RuntimeError(f"unsupported adapter {adapter!r}")
     finally:
+        sys.setrecursionlimit(old_limit)
         if old_path is None:
             del os.environ["PATH"]
         else:
