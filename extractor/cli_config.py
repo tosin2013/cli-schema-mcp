@@ -50,7 +50,9 @@ def _parse_obtain(raw: dict, path: Path) -> ObtainConfig:
 
     fmt = raw["format"]
     if fmt not in _VALID_FORMATS:
-        raise ValueError(f"obtain.format must be one of {_VALID_FORMATS}, got {fmt!r} in {path}")
+        raise ValueError(
+            f"obtain.format must be one of {_VALID_FORMATS}, got {fmt!r} in {path}"
+        )
 
     version_url = raw.get("version_url")
     version_match = raw.get("version_match")
@@ -64,7 +66,9 @@ def _parse_obtain(raw: dict, path: Path) -> ObtainConfig:
         try:
             compiled = re.compile(version_match)
         except re.error as exc:
-            raise ValueError(f"obtain.version_match is not a valid regex in {path}: {exc}") from exc
+            raise ValueError(
+                f"obtain.version_match is not a valid regex in {path}: {exc}"
+            ) from exc
         if compiled.groups < 1:
             raise ValueError(
                 f"obtain.version_match must contain exactly one capture group in {path}"
@@ -72,7 +76,10 @@ def _parse_obtain(raw: dict, path: Path) -> ObtainConfig:
 
     artifact_url = raw["artifact_url"]
     checksum_url = raw["checksum_url"]
-    for field_name, url in (("artifact_url", artifact_url), ("checksum_url", checksum_url)):
+    for field_name, url in (
+        ("artifact_url", artifact_url),
+        ("checksum_url", checksum_url),
+    ):
         if "{version}" not in url and "{resolved}" not in url:
             raise ValueError(
                 f"obtain.{field_name} must contain {{version}} or {{resolved}} in {path}"
@@ -91,7 +98,14 @@ def _parse_obtain(raw: dict, path: Path) -> ObtainConfig:
 def load_cli_config(path: Path) -> CLIConfig:
     """Load and validate a CLI YAML config file."""
     data = yaml.safe_load(path.read_text())
-    required = {"name", "binary", "adapter", "versions", "version_command", "version_parse"}
+    required = {
+        "name",
+        "binary",
+        "adapter",
+        "versions",
+        "version_command",
+        "version_parse",
+    }
     missing = required - set(data.keys())
     if missing:
         raise ValueError(f"Missing required fields in {path}: {missing}")

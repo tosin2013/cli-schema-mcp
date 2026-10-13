@@ -7,7 +7,6 @@ import io
 import re
 import stat
 import tarfile
-import tempfile
 import urllib.request
 import zipfile
 from dataclasses import dataclass
@@ -33,12 +32,12 @@ def _fill_tokens(template: str, version: str, resolved: str) -> str:
 
 
 def _fetch_text(url: str) -> str:
-    with urllib.request.urlopen(url, timeout=120) as resp:  # noqa: S310
+    with urllib.request.urlopen(url, timeout=120) as resp:  # noqa: S310  # nosec B310
         return resp.read().decode("utf-8", errors="replace")
 
 
 def _fetch_bytes(url: str) -> bytes:
-    with urllib.request.urlopen(url, timeout=600) as resp:  # noqa: S310
+    with urllib.request.urlopen(url, timeout=600) as resp:  # noqa: S310  # nosec B310
         return resp.read()
 
 
@@ -55,7 +54,9 @@ def resolve_version(instr: ObtainInstruction, version: str) -> str:
     return m.group(1)
 
 
-def _verify_checksum(artifact_bytes: bytes, artifact_basename: str, checksum_body: str) -> None:
+def _verify_checksum(
+    artifact_bytes: bytes, artifact_basename: str, checksum_body: str
+) -> None:
     """Verify SHA-256. Accepts a bare 64-hex digest or a sha256sum listing."""
     actual = hashlib.sha256(artifact_bytes).hexdigest()
     body = checksum_body.strip()
@@ -69,7 +70,9 @@ def _verify_checksum(artifact_bytes: bytes, artifact_basename: str, checksum_bod
             if len(parts) == 2:
                 digest, fname = parts
                 fname = fname.lstrip("* ")
-                if fname == artifact_basename and re.fullmatch(r"[0-9a-fA-F]{64}", digest):
+                if fname == artifact_basename and re.fullmatch(
+                    r"[0-9a-fA-F]{64}", digest
+                ):
                     expected = digest.lower()
                     break
         if expected is None:
@@ -112,7 +115,9 @@ def _extract_from_tar(data: bytes, member_path: str, dest: Path) -> Path:
                     raise ObtainError(f"member {member_path!r} is not a regular file")
                 binary_data = f.read()
                 dest.write_bytes(binary_data)
-                dest.chmod(dest.stat().st_mode | stat.S_IXUSR | stat.S_IXGRP | stat.S_IXOTH)
+                dest.chmod(
+                    dest.stat().st_mode | stat.S_IXUSR | stat.S_IXGRP | stat.S_IXOTH
+                )
                 return dest
         except tarfile.TarError as exc:
             raise ObtainError(f"tar extraction failed: {exc}") from exc
@@ -158,6 +163,7 @@ def obtain(
     checksum_body = _fetch_text(checksum_url)
 
     import posixpath
+
     artifact_basename = posixpath.basename(artifact_url.split("?")[0])
     _verify_checksum(artifact_bytes, artifact_basename, checksum_body)
 

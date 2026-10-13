@@ -31,21 +31,29 @@ from extractor.obtain import (
 # Token fill
 # ---------------------------------------------------------------------------
 
+
 class TestFillTokens:
     def test_version_replaced(self):
-        assert _fill_tokens("https://example.com/{version}/file", "1.31", "1.31.5") == \
-            "https://example.com/1.31/file"
+        assert (
+            _fill_tokens("https://example.com/{version}/file", "1.31", "1.31.5")
+            == "https://example.com/1.31/file"
+        )
 
     def test_resolved_replaced(self):
-        assert _fill_tokens("https://example.com/{resolved}/file", "1.31", "v1.31.5") == \
-            "https://example.com/v1.31.5/file"
+        assert (
+            _fill_tokens("https://example.com/{resolved}/file", "1.31", "v1.31.5")
+            == "https://example.com/v1.31.5/file"
+        )
 
     def test_both_tokens_replaced(self):
         result = _fill_tokens("url/{version}/{resolved}", "5.3", "5.3.2")
         assert result == "url/5.3/5.3.2"
 
     def test_no_tokens(self):
-        assert _fill_tokens("https://example.com/file", "1.0", "1.0.1") == "https://example.com/file"
+        assert (
+            _fill_tokens("https://example.com/file", "1.0", "1.0.1")
+            == "https://example.com/file"
+        )
 
 
 class TestResolveVersion:
@@ -67,7 +75,9 @@ class TestResolveVersion:
             version_url="https://example.com/stable-{version}.txt",
             version_match=r"v([\d.]+)",
         )
-        with patch("extractor.obtain._fetch_text", return_value="v1.31.5\n") as mock_fetch:
+        with patch(
+            "extractor.obtain._fetch_text", return_value="v1.31.5\n"
+        ) as mock_fetch:
             result = resolve_version(instr, "1.31")
         assert result == "1.31.5"
         mock_fetch.assert_called_once_with("https://example.com/stable-1.31.txt")
@@ -89,6 +99,7 @@ class TestResolveVersion:
 # ---------------------------------------------------------------------------
 # Checksum
 # ---------------------------------------------------------------------------
+
 
 class TestVerifyChecksum:
     def _digest(self, data: bytes) -> str:
@@ -134,6 +145,7 @@ class TestVerifyChecksum:
 # ---------------------------------------------------------------------------
 # Unpack
 # ---------------------------------------------------------------------------
+
 
 class TestExtractFromTar:
     def _make_tar_gz(self, member_name: str, content: bytes) -> bytes:
@@ -184,6 +196,7 @@ class TestExtractFromZip:
 # obtain() — full pipeline (mocked network)
 # ---------------------------------------------------------------------------
 
+
 class TestObtain:
     def _make_raw_artifact(self) -> bytes:
         return b"#!/bin/sh\necho kubectl"
@@ -213,8 +226,10 @@ class TestObtain:
         def fake_fetch_text(url):
             return digest
 
-        with patch("extractor.obtain._fetch_bytes", side_effect=fake_fetch_bytes), \
-             patch("extractor.obtain._fetch_text", side_effect=fake_fetch_text):
+        with (
+            patch("extractor.obtain._fetch_bytes", side_effect=fake_fetch_bytes),
+            patch("extractor.obtain._fetch_text", side_effect=fake_fetch_text),
+        ):
             result = obtain(instr, "1.31", tmp_path)
 
         assert result.name == "kubectl"
@@ -229,13 +244,17 @@ class TestObtain:
             binary="oc",
         )
 
-        with patch("extractor.obtain._fetch_bytes", return_value=artifact), \
-             patch("extractor.obtain._fetch_text", return_value="a" * 64):
+        with (
+            patch("extractor.obtain._fetch_bytes", return_value=artifact),
+            patch("extractor.obtain._fetch_text", return_value="a" * 64),
+        ):
             with pytest.raises(ObtainError, match="mismatch"):
                 obtain(instr, "4.22", tmp_path)
 
         # dest dir should be empty or only the dir itself
-        assert not list(tmp_path.iterdir()) or all(p.is_dir() for p in tmp_path.iterdir())
+        assert not list(tmp_path.iterdir()) or all(
+            p.is_dir() for p in tmp_path.iterdir()
+        )
 
     def test_missing_version_token_raises(self, tmp_path):
         instr = ObtainInstruction(
@@ -261,8 +280,10 @@ class TestObtain:
 
         listing = f"{digest}  openshift-client.tar.gz\n"
 
-        with patch("extractor.obtain._fetch_bytes", return_value=artifact), \
-             patch("extractor.obtain._fetch_text", return_value=listing):
+        with (
+            patch("extractor.obtain._fetch_bytes", return_value=artifact),
+            patch("extractor.obtain._fetch_text", return_value=listing),
+        ):
             result = obtain(instr, "4.22", tmp_path)
 
         assert result.read_bytes() == content
@@ -279,8 +300,10 @@ class TestObtain:
             binary="binary",
         )
 
-        with patch("extractor.obtain._fetch_bytes", return_value=artifact), \
-             patch("extractor.obtain._fetch_text", return_value=digest):
+        with (
+            patch("extractor.obtain._fetch_bytes", return_value=artifact),
+            patch("extractor.obtain._fetch_text", return_value=digest),
+        ):
             # obtain itself succeeds; the empty catalog check is in refresh.py
             result = obtain(instr, "1.0", tmp_path)
         assert result.exists()

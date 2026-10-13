@@ -20,6 +20,7 @@ import yaml
 # Helpers
 # ---------------------------------------------------------------------------
 
+
 def _make_tar_gz(member_name: str, content: bytes) -> bytes:
     buf = io.BytesIO()
     with tarfile.open(fileobj=buf, mode="w:gz") as tf:
@@ -29,7 +30,9 @@ def _make_tar_gz(member_name: str, content: bytes) -> bytes:
     return buf.getvalue()
 
 
-def _make_registration(name: str, versions: list[str], obtain_url_token: str = "{version}") -> dict:
+def _make_registration(
+    name: str, versions: list[str], obtain_url_token: str = "{version}"
+) -> dict:
     return {
         "name": name,
         "display_name": name.upper(),
@@ -74,24 +77,41 @@ def _fake_schema(tool: str, version: str) -> dict:
 # US1: Two-version registration publishes both catalogs only after both succeed
 # ---------------------------------------------------------------------------
 
+
 class TestUS1Publish:
     """A two-version registration publishes both catalogs; outside registrations stay identical."""
 
-    def _run_refresh(self, base: str, head: str, clis_dir: Path, schemas_dir: Path,
-                     extra_args: list[str] | None = None) -> tuple[int, str]:
+    def _run_refresh(
+        self,
+        base: str,
+        head: str,
+        clis_dir: Path,
+        schemas_dir: Path,
+        extra_args: list[str] | None = None,
+    ) -> tuple[int, str]:
         """Invoke refresh.main() and capture stdout + exit code."""
         from extractor import refresh as refresh_mod
         import io as _io
 
-        args = ["--base", base, "--head", head,
-                "--clis-dir", str(clis_dir), "--schemas-dir", str(schemas_dir)]
+        args = [
+            "--base",
+            base,
+            "--head",
+            head,
+            "--clis-dir",
+            str(clis_dir),
+            "--schemas-dir",
+            str(schemas_dir),
+        ]
         if extra_args:
             args += extra_args
 
         captured = _io.StringIO()
         exit_code = 0
-        with patch("sys.argv", ["extractor.refresh"] + args), \
-             patch("sys.stdout", captured):
+        with (
+            patch("sys.argv", ["extractor.refresh"] + args),
+            patch("sys.stdout", captured),
+        ):
             try:
                 refresh_mod.main()
             except SystemExit as e:
@@ -138,12 +158,22 @@ class TestUS1Publish:
         def fake_extract(binary_path, config, version):
             return _fake_schema(config.name, version)
 
-        with patch("extractor.refresh._changed_registration_paths", side_effect=fake_changed), \
-             patch("extractor.refresh._read_versions_at_revision", side_effect=fake_read_versions), \
-             patch("extractor.obtain._fetch_bytes", side_effect=fake_fetch_bytes), \
-             patch("extractor.obtain._fetch_text", side_effect=fake_fetch_text), \
-             patch("extractor.refresh._extract_schema", side_effect=fake_extract):
-            exit_code, output = self._run_refresh("HEAD~1", "HEAD", clis_dir, schemas_dir)
+        with (
+            patch(
+                "extractor.refresh._changed_registration_paths",
+                side_effect=fake_changed,
+            ),
+            patch(
+                "extractor.refresh._read_versions_at_revision",
+                side_effect=fake_read_versions,
+            ),
+            patch("extractor.obtain._fetch_bytes", side_effect=fake_fetch_bytes),
+            patch("extractor.obtain._fetch_text", side_effect=fake_fetch_text),
+            patch("extractor.refresh._extract_schema", side_effect=fake_extract),
+        ):
+            exit_code, output = self._run_refresh(
+                "HEAD~1", "HEAD", clis_dir, schemas_dir
+            )
 
         assert exit_code == 0, f"expected exit 0, got {exit_code}. output: {output}"
         assert (schemas_dir / "mytool" / "1.0.json").exists()
@@ -161,8 +191,9 @@ class TestUS1Publish:
         schemas_dir.mkdir()
 
         # Write an existing catalog for an unchanged tool
-        existing = _write_catalog(schemas_dir, "stable_tool", "3.0",
-                                   _fake_schema("stable_tool", "3.0"))
+        existing = _write_catalog(
+            schemas_dir, "stable_tool", "3.0", _fake_schema("stable_tool", "3.0")
+        )
         existing_mtime = existing.stat().st_mtime
         existing_content = existing.read_bytes()
 
@@ -172,11 +203,22 @@ class TestUS1Publish:
         artifact = _make_tar_gz("mytool", b"#!/bin/sh\necho v1")
         digest = hashlib.sha256(artifact).hexdigest()
 
-        with patch("extractor.refresh._changed_registration_paths", return_value={"mytool": "A"}), \
-             patch("extractor.refresh._read_versions_at_revision", return_value=["1.0"]), \
-             patch("extractor.obtain._fetch_bytes", return_value=artifact), \
-             patch("extractor.obtain._fetch_text", return_value=f"{digest}  mytool.tar.gz\n"), \
-             patch("extractor.refresh._extract_schema", return_value=_fake_schema("mytool", "1.0")):
+        with (
+            patch(
+                "extractor.refresh._changed_registration_paths",
+                return_value={"mytool": "A"},
+            ),
+            patch("extractor.refresh._read_versions_at_revision", return_value=["1.0"]),
+            patch("extractor.obtain._fetch_bytes", return_value=artifact),
+            patch(
+                "extractor.obtain._fetch_text",
+                return_value=f"{digest}  mytool.tar.gz\n",
+            ),
+            patch(
+                "extractor.refresh._extract_schema",
+                return_value=_fake_schema("mytool", "1.0"),
+            ),
+        ):
             exit_code, _ = self._run_refresh("HEAD~1", "HEAD", clis_dir, schemas_dir)
 
         assert exit_code == 0
@@ -188,19 +230,30 @@ class TestUS1Publish:
 # US2: Incomplete catalogs are rejected (exit 2, diff list)
 # ---------------------------------------------------------------------------
 
+
 class TestUS2NoPush:
     def _run_no_push(self, clis_dir: Path, schemas_dir: Path) -> tuple[int, str]:
         from extractor import refresh as refresh_mod
         import io as _io
 
-        args = ["--base", "HEAD~1", "--head", "HEAD",
-                "--no-push",
-                "--clis-dir", str(clis_dir), "--schemas-dir", str(schemas_dir)]
+        args = [
+            "--base",
+            "HEAD~1",
+            "--head",
+            "HEAD",
+            "--no-push",
+            "--clis-dir",
+            str(clis_dir),
+            "--schemas-dir",
+            str(schemas_dir),
+        ]
 
         captured = _io.StringIO()
         exit_code = 0
-        with patch("sys.argv", ["extractor.refresh"] + args), \
-             patch("sys.stdout", captured):
+        with (
+            patch("sys.argv", ["extractor.refresh"] + args),
+            patch("sys.stdout", captured),
+        ):
             try:
                 refresh_mod.main()
             except SystemExit as e:
@@ -221,11 +274,19 @@ class TestUS2NoPush:
         digest = hashlib.sha256(artifact).hexdigest()
         new_schema = _fake_schema("mytool", "1.0")
 
-        with patch("extractor.refresh._changed_registration_paths", return_value={"mytool": "A"}), \
-             patch("extractor.refresh._read_versions_at_revision", return_value=["1.0"]), \
-             patch("extractor.obtain._fetch_bytes", return_value=artifact), \
-             patch("extractor.obtain._fetch_text", return_value=f"{digest}  mytool.tar.gz\n"), \
-             patch("extractor.refresh._extract_schema", return_value=new_schema):
+        with (
+            patch(
+                "extractor.refresh._changed_registration_paths",
+                return_value={"mytool": "A"},
+            ),
+            patch("extractor.refresh._read_versions_at_revision", return_value=["1.0"]),
+            patch("extractor.obtain._fetch_bytes", return_value=artifact),
+            patch(
+                "extractor.obtain._fetch_text",
+                return_value=f"{digest}  mytool.tar.gz\n",
+            ),
+            patch("extractor.refresh._extract_schema", return_value=new_schema),
+        ):
             exit_code, output = self._run_no_push(clis_dir, schemas_dir)
 
         assert exit_code == 2, f"expected exit 2, got {exit_code}"
@@ -249,11 +310,19 @@ class TestUS2NoPush:
         artifact = _make_tar_gz("mytool", b"#!/bin/sh\necho v1")
         digest = hashlib.sha256(artifact).hexdigest()
 
-        with patch("extractor.refresh._changed_registration_paths", return_value={"mytool": "A"}), \
-             patch("extractor.refresh._read_versions_at_revision", return_value=["1.0"]), \
-             patch("extractor.obtain._fetch_bytes", return_value=artifact), \
-             patch("extractor.obtain._fetch_text", return_value=f"{digest}  mytool.tar.gz\n"), \
-             patch("extractor.refresh._extract_schema", return_value=schema):
+        with (
+            patch(
+                "extractor.refresh._changed_registration_paths",
+                return_value={"mytool": "A"},
+            ),
+            patch("extractor.refresh._read_versions_at_revision", return_value=["1.0"]),
+            patch("extractor.obtain._fetch_bytes", return_value=artifact),
+            patch(
+                "extractor.obtain._fetch_text",
+                return_value=f"{digest}  mytool.tar.gz\n",
+            ),
+            patch("extractor.refresh._extract_schema", return_value=schema),
+        ):
             exit_code, output = self._run_no_push(clis_dir, schemas_dir)
 
         assert exit_code == 0
@@ -264,9 +333,17 @@ class TestUS2NoPush:
 # US3: Removal stays in sync
 # ---------------------------------------------------------------------------
 
+
 class TestUS3Removal:
-    def _run_refresh(self, base: str, clis_dir: Path, schemas_dir: Path,
-                     changed: dict, read_versions_base: list, read_versions_head: list) -> tuple[int, str]:
+    def _run_refresh(
+        self,
+        base: str,
+        clis_dir: Path,
+        schemas_dir: Path,
+        changed: dict,
+        read_versions_base: list,
+        read_versions_head: list,
+    ) -> tuple[int, str]:
         import extractor.refresh as refresh_mod
         import io as _io
 
@@ -276,8 +353,16 @@ class TestUS3Removal:
         rv_base = list(read_versions_base)
         rv_head = list(read_versions_head)
 
-        args = ["--base", base_snapshot, "--head", "HEAD",
-                "--clis-dir", str(clis_dir), "--schemas-dir", str(schemas_dir)]
+        args = [
+            "--base",
+            base_snapshot,
+            "--head",
+            "HEAD",
+            "--clis-dir",
+            str(clis_dir),
+            "--schemas-dir",
+            str(schemas_dir),
+        ]
 
         def _changed_side_effect(*a, **kw):
             return changed_snapshot
@@ -290,10 +375,20 @@ class TestUS3Removal:
         captured = _io.StringIO()
         exit_code = 0
         # Use patch.object to target the module object directly, avoiding sys.modules lookup issues
-        with patch("sys.argv", ["extractor.refresh"] + args), \
-             patch("sys.stdout", captured), \
-             patch.object(refresh_mod, "_changed_registration_paths", side_effect=_changed_side_effect), \
-             patch.object(refresh_mod, "_read_versions_at_revision", side_effect=_read_versions_side_effect):
+        with (
+            patch("sys.argv", ["extractor.refresh"] + args),
+            patch("sys.stdout", captured),
+            patch.object(
+                refresh_mod,
+                "_changed_registration_paths",
+                side_effect=_changed_side_effect,
+            ),
+            patch.object(
+                refresh_mod,
+                "_read_versions_at_revision",
+                side_effect=_read_versions_side_effect,
+            ),
+        ):
             try:
                 refresh_mod.main()
             except SystemExit as e:
@@ -322,19 +417,30 @@ class TestUS3Removal:
         # same content as existing — so no diff for 1.0
         _write_catalog(schemas_dir, "mytool", "1.0", new_schema)
 
-        with patch("extractor.obtain._fetch_bytes", return_value=artifact), \
-             patch("extractor.obtain._fetch_text", return_value=f"{digest}  mytool.tar.gz\n"), \
-             patch("extractor.refresh._extract_schema", return_value=new_schema):
+        with (
+            patch("extractor.obtain._fetch_bytes", return_value=artifact),
+            patch(
+                "extractor.obtain._fetch_text",
+                return_value=f"{digest}  mytool.tar.gz\n",
+            ),
+            patch("extractor.refresh._extract_schema", return_value=new_schema),
+        ):
             exit_code, output = self._run_refresh(
-                "HEAD~1", clis_dir, schemas_dir,
+                "HEAD~1",
+                clis_dir,
+                schemas_dir,
                 changed={"mytool": "M"},
                 read_versions_base=["1.0", "2.0"],
                 read_versions_head=["1.0"],
             )
 
         assert exit_code == 0
-        assert not (schemas_dir / "mytool" / "2.0.json").exists(), "retired version should be deleted"
-        assert (schemas_dir / "mytool" / "1.0.json").exists(), "remaining version should still exist"
+        assert not (schemas_dir / "mytool" / "2.0.json").exists(), (
+            "retired version should be deleted"
+        )
+        assert (schemas_dir / "mytool" / "1.0.json").exists(), (
+            "remaining version should still exist"
+        )
 
     def test_deleting_registration_removes_tool_directory(self, tmp_path):
         """Deleting the registration file removes schemas/<tool>/."""
@@ -343,17 +449,25 @@ class TestUS3Removal:
         clis_dir.mkdir()
         schemas_dir.mkdir()
 
-        _write_catalog(schemas_dir, "gone_tool", "1.0", _fake_schema("gone_tool", "1.0"))
-        _write_catalog(schemas_dir, "gone_tool", "2.0", _fake_schema("gone_tool", "2.0"))
+        _write_catalog(
+            schemas_dir, "gone_tool", "1.0", _fake_schema("gone_tool", "1.0")
+        )
+        _write_catalog(
+            schemas_dir, "gone_tool", "2.0", _fake_schema("gone_tool", "2.0")
+        )
 
         # registration file is deleted (not in clis_dir)
         exit_code, output = self._run_refresh(
-            "HEAD~1", clis_dir, schemas_dir,
+            "HEAD~1",
+            clis_dir,
+            schemas_dir,
             changed={"gone_tool": "D"},
             read_versions_base=["1.0", "2.0"],
             read_versions_head=[],
         )
 
         assert exit_code == 0
-        assert not (schemas_dir / "gone_tool").exists(), "tool directory should be removed"
+        assert not (schemas_dir / "gone_tool").exists(), (
+            "tool directory should be removed"
+        )
         assert "published" in output

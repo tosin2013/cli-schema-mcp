@@ -7,7 +7,9 @@ import sys
 from pathlib import Path
 
 
-def extract_custom(script: str, tool: str, version: str, config_path: Path | None = None) -> dict:
+def extract_custom(
+    script: str, tool: str, version: str, config_path: Path | None = None
+) -> dict:
     """Run a custom extraction script and return the schema JSON object.
 
     The script is invoked as ``<script> <tool> <version>``. Python scripts that are not
@@ -51,9 +53,15 @@ def main() -> None:
 
     parser = argparse.ArgumentParser(description="Extract CLI schema to JSON")
     parser.add_argument("cli", help="CLI name (must match a file in clis/)")
-    parser.add_argument("version", help="Version to extract (must match a version in the YAML config)")
-    parser.add_argument("--clis-dir", default="clis", help="Directory containing CLI YAML configs")
-    parser.add_argument("--output", default="schemas", help="Output directory for schema JSON files")
+    parser.add_argument(
+        "version", help="Version to extract (must match a version in the YAML config)"
+    )
+    parser.add_argument(
+        "--clis-dir", default="clis", help="Directory containing CLI YAML configs"
+    )
+    parser.add_argument(
+        "--output", default="schemas", help="Output directory for schema JSON files"
+    )
     args = parser.parse_args()
 
     from extractor.adapters import cobra, help_parser
@@ -74,7 +82,9 @@ def main() -> None:
         )
         sys.exit(1)
 
-    print(f"Extracting {config.name} {args.version} using adapter '{config.adapter}'...")
+    print(
+        f"Extracting {config.name} {args.version} using adapter '{config.adapter}'..."
+    )
 
     try:
         if config.adapter == "cobra":
@@ -86,9 +96,15 @@ def main() -> None:
                 config.extraction_script, args.cli, args.version, config_path
             )
         else:
-            print(f"Error: unsupported adapter '{config.adapter}'", file=sys.stderr)
+            print(f"Error: unsupported adapter '{config.adapter}'", file=sys.stderr)  # type: ignore[unreachable]
             sys.exit(1)
-    except (OSError, subprocess.TimeoutExpired, ValueError, RuntimeError, json.JSONDecodeError) as exc:
+    except (
+        OSError,
+        subprocess.TimeoutExpired,
+        ValueError,
+        RuntimeError,
+        json.JSONDecodeError,
+    ) as exc:
         print(f"Error: {exc}", file=sys.stderr)
         sys.exit(1)
 

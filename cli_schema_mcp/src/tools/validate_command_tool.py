@@ -19,7 +19,9 @@ def _parse_flags_from_string(command_string: str) -> list[str]:
     return [m.group(0).split("=")[0] for m in _FLAG_RE.finditer(command_string)]
 
 
-def _find_subcommand_path(schema: dict[str, Any], tokens: list[str]) -> tuple[dict[str, Any] | None, str]:
+def _find_subcommand_path(
+    schema: dict[str, Any], tokens: list[str]
+) -> tuple[dict[str, Any] | None, str]:
     """
     Walk the schema tree greedily along non-flag tokens to find the deepest
     matching subcommand node. Returns (node, path_string).
@@ -43,7 +45,9 @@ def _find_subcommand_path(schema: dict[str, Any], tokens: list[str]) -> tuple[di
     return node, " ".join(path_parts)
 
 
-def validate_command(tool: str, version: str | None, command_string: str) -> dict[str, Any]:
+def validate_command(
+    tool: str, version: str | None, command_string: str
+) -> dict[str, Any]:
     """
     TOOL_NAME=validate_command
     DISPLAY_NAME=Validate CLI Command
@@ -107,9 +111,9 @@ def validate_command(tool: str, version: str | None, command_string: str) -> dic
         tokens = command_string.strip().split()
         node, path = _find_subcommand_path(schema, tokens)
 
-        valid_flag_names = {f.get("name") for f in node.get("flags", [])}
+        valid_flag_names = {f.get("name") for f in node.get("flags", [])}  # type: ignore[union-attr]
         # Also include shorthands
-        for f in node.get("flags", []):
+        for f in node.get("flags", []):  # type: ignore[union-attr]
             if f.get("shorthand"):
                 valid_flag_names.add(f["shorthand"])
 
@@ -121,7 +125,9 @@ def validate_command(tool: str, version: str | None, command_string: str) -> dic
         ]
 
         context = f"'{tool} {path}'" if path else f"'{tool}'"
-        logger.info(f"validate_command: {tool} {matched} '{command_string[:60]}' → valid={not errors}")
+        logger.info(
+            f"validate_command: {tool} {matched} '{command_string[:60]}' → valid={not errors}"
+        )
         return {
             "status": "success",
             "tool": tool,
@@ -131,7 +137,9 @@ def validate_command(tool: str, version: str | None, command_string: str) -> dic
             "subcommand_context": context,
             "valid": len(errors) == 0,
             "errors": errors,
-            "message": "Command is valid" if not errors else f"{len(errors)} invalid flag(s) found",
+            "message": "Command is valid"
+            if not errors
+            else f"{len(errors)} invalid flag(s) found",
         }
 
     except Exception as e:

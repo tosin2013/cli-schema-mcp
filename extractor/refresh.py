@@ -13,13 +13,13 @@ import sys
 import tempfile
 from pathlib import Path
 
-from extractor.cli_config import load_cli_config, ObtainConfig
-from extractor.obtain import ObtainInstruction, obtain, ObtainError
-
+from extractor.cli_config import ObtainConfig, load_cli_config
+from extractor.obtain import ObtainError, ObtainInstruction, obtain
 
 # ---------------------------------------------------------------------------
 # Change detection
 # ---------------------------------------------------------------------------
+
 
 def _changed_registration_paths(base: str, head: str, clis_dir: Path) -> dict[str, str]:
     """Return {tool_name: status} for registrations that differ between base and head.
@@ -30,12 +30,22 @@ def _changed_registration_paths(base: str, head: str, clis_dir: Path) -> dict[st
     if head == "WORKTREE":
         result = subprocess.run(
             ["git", "diff", "--name-status", base, "--", str(clis_dir) + "/*.yaml"],
-            capture_output=True, text=True,
+            capture_output=True,
+            text=True,
         )
     else:
         result = subprocess.run(
-            ["git", "diff", "--name-status", base, head, "--", str(clis_dir) + "/*.yaml"],
-            capture_output=True, text=True,
+            [
+                "git",
+                "diff",
+                "--name-status",
+                base,
+                head,
+                "--",
+                str(clis_dir) + "/*.yaml",
+            ],
+            capture_output=True,
+            text=True,
         )
 
     changed: dict[str, str] = {}
@@ -53,23 +63,28 @@ def _changed_registration_paths(base: str, head: str, clis_dir: Path) -> dict[st
     return changed
 
 
-def _read_versions_at_revision(tool_name: str, revision: str, clis_dir: Path) -> list[str]:
+def _read_versions_at_revision(
+    tool_name: str, revision: str, clis_dir: Path
+) -> list[str]:
     """Return the declared versions for tool_name at git revision, or [] if not found."""
     path = clis_dir / f"{tool_name}.yaml"
     if revision == "WORKTREE":
         if not path.exists():
             return []
         import yaml
+
         data = yaml.safe_load(path.read_text())
         return data.get("versions", [])
 
     result = subprocess.run(
         ["git", "show", f"{revision}:{path}"],
-        capture_output=True, text=True,
+        capture_output=True,
+        text=True,
     )
     if result.returncode != 0:
         return []
     import yaml
+
     data = yaml.safe_load(result.stdout)
     return data.get("versions", [])
 
@@ -78,9 +93,11 @@ def _read_versions_at_revision(tool_name: str, revision: str, clis_dir: Path) ->
 # Extraction
 # ---------------------------------------------------------------------------
 
+
 def _extract_schema(binary_path: Path, config, version: str) -> dict:
     """Run the extractor adapter on the installed binary and return the schema dict."""
     import os
+
     from extractor.adapters import cobra, help_parser
     from extractor.main import extract_custom
 
@@ -115,13 +132,32 @@ def _extract_schema(binary_path: Path, config, version: str) -> dict:
 # Main
 # ---------------------------------------------------------------------------
 
+
 def main() -> None:
-    parser = argparse.ArgumentParser(description="Refresh CLI flag catalogs for changed registrations")
-    parser.add_argument("--base", required=True, help="Base git revision (e.g. HEAD, SHA)")
-    parser.add_argument("--head", default="WORKTREE", help="Head revision or WORKTREE (default: WORKTREE)")
-    parser.add_argument("--no-push", action="store_true", help="Report differences instead of publishing (fork PR mode)")
-    parser.add_argument("--clis-dir", default="clis", help="Directory containing CLI YAML registrations")
-    parser.add_argument("--schemas-dir", default="schemas", help="Directory containing flag catalog JSON files")
+    parser = argparse.ArgumentParser(
+        description="Refresh CLI flag catalogs for changed registrations"
+    )
+    parser.add_argument(
+        "--base", required=True, help="Base git revision (e.g. HEAD, SHA)"
+    )
+    parser.add_argument(
+        "--head",
+        default="WORKTREE",
+        help="Head revision or WORKTREE (default: WORKTREE)",
+    )
+    parser.add_argument(
+        "--no-push",
+        action="store_true",
+        help="Report differences instead of publishing (fork PR mode)",
+    )
+    parser.add_argument(
+        "--clis-dir", default="clis", help="Directory containing CLI YAML registrations"
+    )
+    parser.add_argument(
+        "--schemas-dir",
+        default="schemas",
+        help="Directory containing flag catalog JSON files",
+    )
     args = parser.parse_args()
 
     clis_dir = Path(args.clis_dir)
