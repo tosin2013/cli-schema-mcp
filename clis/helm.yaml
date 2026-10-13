@@ -1,6 +1,6 @@
 name: helm
 display_name: "Helm"
-description: "The Kubernetes package manager"
+description: "The Kubernetes package manager (CNCF graduated)"
 binary: helm
 adapter: cobra
 versions:
