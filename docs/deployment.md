@@ -1,23 +1,64 @@
 # Deployment Guide
 
-## Using Podman / Docker Compose
+## Local (Podman / Docker Compose)
 
-1. **Build and run with Podman Compose:**
-   ```bash
-   podman compose up --build
-   ```
+### Quick start with Compose
 
-2. **Or build manually:**
-   ```bash
-   podman build -t cli-schema-mcp .
-   podman run -p 5001:5001 --env-file .env cli-schema-mcp
-   ```
+```bash
+podman compose up --build
+```
+
+### Manual build and run
+
+```bash
+podman build -t cli-schema-mcp .
+podman run -p 5001:5001 --env-file .env cli-schema-mcp
+```
+
+Verify:
+
+```bash
+curl http://localhost:5001/health
+# {"status": "healthy"}
+```
+
+### Connect an MCP client
+
+Once the server is running, point your MCP client at it.
+
+**Claude Code** (`~/.claude/mcp.json`):
+
+```json
+{
+  "servers": {
+    "cli-schema-mcp": {
+      "url": "http://localhost:5001"
+    }
+  }
+}
+```
+
+**curl (MCP JSON-RPC)**:
+
+```bash
+# List available tools
+curl -s -X POST http://localhost:5001/mcp \
+  -H "Content-Type: application/json" \
+  -d '{"jsonrpc":"2.0","id":1,"method":"tools/list","params":{}}' \
+  | python -m json.tool
+
+# Call list_supported
+curl -s -X POST http://localhost:5001/mcp \
+  -H "Content-Type: application/json" \
+  -d '{"jsonrpc":"2.0","id":2,"method":"tools/call","params":{"name":"list_supported","arguments":{}}}' \
+  | python -m json.tool
+```
+
+---
 
 ## Deploying to OpenShift
 
 The OpenShift manifests live in `deployment/openshift/` (Deployment, Service, Route, ConfigMap, Secret, BuildConfig, ImageStream, Kustomization).
-
-Quick start:
 
 ```bash
 # Deploy to OpenShift namespace
@@ -27,19 +68,56 @@ make deploy openshift NAMESPACE=your-project-name
 make undeploy openshift
 ```
 
-### PostgreSQL Requirement
+After deployment the route exposes the server. Connect an MCP client to the route URL:
 
-The OpenShift manifests **do not include a PostgreSQL deployment**. If you enable authentication (`ENABLE_AUTH=True`), you must provision PostgreSQL separately and point the `POSTGRES_*` values in `deployment/openshift/secret.yaml` to it.
+```json
+{
+  "servers": {
+    "cli-schema-mcp": {
+      "url": "https://cli-schema-mcp-<namespace>.apps.<cluster-domain>"
+    }
+  }
+}
+```
 
-Common approaches:
+### Air-gapped OpenShift deployment
+
+In clusters with no internet access at build time, use the OCI artifact to embed schemas
+into the image before pushing to the internal registry:
+
+```bash
+# Pull schema artifact from quay.io (needs network access once)
+oras pull quay.io/takinosh/cli-schema-mcp:latest --output /tmp/schemas-pull
+mkdir /opt/cli-schemas
+tar -xzf /tmp/schemas-pull/schemas.tar.gz -C /opt/cli-schemas
+
+# Build the image and pass the schema path via environment
+podman build -t cli-schema-mcp .
+podman run -p 5001:5001 \
+  -e SCHEMA_REGISTRY_PATH=/opt/cli-schemas \
+  -v /opt/cli-schemas:/opt/cli-schemas:ro \
+  cli-schema-mcp
+```
+
+Or embed the schemas at image build time by following the commented `oras pull` block in
+the `Containerfile`. Push the resulting image to your internal registry and update the
+`deployment/openshift/` manifests to reference it.
+
+### PostgreSQL (auth only)
+
+PostgreSQL is only needed when `ENABLE_AUTH=True`. The default is `ENABLE_AUTH=False`
+and no database is required.
+
+If you enable auth, the OpenShift manifests **do not include a PostgreSQL deployment** —
+provision it separately and set `POSTGRES_*` values:
 
 | Option | When to Use |
 |--------|------------|
-| [CloudNativePG Operator](https://cloudnative-pg.io/) | Recommended for Kubernetes/OpenShift — operator-managed, HA-ready, Apache 2.0 licensed |
-| Managed cloud DB (RDS, Cloud SQL, Azure DB) | Hybrid deployments or when the cluster is not self-hosted |
-| Standalone PostgreSQL Pod | Quick testing only — not recommended for production |
+| [CloudNativePG Operator](https://cloudnative-pg.io/) | Recommended — operator-managed, HA-ready |
+| Managed cloud DB (RDS, Cloud SQL, Azure DB) | Hybrid or cloud deployments |
+| Standalone PostgreSQL Pod | Quick testing only |
 
-Update these values in `deployment/openshift/secret.yaml` before deploying:
+Set these in `deployment/openshift/secret.yaml`:
 
 ```yaml
 POSTGRES_DB: "your-db-name"
@@ -47,65 +125,69 @@ POSTGRES_USER: "your-db-user"
 POSTGRES_PASSWORD: "your-secure-password"
 ```
 
-The MCP server also needs `POSTGRES_HOST` and `POSTGRES_PORT` — set these in `deployment/openshift/configmap.yaml` to match your database endpoint.
+And in `deployment/openshift/configmap.yaml`:
 
-> **Without auth:** If `ENABLE_AUTH=False`, PostgreSQL is not required and the `POSTGRES_*` values are ignored.
+```yaml
+POSTGRES_HOST: "your-db-host"
+POSTGRES_PORT: "5432"
+```
+
+---
 
 ## Container Build (`Containerfile`)
 
-The `Containerfile` uses a multi-stage approach on a Red Hat UBI base:
+Built on Red Hat UBI 9 + Python 3.12:
 
 | Stage | What Happens |
 |-------|-------------|
-| **Base image** | `registry.access.redhat.com/ubi9/python-312:latest` — Red Hat UBI 9 with Python 3.12 |
-| **Dependency install** | Switches to `root`, copies `pyproject.toml`, installs `uv`, creates a venv, and installs runtime deps via `uv pip install -r pyproject.toml` |
+| **Base image** | `registry.access.redhat.com/ubi9/python-312:latest` |
+| **Dependency install** | Installs `uv`, creates venv, installs runtime deps |
 | **Source copy** | Copies `cli_schema_mcp/`, `clis/`, `schemas/` into `/app` |
-| **Environment** | Sets `VIRTUAL_ENV`, prepends venv to `PATH`, sets `PYTHONPATH=/app` |
-| **User** | Drops back to `default` (non-root) for runtime security |
+| **Environment** | Sets `VIRTUAL_ENV`, `PATH`, `PYTHONPATH=/app` |
+| **User** | Drops to `default` (non-root) for runtime security |
 | **Entrypoint** | `CMD ["/app/.venv/bin/python", "-m", "cli_schema_mcp.src.main"]` |
 
-Port **5001** is exposed via `EXPOSE 5001`.
+Port **5001** exposed via `EXPOSE 5001`.
 
-### Air-gapped OCI deployment
+---
 
-For environments without internet access at runtime, pull the schema registry as an OCI
-artifact at image build time instead of using `COPY schemas`:
+## Environment Variables
+
+| Variable | Default | Description |
+|----------|---------|-------------|
+| `MCP_HOST` | `localhost` | Bind address (`0.0.0.0` for containers) |
+| `MCP_PORT` | `5001` | Server port |
+| `MCP_TRANSPORT_PROTOCOL` | `http` | `http`, `sse`, or `streamable-http` |
+| `SCHEMA_REGISTRY_PATH` | *(unset)* | Override schema directory (use with OCI pull) |
+| `ENABLE_AUTH` | `False` | Enable OAuth authentication |
+| `PYTHON_LOG_LEVEL` | `INFO` | Log level |
+| `MCP_SSL_KEYFILE` | *(unset)* | SSL private key path |
+| `MCP_SSL_CERTFILE` | *(unset)* | SSL certificate path |
+
+---
+
+## Testing the Deployment
 
 ```bash
-# Pull the schema registry artifact
-mkdir /tmp/schemas-pull
-oras pull quay.io/takinosh/cli-schema-mcp:latest --output /tmp/schemas-pull
-mkdir /opt/cli-schemas
-tar -xzf /tmp/schemas-pull/schemas.tar.gz -C /opt/cli-schemas
+# Health check
+curl -f http://localhost:5001/health
 
-# Start the server against the pulled registry
-SCHEMA_REGISTRY_PATH=/opt/cli-schemas cli-schema-mcp
+# Verify schemas are loaded (should return 5 CLIs)
+curl -s -X POST http://localhost:5001/mcp \
+  -H "Content-Type: application/json" \
+  -d '{"jsonrpc":"2.0","id":1,"method":"tools/call","params":{"name":"list_supported","arguments":{}}}' \
+  | python -m json.tool
+
+# Import validation (container)
+podman run --rm cli-schema-mcp python -c "import cli_schema_mcp; print('OK')"
+
+# SSL (if configured)
+curl -k https://localhost:5001/health
 ```
 
-The `Containerfile` includes a commented block showing the equivalent build-time pattern.
-See the README [Air-gapped deployment section](../README.md#air-gapped-deployment-oci) for details.
+---
 
-## Container Configuration
+## Compose Configuration
 
-The `compose.yaml` maps container port 5001 to host port 5001 and overrides `MCP_HOST=0.0.0.0` so the server binds to all interfaces inside the container (required for port forwarding to work).
-
-- **Health Check**: `curl -f http://localhost:5001/health`
-
-## Manual Testing
-
-1. **Container testing:**
-   ```bash
-   podman compose up -d
-   curl -f http://localhost:5001/health
-   podman compose down
-   ```
-
-2. **SSL testing (if configured):**
-   ```bash
-   curl -k https://localhost:5001/health
-   ```
-
-3. **Import validation:**
-   ```bash
-   podman run --rm template-mcp-server python -c "import template_mcp_server; print('OK')"
-   ```
+`compose.yaml` maps port 5001 to the host and overrides `MCP_HOST=0.0.0.0` so the server
+binds to all interfaces inside the container (required for port forwarding).
