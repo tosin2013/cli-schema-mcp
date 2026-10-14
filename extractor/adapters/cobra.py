@@ -303,14 +303,17 @@ def _extract_complete_tree(
 ) -> dict[str, Any]:
     key = tuple(path)
     name = path[-1] if path else binary
+    # Use the shared mutable `seen` set — adding key here prevents any other
+    # path from revisiting this same command node, which avoids exponential blowup
+    # in CLIs whose help subcommand recursively lists all sibling commands.
     if key in seen or not budget.take():
         return _node(name, [], [])
-    branch_seen = seen | {key}
+    seen.add(key)
 
     sub_items = _completion_items(binary, [*path, ""])
     flag_items = _completion_items(binary, [*path, "-"])
     if sub_items is None and flag_items is None and not path:
-        return _extract_help_tree(binary, path, set(branch_seen), budget)
+        return _extract_help_tree(binary, path, seen, budget)
 
     sub_names: list[str] = []
     for sub, _desc in sub_items or []:
@@ -332,7 +335,7 @@ def _extract_complete_tree(
             binary,
             [*path, sub],
             global_meta,
-            branch_seen,
+            seen,
             budget,
             parallel=False,
         )
