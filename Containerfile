@@ -24,8 +24,24 @@ USER default
 # --------------------------------------------------------------------------------------------------
 
 COPY cli_schema_mcp /app/cli_schema_mcp
-COPY schemas /app/schemas
 COPY clis /app/clis
+
+# --------------------------------------------------------------------------------------------------
+# Default: embed schemas from the build context (standard / CI build)
+# For air-gapped OCI builds, replace the COPY below with the oras pull block instead:
+#
+#   RUN curl -sLO https://github.com/oras-project/oras/releases/download/v1.3.1/oras_1.3.1_linux_amd64.tar.gz \
+#       && tar -xzf oras_1.3.1_linux_amd64.tar.gz oras \
+#       && mv oras /usr/local/bin/oras \
+#       && rm oras_1.3.1_linux_amd64.tar.gz \
+#       && mkdir /tmp/schemas-pull \
+#       && oras pull quay.io/takinosh/cli-schema-mcp:latest --output /tmp/schemas-pull \
+#       && mkdir /app/schemas \
+#       && tar -xzf /tmp/schemas-pull/schemas.tar.gz -C /app/schemas \
+#       && rm -rf /tmp/schemas-pull
+#   ENV SCHEMA_REGISTRY_PATH=/app/schemas
+# --------------------------------------------------------------------------------------------------
+COPY schemas /app/schemas
 
 # --------------------------------------------------------------------------------------------------
 # Set PYTHONPATH to include /app

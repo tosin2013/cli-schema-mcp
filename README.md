@@ -100,6 +100,35 @@ python -m extractor.refresh --base HEAD --head WORKTREE
 python -m extractor oc 4.22
 ```
 
+## Air-gapped deployment (OCI)
+
+The schema registry is published as an OCI artifact to
+`quay.io/takinosh/cli-schema-mcp` on every tagged release. Pull it on any
+machine that can reach quay.io — no internet access to GitHub required at
+runtime.
+
+```bash
+# Install oras (https://oras.land)
+# brew install oras  |  apt install oras  |  see https://oras.land/docs/installation
+
+# Pull the latest schema registry
+mkdir /tmp/schemas-pull
+oras pull quay.io/takinosh/cli-schema-mcp:latest --output /tmp/schemas-pull
+
+# Extract
+mkdir /opt/cli-schemas
+tar -xzf /tmp/schemas-pull/schemas.tar.gz -C /opt/cli-schemas
+
+# Start the MCP server against the pulled registry
+SCHEMA_REGISTRY_PATH=/opt/cli-schemas cli-schema-mcp
+```
+
+Pin to a specific release for reproducible air-gapped environments:
+
+```bash
+oras pull quay.io/takinosh/cli-schema-mcp:v0.1.1 --output /tmp/schemas-pull
+```
+
 ## Configuration
 
 | Variable | Default | Description |
@@ -108,6 +137,7 @@ python -m extractor oc 4.22
 | `MCP_PORT` | `5001` | Server port |
 | `MCP_TRANSPORT_PROTOCOL` | `http` | `http`, `sse`, or `streamable-http` |
 | `ENABLE_AUTH` | `False` | Enable OAuth authentication |
+| `SCHEMA_REGISTRY_PATH` | *(unset)* | Override schema directory (use with OCI pull) |
 
 See [docs/authentication.md](docs/authentication.md) for OAuth setup.
 
