@@ -126,11 +126,16 @@ def _split_default(token: str) -> tuple[str, str | None]:
     return name, default or None
 
 
+_SUBCOMMAND_SECTION = re.compile(
+    r"^(?:Available Commands|SUBCOMMANDS?|[A-Z\s]*Commands?):\s*$"
+)
+
+
 def _commands_section(help_text: str) -> str:
     lines: list[str] = []
     in_section = False
     for line in help_text.splitlines():
-        if re.match(r"^Available Commands:\s*$", line):
+        if _SUBCOMMAND_SECTION.match(line):
             in_section = True
             continue
         if not in_section:

@@ -6,11 +6,12 @@ adapter: help-parser
 versions:
   - "2.2"
 version_command: "nmstatectl version"
-version_parse: "{version}."
+version_parse: "nmstatectl {version}."
 upstream_repo: "https://github.com/nmstate/nmstate"
 maintainers:
   - "tosin2013"
-# No obtain block — nmstate is a system package (dnf install nmstate).
+help_flag: "--help"
+flag_regex: '^\s+(?:-\w,\s+)?(--[\w-]+|-\w)\s{2,}(.+)$'
+subcommand_regex: '^\s{4}([a-zA-Z][\w-]*)\s{2,}(.+)$'
+# No obtain block — nmstate is a system package (sudo dnf install nmstate).
 # Schemas are extracted locally and committed manually.
-# Install: sudo dnf install nmstate
-# Extract: python -m extractor nmstate 2.2

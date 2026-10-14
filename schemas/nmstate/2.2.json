@@ -1,0 +1,372 @@
+{
+  "name": "nmstatectl",
+  "flags": [
+    {
+      "name": "--help",
+      "shorthand": null,
+      "type": "bool",
+      "default": null,
+      "description": "Print help information",
+      "deprecated": false
+    },
+    {
+      "name": "--version",
+      "shorthand": null,
+      "type": "bool",
+      "default": null,
+      "description": "Print version information",
+      "deprecated": false
+    }
+  ],
+  "subcommands": [
+    {
+      "name": "apply",
+      "flags": [
+        {
+          "name": "--help",
+          "shorthand": null,
+          "type": "bool",
+          "default": null,
+          "description": "Print help information",
+          "deprecated": false
+        },
+        {
+          "name": "--kernel",
+          "shorthand": null,
+          "type": "bool",
+          "default": null,
+          "description": "Apply network state to kernel only",
+          "deprecated": false
+        },
+        {
+          "name": "--memory-only",
+          "shorthand": null,
+          "type": "bool",
+          "default": null,
+          "description": "Do not make the state persistent",
+          "deprecated": false
+        },
+        {
+          "name": "--no-commit",
+          "shorthand": null,
+          "type": "bool",
+          "default": null,
+          "description": "Do not commit new state after verification",
+          "deprecated": false
+        },
+        {
+          "name": "--no-verify",
+          "shorthand": null,
+          "type": "bool",
+          "default": null,
+          "description": "Do not verify that the state was completely set and disable rollback",
+          "deprecated": false
+        },
+        {
+          "name": "--override-iface",
+          "shorthand": null,
+          "type": "bool",
+          "default": null,
+          "description": "Override interface settings without merge current network state",
+          "deprecated": false
+        },
+        {
+          "name": "--show-secrets",
+          "shorthand": null,
+          "type": "bool",
+          "default": null,
+          "description": "Show secrets(hide by default)",
+          "deprecated": false
+        }
+      ],
+      "subcommands": []
+    },
+    {
+      "name": "autoconf",
+      "flags": [
+        {
+          "name": "--dry-run",
+          "shorthand": null,
+          "type": "bool",
+          "default": null,
+          "description": "Generate the network state that is going to be applied and print it out without",
+          "deprecated": false
+        },
+        {
+          "name": "--help",
+          "shorthand": null,
+          "type": "bool",
+          "default": null,
+          "description": "Print help information",
+          "deprecated": false
+        },
+        {
+          "name": "--version",
+          "shorthand": null,
+          "type": "bool",
+          "default": null,
+          "description": "Print version information",
+          "deprecated": false
+        }
+      ],
+      "subcommands": []
+    },
+    {
+      "name": "commit",
+      "flags": [
+        {
+          "name": "--help",
+          "shorthand": null,
+          "type": "bool",
+          "default": null,
+          "description": "Print help information",
+          "deprecated": false
+        }
+      ],
+      "subcommands": []
+    },
+    {
+      "name": "edit",
+      "flags": [
+        {
+          "name": "--help",
+          "shorthand": null,
+          "type": "bool",
+          "default": null,
+          "description": "Print help information",
+          "deprecated": false
+        },
+        {
+          "name": "--kernel",
+          "shorthand": null,
+          "type": "bool",
+          "default": null,
+          "description": "Apply network state to kernel only",
+          "deprecated": false
+        },
+        {
+          "name": "--memory-only",
+          "shorthand": null,
+          "type": "bool",
+          "default": null,
+          "description": "Do not make the state persistent",
+          "deprecated": false
+        },
+        {
+          "name": "--no-commit",
+          "shorthand": null,
+          "type": "bool",
+          "default": null,
+          "description": "Do not commit new state after verification",
+          "deprecated": false
+        },
+        {
+          "name": "--no-verify",
+          "shorthand": null,
+          "type": "bool",
+          "default": null,
+          "description": "Do not verify that the state was completely set and disable rollback to",
+          "deprecated": false
+        }
+      ],
+      "subcommands": []
+    },
+    {
+      "name": "format",
+      "flags": [
+        {
+          "name": "--help",
+          "shorthand": null,
+          "type": "bool",
+          "default": null,
+          "description": "Print help information",
+          "deprecated": false
+        }
+      ],
+      "subcommands": []
+    },
+    {
+      "name": "gc",
+      "flags": [
+        {
+          "name": "--help",
+          "shorthand": null,
+          "type": "bool",
+          "default": null,
+          "description": "Print help information",
+          "deprecated": false
+        }
+      ],
+      "subcommands": []
+    },
+    {
+      "name": "gr",
+      "flags": [
+        {
+          "name": "--help",
+          "shorthand": null,
+          "type": "bool",
+          "default": null,
+          "description": "Print help information",
+          "deprecated": false
+        },
+        {
+          "name": "--json",
+          "shorthand": null,
+          "type": "bool",
+          "default": null,
+          "description": "Show state in json format",
+          "deprecated": false
+        }
+      ],
+      "subcommands": []
+    },
+    {
+      "name": "policy",
+      "flags": [
+        {
+          "name": "--help",
+          "shorthand": null,
+          "type": "bool",
+          "default": null,
+          "description": "Print help information",
+          "deprecated": false
+        },
+        {
+          "name": "--json",
+          "shorthand": null,
+          "type": "bool",
+          "default": null,
+          "description": "Show state in json format",
+          "deprecated": false
+        }
+      ],
+      "subcommands": []
+    },
+    {
+      "name": "rollback",
+      "flags": [
+        {
+          "name": "--help",
+          "shorthand": null,
+          "type": "bool",
+          "default": null,
+          "description": "Print help information",
+          "deprecated": false
+        }
+      ],
+      "subcommands": []
+    },
+    {
+      "name": "service",
+      "flags": [
+        {
+          "name": "--help",
+          "shorthand": null,
+          "type": "bool",
+          "default": null,
+          "description": "Print help information",
+          "deprecated": false
+        }
+      ],
+      "subcommands": []
+    },
+    {
+      "name": "show",
+      "flags": [
+        {
+          "name": "--help",
+          "shorthand": null,
+          "type": "bool",
+          "default": null,
+          "description": "Print help information",
+          "deprecated": false
+        },
+        {
+          "name": "--json",
+          "shorthand": null,
+          "type": "bool",
+          "default": null,
+          "description": "Show state in json format",
+          "deprecated": false
+        },
+        {
+          "name": "--kernel",
+          "shorthand": null,
+          "type": "bool",
+          "default": null,
+          "description": "Show kernel network state only",
+          "deprecated": false
+        },
+        {
+          "name": "--running-config",
+          "shorthand": null,
+          "type": "bool",
+          "default": null,
+          "description": "Show running configuration only",
+          "deprecated": false
+        },
+        {
+          "name": "--show-secrets",
+          "shorthand": null,
+          "type": "bool",
+          "default": null,
+          "description": "Show secrets(hide by default)",
+          "deprecated": false
+        }
+      ],
+      "subcommands": []
+    },
+    {
+      "name": "statistic",
+      "flags": [
+        {
+          "name": "--help",
+          "shorthand": null,
+          "type": "bool",
+          "default": null,
+          "description": "Print help information",
+          "deprecated": false
+        },
+        {
+          "name": "--json",
+          "shorthand": null,
+          "type": "bool",
+          "default": null,
+          "description": "Show statistic in json format",
+          "deprecated": false
+        }
+      ],
+      "subcommands": []
+    },
+    {
+      "name": "validate",
+      "flags": [
+        {
+          "name": "--help",
+          "shorthand": null,
+          "type": "bool",
+          "default": null,
+          "description": "Print help information",
+          "deprecated": false
+        }
+      ],
+      "subcommands": []
+    },
+    {
+      "name": "version",
+      "flags": [
+        {
+          "name": "--help",
+          "shorthand": null,
+          "type": "bool",
+          "default": null,
+          "description": "Print help information",
+          "deprecated": false
+        }
+      ],
+      "subcommands": []
+    }
+  ],
+  "version": "2.2"
+}
