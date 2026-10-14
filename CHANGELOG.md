@@ -4,6 +4,23 @@ All notable changes to cli-schema-mcp are documented here.
 
 Detailed release notes are available at [GitHub Releases](https://github.com/tosin2013/cli-schema-mcp/releases).
 
+## [0.1.2] - 2026-10-14
+
+### Added
+
+- `virtctl` (KubeVirt) 1.8 and 1.9 schemas — 35 subcommands, 22 flags
+- `nmstate` (`nmstatectl`) 2.2 schema — 14 subcommands including apply, show, edit, validate
+- `skip_checksum: true` obtain field for CLIs without published checksum files (virtctl uses this)
+- OCI artifact at `quay.io/takinosh/cli-schema-mcp:v0.1.2` / `:latest`
+
+### Fixed
+
+- help-parser adapter now recognises `SUBCOMMANDS:` section header (Rust/clap CLIs)
+- help-parser subcommand detection no longer matches flags as subcommands
+- Registrations without an `obtain` block are now silently skipped in CI (not FAILed)
+
+---
+
 ## [0.1.1] - 2026-10-14
 
 ### Added
