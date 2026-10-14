@@ -221,6 +221,7 @@ def main() -> None:
                 binary=ob.binary,
                 version_url=ob.version_url,
                 version_match=ob.version_match,
+                skip_checksum=ob.skip_checksum,
             )
 
             tool_results: dict[str, Path] = {}

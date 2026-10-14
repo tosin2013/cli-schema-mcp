@@ -18,6 +18,7 @@ Community contributors are encouraged to maintain the CLIs they add.
 | `kustomize` | 5.3–5.5 | community |
 | `podman` | 5.2–5.4 | community |
 | `tkn` | 0.45–0.46 | community |
+| `virtctl` | 1.8–1.9 | community |
 
 ## Becoming a CLI Maintainer
 

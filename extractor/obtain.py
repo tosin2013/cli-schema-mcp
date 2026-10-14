@@ -17,11 +17,15 @@ from pathlib import Path
 @dataclass
 class ObtainInstruction:
     artifact_url: str
-    checksum_url: str
     format: str  # "raw", "tar.gz", or "zip"
     binary: str
+    checksum_url: str = ""
     version_url: str | None = None
     version_match: str | None = None
+    # Skip SHA-256 verification for CLIs that publish no checksum file.
+    # Only set True when the upstream project provides no checksum — reduces
+    # supply-chain security guarantees.
+    skip_checksum: bool = False
 
 
 class ObtainError(Exception):
@@ -169,12 +173,13 @@ def obtain(
         )
 
     artifact_bytes = _fetch_bytes(artifact_url)
-    checksum_body = _fetch_text(checksum_url)
 
-    import posixpath
+    if not instr.skip_checksum:
+        checksum_body = _fetch_text(checksum_url)
+        import posixpath
 
-    artifact_basename = posixpath.basename(artifact_url.split("?")[0])
-    _verify_checksum(artifact_bytes, artifact_basename, checksum_body)
+        artifact_basename = posixpath.basename(artifact_url.split("?")[0])
+        _verify_checksum(artifact_bytes, artifact_basename, checksum_body)
 
     dest_dir.mkdir(parents=True, exist_ok=True)
 

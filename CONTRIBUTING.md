@@ -82,18 +82,21 @@ obtain:
 | Field | Required | Description |
 |---|---|---|
 | `artifact_url` | Yes | Download URL. Must contain `{version}` or `{resolved}`. |
-| `checksum_url` | Yes | URL of the SHA-256 checksum. Same tokens as `artifact_url`. |
+| `checksum_url` | Yes (unless `skip_checksum: true`) | URL of the SHA-256 checksum. Same tokens as `artifact_url`. |
 | `format` | Yes | Archive format: `raw`, `tar.gz`, or `zip`. |
 | `binary` | Yes | Installed filename for `raw`, or archive member path otherwise. |
 | `version_url` | No | URL to fetch for the resolved patch tag (fill `{version}` first). |
 | `version_match` | Required with `version_url` | Regex with one capture group for `{resolved}`. |
+| `skip_checksum` | No (default: `false`) | Set `true` only when the upstream project publishes no checksum file. Reduces supply-chain security — requires maintainer review. |
 
 **Token substitution**: `{version}` is replaced with the declared version string (e.g. `4.22`).
 `{resolved}` is replaced with the first capture group from `version_match`, or equals `{version}`
 when `version_url` is omitted.
 
 **Checksum**: The file at `checksum_url` must be a bare 64-hex SHA-256 digest, or a `sha256sum`
-listing. The artifact is not unpacked or executed unless the digest matches.
+listing. The artifact is not unpacked or executed unless the digest matches. Use
+`skip_checksum: true` only for CLIs whose upstream project does not publish a checksum file (e.g.
+KubeVirt `virtctl`). This must be noted in the PR and reviewed by a maintainer.
 
 **Example with version pointer** (kubectl):
 

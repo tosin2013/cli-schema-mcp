@@ -11,11 +11,14 @@ import yaml
 @dataclass
 class ObtainConfig:
     artifact_url: str
-    checksum_url: str
     format: Literal["raw", "tar.gz", "zip"]
     binary: str
+    checksum_url: str = ""
     version_url: str | None = None
     version_match: str | None = None
+    # Set True only for CLIs that publish no checksum file.
+    # Skipping verification reduces supply-chain security — use sparingly.
+    skip_checksum: bool = False
 
 
 @dataclass
@@ -43,7 +46,10 @@ _VALID_FORMATS = {"raw", "tar.gz", "zip"}
 
 def _parse_obtain(raw: dict, path: Path) -> ObtainConfig:
     """Parse and validate the obtain block."""
-    required = {"artifact_url", "checksum_url", "format", "binary"}
+    skip_checksum = bool(raw.get("skip_checksum", False))
+    required = {"artifact_url", "format", "binary"}
+    if not skip_checksum:
+        required.add("checksum_url")
     missing = required - set(raw.keys())
     if missing:
         raise ValueError(f"obtain block in {path} missing required fields: {missing}")
@@ -75,10 +81,11 @@ def _parse_obtain(raw: dict, path: Path) -> ObtainConfig:
             )
 
     artifact_url = raw["artifact_url"]
-    checksum_url = raw["checksum_url"]
+    checksum_url = raw.get("checksum_url", "")
+
     for field_name, url in (
         ("artifact_url", artifact_url),
-        ("checksum_url", checksum_url),
+        *([("checksum_url", checksum_url)] if checksum_url else []),
     ):
         if "{version}" not in url and "{resolved}" not in url:
             raise ValueError(
@@ -92,6 +99,7 @@ def _parse_obtain(raw: dict, path: Path) -> ObtainConfig:
         binary=raw["binary"],
         version_url=version_url or None,
         version_match=version_match or None,
+        skip_checksum=skip_checksum,
     )
 
 
