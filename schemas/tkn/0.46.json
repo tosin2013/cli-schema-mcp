@@ -1,0 +1,5149 @@
+{
+  "name": "/tmp/extractor-refresh-61c6w462/tkn/0.46/bin/tkn",
+  "flags": [
+    {
+      "name": "--help",
+      "shorthand": "-h",
+      "type": "bool",
+      "default": null,
+      "description": "help for tkn",
+      "deprecated": false
+    }
+  ],
+  "subcommands": [
+    {
+      "name": "bundle",
+      "flags": [
+        {
+          "name": "--help",
+          "shorthand": "-h",
+          "type": "bool",
+          "default": null,
+          "description": "help for bundle",
+          "deprecated": false
+        },
+        {
+          "name": "--no-color",
+          "shorthand": "-C",
+          "type": "bool",
+          "default": null,
+          "description": "disable coloring (default: false)",
+          "deprecated": false
+        }
+      ],
+      "subcommands": [
+        {
+          "name": "list",
+          "flags": [
+            {
+              "name": "--no-color",
+              "shorthand": "-C",
+              "type": "bool",
+              "default": null,
+              "description": "disable coloring (default: false)",
+              "deprecated": false
+            },
+            {
+              "name": "--allow-missing-template-keys",
+              "shorthand": null,
+              "type": "bool",
+              "default": "true",
+              "description": "If true, ignore any errors in templates when a field or map key is missing in the template. Only applies to golang and jsonpath output formats. (default true)",
+              "deprecated": false
+            },
+            {
+              "name": "--cache-dir",
+              "shorthand": null,
+              "type": "string",
+              "default": "~/.tekton/bundles",
+              "description": "A directory to cache Tekton bundles in. (default \"~/.tekton/bundles\")",
+              "deprecated": false
+            },
+            {
+              "name": "--help",
+              "shorthand": "-h",
+              "type": "bool",
+              "default": null,
+              "description": "help for list",
+              "deprecated": false
+            },
+            {
+              "name": "--no-cache",
+              "shorthand": null,
+              "type": "bool",
+              "default": null,
+              "description": "If set to true, pulls a Tekton bundle from the remote even its exact digest is available in the cache.",
+              "deprecated": false
+            },
+            {
+              "name": "--output",
+              "shorthand": "-o",
+              "type": "string",
+              "default": null,
+              "description": "Output format. One of: (json, yaml, name, go-template, go-template-file, template, templatefile, jsonpath, jsonpath-as-json, jsonpath-file).",
+              "deprecated": false
+            },
+            {
+              "name": "--remote-bearer",
+              "shorthand": null,
+              "type": "string",
+              "default": null,
+              "description": "A Bearer token to authenticate against the repository",
+              "deprecated": false
+            },
+            {
+              "name": "--remote-password",
+              "shorthand": null,
+              "type": "string",
+              "default": null,
+              "description": "A password to pass to the registry for basic auth. Must be used with --remote-username",
+              "deprecated": false
+            },
+            {
+              "name": "--remote-skip-tls",
+              "shorthand": null,
+              "type": "bool",
+              "default": null,
+              "description": "Skip TLS certificate verification and allow plain-HTTP connections to the registry (opt-in insecure mode)",
+              "deprecated": false
+            },
+            {
+              "name": "--remote-username",
+              "shorthand": null,
+              "type": "string",
+              "default": null,
+              "description": "A username to pass to the registry for basic auth. Must be used with --remote-password",
+              "deprecated": false
+            },
+            {
+              "name": "--show-managed-fields",
+              "shorthand": null,
+              "type": "bool",
+              "default": null,
+              "description": "If true, keep the managedFields when printing objects in JSON or YAML format.",
+              "deprecated": false
+            },
+            {
+              "name": "--template",
+              "shorthand": null,
+              "type": "string",
+              "default": null,
+              "description": "Template string or path to template file to use when -o=go-template, -o=go-template-file. The template format is golang templates [http://golang.org/pkg/text/template/#pkg-overview].",
+              "deprecated": false
+            }
+          ],
+          "subcommands": []
+        },
+        {
+          "name": "push",
+          "flags": [
+            {
+              "name": "--no-color",
+              "shorthand": "-C",
+              "type": "bool",
+              "default": null,
+              "description": "disable coloring (default: false)",
+              "deprecated": false
+            },
+            {
+              "name": "--annotate",
+              "shorthand": null,
+              "type": "stringArray",
+              "default": null,
+              "description": "OCI Manifest annotation in the form of key=value to be added to the OCI image. Can be provided multiple times to add multiple annotations.",
+              "deprecated": false
+            },
+            {
+              "name": "--ctime",
+              "shorthand": null,
+              "type": "string",
+              "default": null,
+              "description": "YYYY-MM-DD, YYYY-MM-DDTHH:MM:SS or RFC3339 formatted created time to set, defaults to current time. In non RFC3339 syntax dates are in UTC timezone.",
+              "deprecated": false
+            },
+            {
+              "name": "--filenames",
+              "shorthand": "-f",
+              "type": "stringArray",
+              "default": null,
+              "description": "List of fully-qualified file paths containing YAML or JSON defined Tekton objects to include in this bundle",
+              "deprecated": false
+            },
+            {
+              "name": "--help",
+              "shorthand": "-h",
+              "type": "bool",
+              "default": null,
+              "description": "help for push",
+              "deprecated": false
+            },
+            {
+              "name": "--label",
+              "shorthand": null,
+              "type": "stringArray",
+              "default": null,
+              "description": "OCI Config labels in the form of key=value to be added to the OCI image. Can be provided multiple times to add multiple labels.",
+              "deprecated": false
+            },
+            {
+              "name": "--remote-bearer",
+              "shorthand": null,
+              "type": "string",
+              "default": null,
+              "description": "A Bearer token to authenticate against the repository",
+              "deprecated": false
+            },
+            {
+              "name": "--remote-password",
+              "shorthand": null,
+              "type": "string",
+              "default": null,
+              "description": "A password to pass to the registry for basic auth. Must be used with --remote-username",
+              "deprecated": false
+            },
+            {
+              "name": "--remote-skip-tls",
+              "shorthand": null,
+              "type": "bool",
+              "default": null,
+              "description": "Skip TLS certificate verification and allow plain-HTTP connections to the registry (opt-in insecure mode)",
+              "deprecated": false
+            },
+            {
+              "name": "--remote-username",
+              "shorthand": null,
+              "type": "string",
+              "default": null,
+              "description": "A username to pass to the registry for basic auth. Must be used with --remote-password",
+              "deprecated": false
+            }
+          ],
+          "subcommands": []
+        }
+      ]
+    },
+    {
+      "name": "clustertriggerbinding",
+      "flags": [
+        {
+          "name": "--context",
+          "shorthand": "-c",
+          "type": "string",
+          "default": null,
+          "description": "name of the kubeconfig context to use (default: kubectl config current-context)",
+          "deprecated": false
+        },
+        {
+          "name": "--help",
+          "shorthand": "-h",
+          "type": "bool",
+          "default": null,
+          "description": "help for clustertriggerbinding",
+          "deprecated": false
+        },
+        {
+          "name": "--kubeconfig",
+          "shorthand": "-k",
+          "type": "string",
+          "default": null,
+          "description": "kubectl config file (default: $HOME/.kube/config)",
+          "deprecated": false
+        },
+        {
+          "name": "--no-color",
+          "shorthand": "-C",
+          "type": "bool",
+          "default": null,
+          "description": "disable coloring (default: false)",
+          "deprecated": false
+        }
+      ],
+      "subcommands": [
+        {
+          "name": "delete",
+          "flags": [
+            {
+              "name": "--context",
+              "shorthand": "-c",
+              "type": "string",
+              "default": null,
+              "description": "name of the kubeconfig context to use (default: kubectl config current-context)",
+              "deprecated": false
+            },
+            {
+              "name": "--kubeconfig",
+              "shorthand": "-k",
+              "type": "string",
+              "default": null,
+              "description": "kubectl config file (default: $HOME/.kube/config)",
+              "deprecated": false
+            },
+            {
+              "name": "--no-color",
+              "shorthand": "-C",
+              "type": "bool",
+              "default": null,
+              "description": "disable coloring (default: false)",
+              "deprecated": false
+            },
+            {
+              "name": "--all",
+              "shorthand": null,
+              "type": "bool",
+              "default": null,
+              "description": "Delete all ClusterTriggerBindings (default: false)",
+              "deprecated": false
+            },
+            {
+              "name": "--allow-missing-template-keys",
+              "shorthand": null,
+              "type": "bool",
+              "default": "true",
+              "description": "If true, ignore any errors in templates when a field or map key is missing in the template. Only applies to golang and jsonpath output formats. (default true)",
+              "deprecated": false
+            },
+            {
+              "name": "--force",
+              "shorthand": "-f",
+              "type": "bool",
+              "default": null,
+              "description": "Whether to force deletion (default: false)",
+              "deprecated": false
+            },
+            {
+              "name": "--help",
+              "shorthand": "-h",
+              "type": "bool",
+              "default": null,
+              "description": "help for delete",
+              "deprecated": false
+            },
+            {
+              "name": "--output",
+              "shorthand": "-o",
+              "type": "string",
+              "default": null,
+              "description": "Output format. One of: (json, yaml, name, go-template, go-template-file, template, templatefile, jsonpath, jsonpath-as-json, jsonpath-file).",
+              "deprecated": false
+            },
+            {
+              "name": "--show-managed-fields",
+              "shorthand": null,
+              "type": "bool",
+              "default": null,
+              "description": "If true, keep the managedFields when printing objects in JSON or YAML format.",
+              "deprecated": false
+            },
+            {
+              "name": "--template",
+              "shorthand": null,
+              "type": "string",
+              "default": null,
+              "description": "Template string or path to template file to use when -o=go-template, -o=go-template-file. The template format is golang templates [http://golang.org/pkg/text/template/#pkg-overview].",
+              "deprecated": false
+            }
+          ],
+          "subcommands": []
+        },
+        {
+          "name": "describe",
+          "flags": [
+            {
+              "name": "--context",
+              "shorthand": "-c",
+              "type": "string",
+              "default": null,
+              "description": "name of the kubeconfig context to use (default: kubectl config current-context)",
+              "deprecated": false
+            },
+            {
+              "name": "--kubeconfig",
+              "shorthand": "-k",
+              "type": "string",
+              "default": null,
+              "description": "kubectl config file (default: $HOME/.kube/config)",
+              "deprecated": false
+            },
+            {
+              "name": "--no-color",
+              "shorthand": "-C",
+              "type": "bool",
+              "default": null,
+              "description": "disable coloring (default: false)",
+              "deprecated": false
+            },
+            {
+              "name": "--allow-missing-template-keys",
+              "shorthand": null,
+              "type": "bool",
+              "default": "true",
+              "description": "If true, ignore any errors in templates when a field or map key is missing in the template. Only applies to golang and jsonpath output formats. (default true)",
+              "deprecated": false
+            },
+            {
+              "name": "--help",
+              "shorthand": "-h",
+              "type": "bool",
+              "default": null,
+              "description": "help for describe",
+              "deprecated": false
+            },
+            {
+              "name": "--output",
+              "shorthand": "-o",
+              "type": "string",
+              "default": null,
+              "description": "Output format. One of: (json, yaml, name, go-template, go-template-file, template, templatefile, jsonpath, jsonpath-as-json, jsonpath-file).",
+              "deprecated": false
+            },
+            {
+              "name": "--show-managed-fields",
+              "shorthand": null,
+              "type": "bool",
+              "default": null,
+              "description": "If true, keep the managedFields when printing objects in JSON or YAML format.",
+              "deprecated": false
+            },
+            {
+              "name": "--template",
+              "shorthand": null,
+              "type": "string",
+              "default": null,
+              "description": "Template string or path to template file to use when -o=go-template, -o=go-template-file. The template format is golang templates [http://golang.org/pkg/text/template/#pkg-overview].",
+              "deprecated": false
+            }
+          ],
+          "subcommands": []
+        },
+        {
+          "name": "list",
+          "flags": [
+            {
+              "name": "--context",
+              "shorthand": "-c",
+              "type": "string",
+              "default": null,
+              "description": "name of the kubeconfig context to use (default: kubectl config current-context)",
+              "deprecated": false
+            },
+            {
+              "name": "--kubeconfig",
+              "shorthand": "-k",
+              "type": "string",
+              "default": null,
+              "description": "kubectl config file (default: $HOME/.kube/config)",
+              "deprecated": false
+            },
+            {
+              "name": "--no-color",
+              "shorthand": "-C",
+              "type": "bool",
+              "default": null,
+              "description": "disable coloring (default: false)",
+              "deprecated": false
+            },
+            {
+              "name": "--allow-missing-template-keys",
+              "shorthand": null,
+              "type": "bool",
+              "default": "true",
+              "description": "If true, ignore any errors in templates when a field or map key is missing in the template. Only applies to golang and jsonpath output formats. (default true)",
+              "deprecated": false
+            },
+            {
+              "name": "--help",
+              "shorthand": "-h",
+              "type": "bool",
+              "default": null,
+              "description": "help for list",
+              "deprecated": false
+            },
+            {
+              "name": "--no-headers",
+              "shorthand": null,
+              "type": "bool",
+              "default": "print column headers with output",
+              "description": "do not print column headers with output (default print column headers with output)",
+              "deprecated": false
+            },
+            {
+              "name": "--output",
+              "shorthand": "-o",
+              "type": "string",
+              "default": null,
+              "description": "Output format. One of: (json, yaml, name, go-template, go-template-file, template, templatefile, jsonpath, jsonpath-as-json, jsonpath-file).",
+              "deprecated": false
+            },
+            {
+              "name": "--show-managed-fields",
+              "shorthand": null,
+              "type": "bool",
+              "default": null,
+              "description": "If true, keep the managedFields when printing objects in JSON or YAML format.",
+              "deprecated": false
+            },
+            {
+              "name": "--template",
+              "shorthand": null,
+              "type": "string",
+              "default": null,
+              "description": "Template string or path to template file to use when -o=go-template, -o=go-template-file. The template format is golang templates [http://golang.org/pkg/text/template/#pkg-overview].",
+              "deprecated": false
+            }
+          ],
+          "subcommands": []
+        }
+      ]
+    },
+    {
+      "name": "completion",
+      "flags": [
+        {
+          "name": "--help",
+          "shorthand": "-h",
+          "type": "bool",
+          "default": null,
+          "description": "help for completion",
+          "deprecated": false
+        }
+      ],
+      "subcommands": [
+        {
+          "name": "bash",
+          "flags": [
+            {
+              "name": "--help",
+              "shorthand": "-h",
+              "type": "bool",
+              "default": null,
+              "description": "help for completion",
+              "deprecated": false
+            }
+          ],
+          "subcommands": []
+        },
+        {
+          "name": "zsh",
+          "flags": [
+            {
+              "name": "--help",
+              "shorthand": "-h",
+              "type": "bool",
+              "default": null,
+              "description": "help for completion",
+              "deprecated": false
+            }
+          ],
+          "subcommands": []
+        },
+        {
+          "name": "fish",
+          "flags": [
+            {
+              "name": "--help",
+              "shorthand": "-h",
+              "type": "bool",
+              "default": null,
+              "description": "help for completion",
+              "deprecated": false
+            }
+          ],
+          "subcommands": []
+        },
+        {
+          "name": "powershell",
+          "flags": [
+            {
+              "name": "--help",
+              "shorthand": "-h",
+              "type": "bool",
+              "default": null,
+              "description": "help for completion",
+              "deprecated": false
+            }
+          ],
+          "subcommands": []
+        }
+      ]
+    },
+    {
+      "name": "customrun",
+      "flags": [
+        {
+          "name": "--context",
+          "shorthand": "-c",
+          "type": "string",
+          "default": null,
+          "description": "name of the kubeconfig context to use (default: kubectl config current-context)",
+          "deprecated": false
+        },
+        {
+          "name": "--help",
+          "shorthand": "-h",
+          "type": "bool",
+          "default": null,
+          "description": "help for customrun",
+          "deprecated": false
+        },
+        {
+          "name": "--kubeconfig",
+          "shorthand": "-k",
+          "type": "string",
+          "default": null,
+          "description": "kubectl config file (default: $HOME/.kube/config)",
+          "deprecated": false
+        },
+        {
+          "name": "--namespace",
+          "shorthand": "-n",
+          "type": "string",
+          "default": null,
+          "description": "namespace to use (default: from $KUBECONFIG)",
+          "deprecated": false
+        },
+        {
+          "name": "--no-color",
+          "shorthand": "-C",
+          "type": "bool",
+          "default": null,
+          "description": "disable coloring (default: false)",
+          "deprecated": false
+        }
+      ],
+      "subcommands": [
+        {
+          "name": "delete",
+          "flags": [
+            {
+              "name": "--context",
+              "shorthand": "-c",
+              "type": "string",
+              "default": null,
+              "description": "name of the kubeconfig context to use (default: kubectl config current-context)",
+              "deprecated": false
+            },
+            {
+              "name": "--kubeconfig",
+              "shorthand": "-k",
+              "type": "string",
+              "default": null,
+              "description": "kubectl config file (default: $HOME/.kube/config)",
+              "deprecated": false
+            },
+            {
+              "name": "--namespace",
+              "shorthand": "-n",
+              "type": "string",
+              "default": null,
+              "description": "namespace to use (default: from $KUBECONFIG)",
+              "deprecated": false
+            },
+            {
+              "name": "--no-color",
+              "shorthand": "-C",
+              "type": "bool",
+              "default": null,
+              "description": "disable coloring (default: false)",
+              "deprecated": false
+            },
+            {
+              "name": "--allow-missing-template-keys",
+              "shorthand": null,
+              "type": "bool",
+              "default": "true",
+              "description": "If true, ignore any errors in templates when a field or map key is missing in the template. Only applies to golang and jsonpath output formats. (default true)",
+              "deprecated": false
+            },
+            {
+              "name": "--help",
+              "shorthand": "-h",
+              "type": "bool",
+              "default": null,
+              "description": "help for delete",
+              "deprecated": false
+            },
+            {
+              "name": "--output",
+              "shorthand": "-o",
+              "type": "string",
+              "default": null,
+              "description": "Output format. One of: (json, yaml, name, go-template, go-template-file, template, templatefile, jsonpath, jsonpath-as-json, jsonpath-file).",
+              "deprecated": false
+            },
+            {
+              "name": "--show-managed-fields",
+              "shorthand": null,
+              "type": "bool",
+              "default": null,
+              "description": "If true, keep the managedFields when printing objects in JSON or YAML format.",
+              "deprecated": false
+            },
+            {
+              "name": "--template",
+              "shorthand": null,
+              "type": "string",
+              "default": null,
+              "description": "Template string or path to template file to use when -o=go-template, -o=go-template-file. The template format is golang templates [http://golang.org/pkg/text/template/#pkg-overview].",
+              "deprecated": false
+            }
+          ],
+          "subcommands": []
+        },
+        {
+          "name": "describe",
+          "flags": [
+            {
+              "name": "--context",
+              "shorthand": "-c",
+              "type": "string",
+              "default": null,
+              "description": "name of the kubeconfig context to use (default: kubectl config current-context)",
+              "deprecated": false
+            },
+            {
+              "name": "--kubeconfig",
+              "shorthand": "-k",
+              "type": "string",
+              "default": null,
+              "description": "kubectl config file (default: $HOME/.kube/config)",
+              "deprecated": false
+            },
+            {
+              "name": "--namespace",
+              "shorthand": "-n",
+              "type": "string",
+              "default": null,
+              "description": "namespace to use (default: from $KUBECONFIG)",
+              "deprecated": false
+            },
+            {
+              "name": "--no-color",
+              "shorthand": "-C",
+              "type": "bool",
+              "default": null,
+              "description": "disable coloring (default: false)",
+              "deprecated": false
+            },
+            {
+              "name": "--allow-missing-template-keys",
+              "shorthand": null,
+              "type": "bool",
+              "default": "true",
+              "description": "If true, ignore any errors in templates when a field or map key is missing in the template. Only applies to golang and jsonpath output formats. (default true)",
+              "deprecated": false
+            },
+            {
+              "name": "--fzf",
+              "shorthand": "-F",
+              "type": "bool",
+              "default": null,
+              "description": "use fzf to select a CustomRun to describe",
+              "deprecated": false
+            },
+            {
+              "name": "--help",
+              "shorthand": "-h",
+              "type": "bool",
+              "default": null,
+              "description": "help for describe",
+              "deprecated": false
+            },
+            {
+              "name": "--last",
+              "shorthand": "-L",
+              "type": "bool",
+              "default": null,
+              "description": "show description for last CustomRun",
+              "deprecated": false
+            },
+            {
+              "name": "--limit",
+              "shorthand": null,
+              "type": "int",
+              "default": "5",
+              "description": "lists number of CustomRuns when selecting a CustomRun to describe (default 5)",
+              "deprecated": false
+            },
+            {
+              "name": "--output",
+              "shorthand": "-o",
+              "type": "string",
+              "default": null,
+              "description": "Output format. One of: (json, yaml, name, go-template, go-template-file, template, templatefile, jsonpath, jsonpath-as-json, jsonpath-file).",
+              "deprecated": false
+            },
+            {
+              "name": "--show-managed-fields",
+              "shorthand": null,
+              "type": "bool",
+              "default": null,
+              "description": "If true, keep the managedFields when printing objects in JSON or YAML format.",
+              "deprecated": false
+            },
+            {
+              "name": "--template",
+              "shorthand": null,
+              "type": "string",
+              "default": null,
+              "description": "Template string or path to template file to use when -o=go-template, -o=go-template-file. The template format is golang templates [http://golang.org/pkg/text/template/#pkg-overview].",
+              "deprecated": false
+            }
+          ],
+          "subcommands": []
+        },
+        {
+          "name": "list",
+          "flags": [
+            {
+              "name": "--context",
+              "shorthand": "-c",
+              "type": "string",
+              "default": null,
+              "description": "name of the kubeconfig context to use (default: kubectl config current-context)",
+              "deprecated": false
+            },
+            {
+              "name": "--kubeconfig",
+              "shorthand": "-k",
+              "type": "string",
+              "default": null,
+              "description": "kubectl config file (default: $HOME/.kube/config)",
+              "deprecated": false
+            },
+            {
+              "name": "--namespace",
+              "shorthand": "-n",
+              "type": "string",
+              "default": null,
+              "description": "namespace to use (default: from $KUBECONFIG)",
+              "deprecated": false
+            },
+            {
+              "name": "--no-color",
+              "shorthand": "-C",
+              "type": "bool",
+              "default": null,
+              "description": "disable coloring (default: false)",
+              "deprecated": false
+            },
+            {
+              "name": "--all-namespaces",
+              "shorthand": "-A",
+              "type": "bool",
+              "default": null,
+              "description": "list CustomRuns from all namespaces",
+              "deprecated": false
+            },
+            {
+              "name": "--allow-missing-template-keys",
+              "shorthand": null,
+              "type": "bool",
+              "default": "true",
+              "description": "If true, ignore any errors in templates when a field or map key is missing in the template. Only applies to golang and jsonpath output formats. (default true)",
+              "deprecated": false
+            },
+            {
+              "name": "--help",
+              "shorthand": "-h",
+              "type": "bool",
+              "default": null,
+              "description": "help for list",
+              "deprecated": false
+            },
+            {
+              "name": "--label",
+              "shorthand": null,
+              "type": "string",
+              "default": null,
+              "description": "A selector (label query) to filter on, supports '=', '==', and '!='",
+              "deprecated": false
+            },
+            {
+              "name": "--limit",
+              "shorthand": null,
+              "type": "int",
+              "default": null,
+              "description": "Limits the number of CustomRuns. If the limit value is 0 returns all",
+              "deprecated": false
+            },
+            {
+              "name": "--no-headers",
+              "shorthand": null,
+              "type": "bool",
+              "default": "print column headers with output",
+              "description": "do not print column headers with output (default print column headers with output)",
+              "deprecated": false
+            },
+            {
+              "name": "--output",
+              "shorthand": "-o",
+              "type": "string",
+              "default": null,
+              "description": "Output format. One of: (json, yaml, name, go-template, go-template-file, template, templatefile, jsonpath, jsonpath-as-json, jsonpath-file).",
+              "deprecated": false
+            },
+            {
+              "name": "--reverse",
+              "shorthand": null,
+              "type": "bool",
+              "default": null,
+              "description": "list CustomRuns in reverse order",
+              "deprecated": false
+            },
+            {
+              "name": "--show-managed-fields",
+              "shorthand": null,
+              "type": "bool",
+              "default": null,
+              "description": "If true, keep the managedFields when printing objects in JSON or YAML format.",
+              "deprecated": false
+            },
+            {
+              "name": "--template",
+              "shorthand": null,
+              "type": "string",
+              "default": null,
+              "description": "Template string or path to template file to use when -o=go-template, -o=go-template-file. The template format is golang templates [http://golang.org/pkg/text/template/#pkg-overview].",
+              "deprecated": false
+            }
+          ],
+          "subcommands": []
+        }
+      ]
+    },
+    {
+      "name": "eventlistener",
+      "flags": [
+        {
+          "name": "--context",
+          "shorthand": "-c",
+          "type": "string",
+          "default": null,
+          "description": "name of the kubeconfig context to use (default: kubectl config current-context)",
+          "deprecated": false
+        },
+        {
+          "name": "--help",
+          "shorthand": "-h",
+          "type": "bool",
+          "default": null,
+          "description": "help for eventlistener",
+          "deprecated": false
+        },
+        {
+          "name": "--kubeconfig",
+          "shorthand": "-k",
+          "type": "string",
+          "default": null,
+          "description": "kubectl config file (default: $HOME/.kube/config)",
+          "deprecated": false
+        },
+        {
+          "name": "--namespace",
+          "shorthand": "-n",
+          "type": "string",
+          "default": null,
+          "description": "namespace to use (default: from $KUBECONFIG)",
+          "deprecated": false
+        },
+        {
+          "name": "--no-color",
+          "shorthand": "-C",
+          "type": "bool",
+          "default": null,
+          "description": "disable coloring (default: false)",
+          "deprecated": false
+        }
+      ],
+      "subcommands": [
+        {
+          "name": "delete",
+          "flags": [
+            {
+              "name": "--context",
+              "shorthand": "-c",
+              "type": "string",
+              "default": null,
+              "description": "name of the kubeconfig context to use (default: kubectl config current-context)",
+              "deprecated": false
+            },
+            {
+              "name": "--kubeconfig",
+              "shorthand": "-k",
+              "type": "string",
+              "default": null,
+              "description": "kubectl config file (default: $HOME/.kube/config)",
+              "deprecated": false
+            },
+            {
+              "name": "--namespace",
+              "shorthand": "-n",
+              "type": "string",
+              "default": null,
+              "description": "namespace to use (default: from $KUBECONFIG)",
+              "deprecated": false
+            },
+            {
+              "name": "--no-color",
+              "shorthand": "-C",
+              "type": "bool",
+              "default": null,
+              "description": "disable coloring (default: false)",
+              "deprecated": false
+            },
+            {
+              "name": "--all",
+              "shorthand": null,
+              "type": "bool",
+              "default": null,
+              "description": "Delete all EventListeners in a namespace (default: false)",
+              "deprecated": false
+            },
+            {
+              "name": "--allow-missing-template-keys",
+              "shorthand": null,
+              "type": "bool",
+              "default": "true",
+              "description": "If true, ignore any errors in templates when a field or map key is missing in the template. Only applies to golang and jsonpath output formats. (default true)",
+              "deprecated": false
+            },
+            {
+              "name": "--force",
+              "shorthand": "-f",
+              "type": "bool",
+              "default": null,
+              "description": "Whether to force deletion (default: false)",
+              "deprecated": false
+            },
+            {
+              "name": "--help",
+              "shorthand": "-h",
+              "type": "bool",
+              "default": null,
+              "description": "help for delete",
+              "deprecated": false
+            },
+            {
+              "name": "--output",
+              "shorthand": "-o",
+              "type": "string",
+              "default": null,
+              "description": "Output format. One of: (json, yaml, name, go-template, go-template-file, template, templatefile, jsonpath, jsonpath-as-json, jsonpath-file).",
+              "deprecated": false
+            },
+            {
+              "name": "--show-managed-fields",
+              "shorthand": null,
+              "type": "bool",
+              "default": null,
+              "description": "If true, keep the managedFields when printing objects in JSON or YAML format.",
+              "deprecated": false
+            },
+            {
+              "name": "--template",
+              "shorthand": null,
+              "type": "string",
+              "default": null,
+              "description": "Template string or path to template file to use when -o=go-template, -o=go-template-file. The template format is golang templates [http://golang.org/pkg/text/template/#pkg-overview].",
+              "deprecated": false
+            }
+          ],
+          "subcommands": []
+        },
+        {
+          "name": "describe",
+          "flags": [
+            {
+              "name": "--context",
+              "shorthand": "-c",
+              "type": "string",
+              "default": null,
+              "description": "name of the kubeconfig context to use (default: kubectl config current-context)",
+              "deprecated": false
+            },
+            {
+              "name": "--kubeconfig",
+              "shorthand": "-k",
+              "type": "string",
+              "default": null,
+              "description": "kubectl config file (default: $HOME/.kube/config)",
+              "deprecated": false
+            },
+            {
+              "name": "--namespace",
+              "shorthand": "-n",
+              "type": "string",
+              "default": null,
+              "description": "namespace to use (default: from $KUBECONFIG)",
+              "deprecated": false
+            },
+            {
+              "name": "--no-color",
+              "shorthand": "-C",
+              "type": "bool",
+              "default": null,
+              "description": "disable coloring (default: false)",
+              "deprecated": false
+            },
+            {
+              "name": "--allow-missing-template-keys",
+              "shorthand": null,
+              "type": "bool",
+              "default": "true",
+              "description": "If true, ignore any errors in templates when a field or map key is missing in the template. Only applies to golang and jsonpath output formats. (default true)",
+              "deprecated": false
+            },
+            {
+              "name": "--help",
+              "shorthand": "-h",
+              "type": "bool",
+              "default": null,
+              "description": "help for describe",
+              "deprecated": false
+            },
+            {
+              "name": "--output",
+              "shorthand": "-o",
+              "type": "string",
+              "default": null,
+              "description": "Output format. One of: (json, yaml, name, go-template, go-template-file, template, templatefile, jsonpath, jsonpath-as-json, jsonpath-file).",
+              "deprecated": false
+            },
+            {
+              "name": "--show-managed-fields",
+              "shorthand": null,
+              "type": "bool",
+              "default": null,
+              "description": "If true, keep the managedFields when printing objects in JSON or YAML format.",
+              "deprecated": false
+            },
+            {
+              "name": "--template",
+              "shorthand": null,
+              "type": "string",
+              "default": null,
+              "description": "Template string or path to template file to use when -o=go-template, -o=go-template-file. The template format is golang templates [http://golang.org/pkg/text/template/#pkg-overview].",
+              "deprecated": false
+            }
+          ],
+          "subcommands": []
+        },
+        {
+          "name": "list",
+          "flags": [
+            {
+              "name": "--context",
+              "shorthand": "-c",
+              "type": "string",
+              "default": null,
+              "description": "name of the kubeconfig context to use (default: kubectl config current-context)",
+              "deprecated": false
+            },
+            {
+              "name": "--kubeconfig",
+              "shorthand": "-k",
+              "type": "string",
+              "default": null,
+              "description": "kubectl config file (default: $HOME/.kube/config)",
+              "deprecated": false
+            },
+            {
+              "name": "--namespace",
+              "shorthand": "-n",
+              "type": "string",
+              "default": null,
+              "description": "namespace to use (default: from $KUBECONFIG)",
+              "deprecated": false
+            },
+            {
+              "name": "--no-color",
+              "shorthand": "-C",
+              "type": "bool",
+              "default": null,
+              "description": "disable coloring (default: false)",
+              "deprecated": false
+            },
+            {
+              "name": "--all-namespaces",
+              "shorthand": "-A",
+              "type": "bool",
+              "default": null,
+              "description": "list EventListeners from all namespaces",
+              "deprecated": false
+            },
+            {
+              "name": "--allow-missing-template-keys",
+              "shorthand": null,
+              "type": "bool",
+              "default": "true",
+              "description": "If true, ignore any errors in templates when a field or map key is missing in the template. Only applies to golang and jsonpath output formats. (default true)",
+              "deprecated": false
+            },
+            {
+              "name": "--help",
+              "shorthand": "-h",
+              "type": "bool",
+              "default": null,
+              "description": "help for list",
+              "deprecated": false
+            },
+            {
+              "name": "--no-headers",
+              "shorthand": null,
+              "type": "bool",
+              "default": "print column headers with output",
+              "description": "do not print column headers with output (default print column headers with output)",
+              "deprecated": false
+            },
+            {
+              "name": "--output",
+              "shorthand": "-o",
+              "type": "string",
+              "default": null,
+              "description": "Output format. One of: (json, yaml, name, go-template, go-template-file, template, templatefile, jsonpath, jsonpath-as-json, jsonpath-file).",
+              "deprecated": false
+            },
+            {
+              "name": "--show-managed-fields",
+              "shorthand": null,
+              "type": "bool",
+              "default": null,
+              "description": "If true, keep the managedFields when printing objects in JSON or YAML format.",
+              "deprecated": false
+            },
+            {
+              "name": "--template",
+              "shorthand": null,
+              "type": "string",
+              "default": null,
+              "description": "Template string or path to template file to use when -o=go-template, -o=go-template-file. The template format is golang templates [http://golang.org/pkg/text/template/#pkg-overview].",
+              "deprecated": false
+            }
+          ],
+          "subcommands": []
+        },
+        {
+          "name": "logs",
+          "flags": [
+            {
+              "name": "--context",
+              "shorthand": "-c",
+              "type": "string",
+              "default": null,
+              "description": "name of the kubeconfig context to use (default: kubectl config current-context)",
+              "deprecated": false
+            },
+            {
+              "name": "--kubeconfig",
+              "shorthand": "-k",
+              "type": "string",
+              "default": null,
+              "description": "kubectl config file (default: $HOME/.kube/config)",
+              "deprecated": false
+            },
+            {
+              "name": "--namespace",
+              "shorthand": "-n",
+              "type": "string",
+              "default": null,
+              "description": "namespace to use (default: from $KUBECONFIG)",
+              "deprecated": false
+            },
+            {
+              "name": "--no-color",
+              "shorthand": "-C",
+              "type": "bool",
+              "default": null,
+              "description": "disable coloring (default: false)",
+              "deprecated": false
+            },
+            {
+              "name": "--help",
+              "shorthand": "-h",
+              "type": "bool",
+              "default": null,
+              "description": "help for logs",
+              "deprecated": false
+            },
+            {
+              "name": "--tail",
+              "shorthand": "-t",
+              "type": "int",
+              "default": "10",
+              "description": "Number of most recent log lines to show. Specify -1 for all logs from each pod. (default 10)",
+              "deprecated": false
+            }
+          ],
+          "subcommands": []
+        }
+      ]
+    },
+    {
+      "name": "hub",
+      "flags": [
+        {
+          "name": "--api-server",
+          "shorthand": null,
+          "type": "string",
+          "default": null,
+          "description": "Hub API Server URL.",
+          "deprecated": false
+        },
+        {
+          "name": "--help",
+          "shorthand": "-h",
+          "type": "bool",
+          "default": null,
+          "description": "help for hub",
+          "deprecated": false
+        },
+        {
+          "name": "--type",
+          "shorthand": null,
+          "type": "string",
+          "default": "artifact",
+          "description": "The type of Hub from where to pull the resource. Either 'artifact' or 'tekton' (DEPRECATED: tekton type will be removed in a future release) (default \"artifact\")",
+          "deprecated": true
+        }
+      ],
+      "subcommands": [
+        {
+          "name": "install",
+          "flags": [
+            {
+              "name": "--api-server",
+              "shorthand": null,
+              "type": "string",
+              "default": null,
+              "description": "Hub API Server URL.",
+              "deprecated": false
+            },
+            {
+              "name": "--type",
+              "shorthand": null,
+              "type": "string",
+              "default": "artifact",
+              "description": "The type of Hub from where to pull the resource. Either 'artifact' or 'tekton' (DEPRECATED: tekton type will be removed in a future release) (default \"artifact\")",
+              "deprecated": true
+            },
+            {
+              "name": "--context",
+              "shorthand": "-c",
+              "type": "string",
+              "default": null,
+              "description": "Name of the kubeconfig context to use (default: kubectl config current-context)",
+              "deprecated": false
+            },
+            {
+              "name": "--from",
+              "shorthand": null,
+              "type": "string",
+              "default": null,
+              "description": "Name of Catalog to which resource belongs.",
+              "deprecated": false
+            },
+            {
+              "name": "--help",
+              "shorthand": "-h",
+              "type": "bool",
+              "default": null,
+              "description": "help for install",
+              "deprecated": false
+            },
+            {
+              "name": "--kubeconfig",
+              "shorthand": "-k",
+              "type": "string",
+              "default": null,
+              "description": "Kubectl config file (default: $HOME/.kube/config)",
+              "deprecated": false
+            },
+            {
+              "name": "--namespace",
+              "shorthand": "-n",
+              "type": "string",
+              "default": null,
+              "description": "Namespace to use (default: from $KUBECONFIG)",
+              "deprecated": false
+            },
+            {
+              "name": "--version",
+              "shorthand": null,
+              "type": "string",
+              "default": null,
+              "description": "Version of Resource",
+              "deprecated": false
+            }
+          ],
+          "subcommands": [
+            {
+              "name": "task",
+              "flags": [
+                {
+                  "name": "--api-server",
+                  "shorthand": null,
+                  "type": "string",
+                  "default": null,
+                  "description": "Hub API Server URL.",
+                  "deprecated": false
+                },
+                {
+                  "name": "--context",
+                  "shorthand": "-c",
+                  "type": "string",
+                  "default": null,
+                  "description": "Name of the kubeconfig context to use (default: kubectl config current-context)",
+                  "deprecated": false
+                },
+                {
+                  "name": "--from",
+                  "shorthand": null,
+                  "type": "string",
+                  "default": null,
+                  "description": "Name of Catalog to which resource belongs.",
+                  "deprecated": false
+                },
+                {
+                  "name": "--kubeconfig",
+                  "shorthand": "-k",
+                  "type": "string",
+                  "default": null,
+                  "description": "Kubectl config file (default: $HOME/.kube/config)",
+                  "deprecated": false
+                },
+                {
+                  "name": "--namespace",
+                  "shorthand": "-n",
+                  "type": "string",
+                  "default": null,
+                  "description": "Namespace to use (default: from $KUBECONFIG)",
+                  "deprecated": false
+                },
+                {
+                  "name": "--type",
+                  "shorthand": null,
+                  "type": "string",
+                  "default": "artifact",
+                  "description": "The type of Hub from where to pull the resource. Either 'artifact' or 'tekton' (DEPRECATED: tekton type will be removed in a future release) (default \"artifact\")",
+                  "deprecated": true
+                },
+                {
+                  "name": "--version",
+                  "shorthand": null,
+                  "type": "string",
+                  "default": null,
+                  "description": "Version of Resource",
+                  "deprecated": false
+                },
+                {
+                  "name": "--help",
+                  "shorthand": "-h",
+                  "type": "bool",
+                  "default": null,
+                  "description": "help for task",
+                  "deprecated": false
+                }
+              ],
+              "subcommands": []
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "pipeline",
+      "flags": [
+        {
+          "name": "--context",
+          "shorthand": "-c",
+          "type": "string",
+          "default": null,
+          "description": "name of the kubeconfig context to use (default: kubectl config current-context)",
+          "deprecated": false
+        },
+        {
+          "name": "--help",
+          "shorthand": "-h",
+          "type": "bool",
+          "default": null,
+          "description": "help for pipeline",
+          "deprecated": false
+        },
+        {
+          "name": "--kubeconfig",
+          "shorthand": "-k",
+          "type": "string",
+          "default": null,
+          "description": "kubectl config file (default: $HOME/.kube/config)",
+          "deprecated": false
+        },
+        {
+          "name": "--namespace",
+          "shorthand": "-n",
+          "type": "string",
+          "default": null,
+          "description": "namespace to use (default: from $KUBECONFIG)",
+          "deprecated": false
+        },
+        {
+          "name": "--no-color",
+          "shorthand": "-C",
+          "type": "bool",
+          "default": null,
+          "description": "disable coloring (default: false)",
+          "deprecated": false
+        }
+      ],
+      "subcommands": [
+        {
+          "name": "delete",
+          "flags": [
+            {
+              "name": "--context",
+              "shorthand": "-c",
+              "type": "string",
+              "default": null,
+              "description": "name of the kubeconfig context to use (default: kubectl config current-context)",
+              "deprecated": false
+            },
+            {
+              "name": "--kubeconfig",
+              "shorthand": "-k",
+              "type": "string",
+              "default": null,
+              "description": "kubectl config file (default: $HOME/.kube/config)",
+              "deprecated": false
+            },
+            {
+              "name": "--namespace",
+              "shorthand": "-n",
+              "type": "string",
+              "default": null,
+              "description": "namespace to use (default: from $KUBECONFIG)",
+              "deprecated": false
+            },
+            {
+              "name": "--no-color",
+              "shorthand": "-C",
+              "type": "bool",
+              "default": null,
+              "description": "disable coloring (default: false)",
+              "deprecated": false
+            },
+            {
+              "name": "--all",
+              "shorthand": null,
+              "type": "bool",
+              "default": null,
+              "description": "Delete all Pipelines in a namespace (default: false)",
+              "deprecated": false
+            },
+            {
+              "name": "--allow-missing-template-keys",
+              "shorthand": null,
+              "type": "bool",
+              "default": "true",
+              "description": "If true, ignore any errors in templates when a field or map key is missing in the template. Only applies to golang and jsonpath output formats. (default true)",
+              "deprecated": false
+            },
+            {
+              "name": "--force",
+              "shorthand": "-f",
+              "type": "bool",
+              "default": null,
+              "description": "Whether to force deletion (default: false)",
+              "deprecated": false
+            },
+            {
+              "name": "--help",
+              "shorthand": "-h",
+              "type": "bool",
+              "default": null,
+              "description": "help for delete",
+              "deprecated": false
+            },
+            {
+              "name": "--output",
+              "shorthand": "-o",
+              "type": "string",
+              "default": null,
+              "description": "Output format. One of: (json, yaml, name, go-template, go-template-file, template, templatefile, jsonpath, jsonpath-as-json, jsonpath-file).",
+              "deprecated": false
+            },
+            {
+              "name": "--prs",
+              "shorthand": null,
+              "type": "bool",
+              "default": null,
+              "description": "Whether to delete Pipeline(s) and related resources (PipelineRuns) (default: false)",
+              "deprecated": false
+            },
+            {
+              "name": "--show-managed-fields",
+              "shorthand": null,
+              "type": "bool",
+              "default": null,
+              "description": "If true, keep the managedFields when printing objects in JSON or YAML format.",
+              "deprecated": false
+            },
+            {
+              "name": "--template",
+              "shorthand": null,
+              "type": "string",
+              "default": null,
+              "description": "Template string or path to template file to use when -o=go-template, -o=go-template-file. The template format is golang templates [http://golang.org/pkg/text/template/#pkg-overview].",
+              "deprecated": false
+            }
+          ],
+          "subcommands": []
+        },
+        {
+          "name": "describe",
+          "flags": [
+            {
+              "name": "--context",
+              "shorthand": "-c",
+              "type": "string",
+              "default": null,
+              "description": "name of the kubeconfig context to use (default: kubectl config current-context)",
+              "deprecated": false
+            },
+            {
+              "name": "--kubeconfig",
+              "shorthand": "-k",
+              "type": "string",
+              "default": null,
+              "description": "kubectl config file (default: $HOME/.kube/config)",
+              "deprecated": false
+            },
+            {
+              "name": "--namespace",
+              "shorthand": "-n",
+              "type": "string",
+              "default": null,
+              "description": "namespace to use (default: from $KUBECONFIG)",
+              "deprecated": false
+            },
+            {
+              "name": "--no-color",
+              "shorthand": "-C",
+              "type": "bool",
+              "default": null,
+              "description": "disable coloring (default: false)",
+              "deprecated": false
+            },
+            {
+              "name": "--allow-missing-template-keys",
+              "shorthand": null,
+              "type": "bool",
+              "default": "true",
+              "description": "If true, ignore any errors in templates when a field or map key is missing in the template. Only applies to golang and jsonpath output formats. (default true)",
+              "deprecated": false
+            },
+            {
+              "name": "--help",
+              "shorthand": "-h",
+              "type": "bool",
+              "default": null,
+              "description": "help for describe",
+              "deprecated": false
+            },
+            {
+              "name": "--output",
+              "shorthand": "-o",
+              "type": "string",
+              "default": null,
+              "description": "Output format. One of: (json, yaml, name, go-template, go-template-file, template, templatefile, jsonpath, jsonpath-as-json, jsonpath-file).",
+              "deprecated": false
+            },
+            {
+              "name": "--show-managed-fields",
+              "shorthand": null,
+              "type": "bool",
+              "default": null,
+              "description": "If true, keep the managedFields when printing objects in JSON or YAML format.",
+              "deprecated": false
+            },
+            {
+              "name": "--template",
+              "shorthand": null,
+              "type": "string",
+              "default": null,
+              "description": "Template string or path to template file to use when -o=go-template, -o=go-template-file. The template format is golang templates [http://golang.org/pkg/text/template/#pkg-overview].",
+              "deprecated": false
+            }
+          ],
+          "subcommands": []
+        },
+        {
+          "name": "export",
+          "flags": [
+            {
+              "name": "--context",
+              "shorthand": "-c",
+              "type": "string",
+              "default": null,
+              "description": "name of the kubeconfig context to use (default: kubectl config current-context)",
+              "deprecated": false
+            },
+            {
+              "name": "--kubeconfig",
+              "shorthand": "-k",
+              "type": "string",
+              "default": null,
+              "description": "kubectl config file (default: $HOME/.kube/config)",
+              "deprecated": false
+            },
+            {
+              "name": "--namespace",
+              "shorthand": "-n",
+              "type": "string",
+              "default": null,
+              "description": "namespace to use (default: from $KUBECONFIG)",
+              "deprecated": false
+            },
+            {
+              "name": "--no-color",
+              "shorthand": "-C",
+              "type": "bool",
+              "default": null,
+              "description": "disable coloring (default: false)",
+              "deprecated": false
+            },
+            {
+              "name": "--allow-missing-template-keys",
+              "shorthand": null,
+              "type": "bool",
+              "default": "true",
+              "description": "If true, ignore any errors in templates when a field or map key is missing in the template. Only applies to golang and jsonpath output formats. (default true)",
+              "deprecated": false
+            },
+            {
+              "name": "--help",
+              "shorthand": "-h",
+              "type": "bool",
+              "default": null,
+              "description": "help for export",
+              "deprecated": false
+            },
+            {
+              "name": "--output",
+              "shorthand": "-o",
+              "type": "string",
+              "default": null,
+              "description": "Output format. One of: (json, yaml, name, go-template, go-template-file, template, templatefile, jsonpath, jsonpath-as-json, jsonpath-file).",
+              "deprecated": false
+            },
+            {
+              "name": "--show-managed-fields",
+              "shorthand": null,
+              "type": "bool",
+              "default": null,
+              "description": "If true, keep the managedFields when printing objects in JSON or YAML format.",
+              "deprecated": false
+            },
+            {
+              "name": "--template",
+              "shorthand": null,
+              "type": "string",
+              "default": null,
+              "description": "Template string or path to template file to use when -o=go-template, -o=go-template-file. The template format is golang templates [http://golang.org/pkg/text/template/#pkg-overview].",
+              "deprecated": false
+            }
+          ],
+          "subcommands": []
+        },
+        {
+          "name": "list",
+          "flags": [
+            {
+              "name": "--context",
+              "shorthand": "-c",
+              "type": "string",
+              "default": null,
+              "description": "name of the kubeconfig context to use (default: kubectl config current-context)",
+              "deprecated": false
+            },
+            {
+              "name": "--kubeconfig",
+              "shorthand": "-k",
+              "type": "string",
+              "default": null,
+              "description": "kubectl config file (default: $HOME/.kube/config)",
+              "deprecated": false
+            },
+            {
+              "name": "--namespace",
+              "shorthand": "-n",
+              "type": "string",
+              "default": null,
+              "description": "namespace to use (default: from $KUBECONFIG)",
+              "deprecated": false
+            },
+            {
+              "name": "--no-color",
+              "shorthand": "-C",
+              "type": "bool",
+              "default": null,
+              "description": "disable coloring (default: false)",
+              "deprecated": false
+            },
+            {
+              "name": "--all-namespaces",
+              "shorthand": "-A",
+              "type": "bool",
+              "default": null,
+              "description": "list Pipelines from all namespaces",
+              "deprecated": false
+            },
+            {
+              "name": "--allow-missing-template-keys",
+              "shorthand": null,
+              "type": "bool",
+              "default": "true",
+              "description": "If true, ignore any errors in templates when a field or map key is missing in the template. Only applies to golang and jsonpath output formats. (default true)",
+              "deprecated": false
+            },
+            {
+              "name": "--help",
+              "shorthand": "-h",
+              "type": "bool",
+              "default": null,
+              "description": "help for list",
+              "deprecated": false
+            },
+            {
+              "name": "--no-headers",
+              "shorthand": null,
+              "type": "bool",
+              "default": "print column headers with output",
+              "description": "do not print column headers with output (default print column headers with output)",
+              "deprecated": false
+            },
+            {
+              "name": "--output",
+              "shorthand": "-o",
+              "type": "string",
+              "default": null,
+              "description": "Output format. One of: (json, yaml, name, go-template, go-template-file, template, templatefile, jsonpath, jsonpath-as-json, jsonpath-file).",
+              "deprecated": false
+            },
+            {
+              "name": "--show-managed-fields",
+              "shorthand": null,
+              "type": "bool",
+              "default": null,
+              "description": "If true, keep the managedFields when printing objects in JSON or YAML format.",
+              "deprecated": false
+            },
+            {
+              "name": "--template",
+              "shorthand": null,
+              "type": "string",
+              "default": null,
+              "description": "Template string or path to template file to use when -o=go-template, -o=go-template-file. The template format is golang templates [http://golang.org/pkg/text/template/#pkg-overview].",
+              "deprecated": false
+            }
+          ],
+          "subcommands": []
+        },
+        {
+          "name": "logs",
+          "flags": [
+            {
+              "name": "--context",
+              "shorthand": "-c",
+              "type": "string",
+              "default": null,
+              "description": "name of the kubeconfig context to use (default: kubectl config current-context)",
+              "deprecated": false
+            },
+            {
+              "name": "--kubeconfig",
+              "shorthand": "-k",
+              "type": "string",
+              "default": null,
+              "description": "kubectl config file (default: $HOME/.kube/config)",
+              "deprecated": false
+            },
+            {
+              "name": "--namespace",
+              "shorthand": "-n",
+              "type": "string",
+              "default": null,
+              "description": "namespace to use (default: from $KUBECONFIG)",
+              "deprecated": false
+            },
+            {
+              "name": "--no-color",
+              "shorthand": "-C",
+              "type": "bool",
+              "default": null,
+              "description": "disable coloring (default: false)",
+              "deprecated": false
+            },
+            {
+              "name": "--all",
+              "shorthand": "-a",
+              "type": "bool",
+              "default": null,
+              "description": "show all logs including init steps injected by tekton",
+              "deprecated": false
+            },
+            {
+              "name": "--follow",
+              "shorthand": "-f",
+              "type": "bool",
+              "default": null,
+              "description": "stream live logs",
+              "deprecated": false
+            },
+            {
+              "name": "--help",
+              "shorthand": "-h",
+              "type": "bool",
+              "default": null,
+              "description": "help for logs",
+              "deprecated": false
+            },
+            {
+              "name": "--last",
+              "shorthand": "-L",
+              "type": "bool",
+              "default": null,
+              "description": "show logs for last PipelineRun",
+              "deprecated": false
+            },
+            {
+              "name": "--limit",
+              "shorthand": null,
+              "type": "int",
+              "default": "5",
+              "description": "lists number of PipelineRuns (default 5)",
+              "deprecated": false
+            },
+            {
+              "name": "--prefix",
+              "shorthand": null,
+              "type": "bool",
+              "default": "true",
+              "description": "prefix each log line with the log source (task name and step name) (default true)",
+              "deprecated": false
+            },
+            {
+              "name": "--timestamps",
+              "shorthand": "-t",
+              "type": "bool",
+              "default": null,
+              "description": "show logs with timestamp",
+              "deprecated": false
+            }
+          ],
+          "subcommands": []
+        },
+        {
+          "name": "sign",
+          "flags": [
+            {
+              "name": "--context",
+              "shorthand": "-c",
+              "type": "string",
+              "default": null,
+              "description": "name of the kubeconfig context to use (default: kubectl config current-context)",
+              "deprecated": false
+            },
+            {
+              "name": "--kubeconfig",
+              "shorthand": "-k",
+              "type": "string",
+              "default": null,
+              "description": "kubectl config file (default: $HOME/.kube/config)",
+              "deprecated": false
+            },
+            {
+              "name": "--namespace",
+              "shorthand": "-n",
+              "type": "string",
+              "default": null,
+              "description": "namespace to use (default: from $KUBECONFIG)",
+              "deprecated": false
+            },
+            {
+              "name": "--no-color",
+              "shorthand": "-C",
+              "type": "bool",
+              "default": null,
+              "description": "disable coloring (default: false)",
+              "deprecated": false
+            },
+            {
+              "name": "--allow-missing-template-keys",
+              "shorthand": null,
+              "type": "bool",
+              "default": "true",
+              "description": "If true, ignore any errors in templates when a field or map key is missing in the template. Only applies to golang and jsonpath output formats. (default true)",
+              "deprecated": false
+            },
+            {
+              "name": "--file-name",
+              "shorthand": "-f",
+              "type": "string",
+              "default": null,
+              "description": "Fle name of the signed pipeline, using the original file name will overwrite the file",
+              "deprecated": false
+            },
+            {
+              "name": "--help",
+              "shorthand": "-h",
+              "type": "bool",
+              "default": null,
+              "description": "help for sign",
+              "deprecated": false
+            },
+            {
+              "name": "--key-file",
+              "shorthand": "-K",
+              "type": "string",
+              "default": null,
+              "description": "Key file",
+              "deprecated": false
+            },
+            {
+              "name": "--kms-key",
+              "shorthand": "-m",
+              "type": "string",
+              "default": null,
+              "description": "KMS key url",
+              "deprecated": false
+            },
+            {
+              "name": "--output",
+              "shorthand": "-o",
+              "type": "string",
+              "default": null,
+              "description": "Output format. One of: (json, yaml, name, go-template, go-template-file, template, templatefile, jsonpath, jsonpath-as-json, jsonpath-file).",
+              "deprecated": false
+            },
+            {
+              "name": "--show-managed-fields",
+              "shorthand": null,
+              "type": "bool",
+              "default": null,
+              "description": "If true, keep the managedFields when printing objects in JSON or YAML format.",
+              "deprecated": false
+            },
+            {
+              "name": "--template",
+              "shorthand": null,
+              "type": "string",
+              "default": null,
+              "description": "Template string or path to template file to use when -o=go-template, -o=go-template-file. The template format is golang templates [http://golang.org/pkg/text/template/#pkg-overview].",
+              "deprecated": false
+            }
+          ],
+          "subcommands": []
+        },
+        {
+          "name": "start",
+          "flags": [
+            {
+              "name": "--context",
+              "shorthand": "-c",
+              "type": "string",
+              "default": null,
+              "description": "name of the kubeconfig context to use (default: kubectl config current-context)",
+              "deprecated": false
+            },
+            {
+              "name": "--kubeconfig",
+              "shorthand": "-k",
+              "type": "string",
+              "default": null,
+              "description": "kubectl config file (default: $HOME/.kube/config)",
+              "deprecated": false
+            },
+            {
+              "name": "--namespace",
+              "shorthand": "-n",
+              "type": "string",
+              "default": null,
+              "description": "namespace to use (default: from $KUBECONFIG)",
+              "deprecated": false
+            },
+            {
+              "name": "--no-color",
+              "shorthand": "-C",
+              "type": "bool",
+              "default": null,
+              "description": "disable coloring (default: false)",
+              "deprecated": false
+            },
+            {
+              "name": "--dry-run",
+              "shorthand": null,
+              "type": "bool",
+              "default": null,
+              "description": "preview PipelineRun without running it",
+              "deprecated": false
+            },
+            {
+              "name": "--exit-with-pipelinerun-error",
+              "shorthand": "-E",
+              "type": "bool",
+              "default": null,
+              "description": "when using --showlog, exit with pipelinerun to the unix shell, 0 if success, 1 if error, 2 on unknown status",
+              "deprecated": false
+            },
+            {
+              "name": "--filename",
+              "shorthand": "-f",
+              "type": "string",
+              "default": null,
+              "description": "local or remote file name containing a Pipeline definition to start a PipelineRun",
+              "deprecated": false
+            },
+            {
+              "name": "--finally-timeout",
+              "shorthand": null,
+              "type": "string",
+              "default": null,
+              "description": "timeout for Finally TaskRuns",
+              "deprecated": false
+            },
+            {
+              "name": "--help",
+              "shorthand": "-h",
+              "type": "bool",
+              "default": null,
+              "description": "help for start",
+              "deprecated": false
+            },
+            {
+              "name": "--labels",
+              "shorthand": "-l",
+              "type": "stringArray",
+              "default": null,
+              "description": "pass labels as label=value.",
+              "deprecated": false
+            },
+            {
+              "name": "--last",
+              "shorthand": "-L",
+              "type": "bool",
+              "default": null,
+              "description": "re-run the Pipeline using last PipelineRun values",
+              "deprecated": false
+            },
+            {
+              "name": "--output",
+              "shorthand": "-o",
+              "type": "string",
+              "default": null,
+              "description": "format of PipelineRun (yaml, json or name)",
+              "deprecated": false
+            },
+            {
+              "name": "--param",
+              "shorthand": "-p",
+              "type": "stringArray",
+              "default": null,
+              "description": "pass the param as key=value for string type, or key=value1,value2,... for array type, or key=\"key1:value1, key2:value2\" for object type",
+              "deprecated": false
+            },
+            {
+              "name": "--pipeline-timeout",
+              "shorthand": null,
+              "type": "string",
+              "default": null,
+              "description": "timeout for PipelineRun",
+              "deprecated": false
+            },
+            {
+              "name": "--pod-template",
+              "shorthand": null,
+              "type": "string",
+              "default": null,
+              "description": "local or remote file containing a PodTemplate definition",
+              "deprecated": false
+            },
+            {
+              "name": "--prefix-name",
+              "shorthand": null,
+              "type": "string",
+              "default": null,
+              "description": "specify a prefix for the PipelineRun name (must be lowercase alphanumeric characters)",
+              "deprecated": false
+            },
+            {
+              "name": "--resolvertype",
+              "shorthand": null,
+              "type": "string",
+              "default": null,
+              "description": "resolver type for remote pipelines (hub, git, http, cluster, bundle, remote)",
+              "deprecated": false
+            },
+            {
+              "name": "--serviceaccount",
+              "shorthand": "-s",
+              "type": "string",
+              "default": null,
+              "description": "pass the serviceaccount name",
+              "deprecated": false
+            },
+            {
+              "name": "--showlog",
+              "shorthand": null,
+              "type": "bool",
+              "default": null,
+              "description": "show logs right after starting the Pipeline",
+              "deprecated": false
+            },
+            {
+              "name": "--skip-optional-workspace",
+              "shorthand": null,
+              "type": "bool",
+              "default": null,
+              "description": "skips the prompt for optional workspaces",
+              "deprecated": false
+            },
+            {
+              "name": "--task-serviceaccount",
+              "shorthand": null,
+              "type": "stringArray",
+              "default": null,
+              "description": "pass the service account corresponding to the task",
+              "deprecated": false
+            },
+            {
+              "name": "--tasks-timeout",
+              "shorthand": null,
+              "type": "string",
+              "default": null,
+              "description": "timeout for Pipeline TaskRuns",
+              "deprecated": false
+            },
+            {
+              "name": "--use-param-defaults",
+              "shorthand": null,
+              "type": "bool",
+              "default": null,
+              "description": "use default parameter values without prompting for input",
+              "deprecated": false
+            },
+            {
+              "name": "--use-pipelinerun",
+              "shorthand": null,
+              "type": "string",
+              "default": null,
+              "description": "use this pipelinerun values to re-run the pipeline.",
+              "deprecated": false
+            },
+            {
+              "name": "--workspace",
+              "shorthand": "-w",
+              "type": "stringArray",
+              "default": null,
+              "description": "pass one or more workspaces to map to the corresponding physical volumes",
+              "deprecated": false
+            }
+          ],
+          "subcommands": []
+        },
+        {
+          "name": "verify",
+          "flags": [
+            {
+              "name": "--context",
+              "shorthand": "-c",
+              "type": "string",
+              "default": null,
+              "description": "name of the kubeconfig context to use (default: kubectl config current-context)",
+              "deprecated": false
+            },
+            {
+              "name": "--kubeconfig",
+              "shorthand": "-k",
+              "type": "string",
+              "default": null,
+              "description": "kubectl config file (default: $HOME/.kube/config)",
+              "deprecated": false
+            },
+            {
+              "name": "--namespace",
+              "shorthand": "-n",
+              "type": "string",
+              "default": null,
+              "description": "namespace to use (default: from $KUBECONFIG)",
+              "deprecated": false
+            },
+            {
+              "name": "--no-color",
+              "shorthand": "-C",
+              "type": "bool",
+              "default": null,
+              "description": "disable coloring (default: false)",
+              "deprecated": false
+            },
+            {
+              "name": "--allow-missing-template-keys",
+              "shorthand": null,
+              "type": "bool",
+              "default": "true",
+              "description": "If true, ignore any errors in templates when a field or map key is missing in the template. Only applies to golang and jsonpath output formats. (default true)",
+              "deprecated": false
+            },
+            {
+              "name": "--help",
+              "shorthand": "-h",
+              "type": "bool",
+              "default": null,
+              "description": "help for verify",
+              "deprecated": false
+            },
+            {
+              "name": "--key-file",
+              "shorthand": "-K",
+              "type": "string",
+              "default": null,
+              "description": "Key file",
+              "deprecated": false
+            },
+            {
+              "name": "--kms-key",
+              "shorthand": "-m",
+              "type": "string",
+              "default": null,
+              "description": "KMS key url",
+              "deprecated": false
+            },
+            {
+              "name": "--output",
+              "shorthand": "-o",
+              "type": "string",
+              "default": null,
+              "description": "Output format. One of: (json, yaml, name, go-template, go-template-file, template, templatefile, jsonpath, jsonpath-as-json, jsonpath-file).",
+              "deprecated": false
+            },
+            {
+              "name": "--show-managed-fields",
+              "shorthand": null,
+              "type": "bool",
+              "default": null,
+              "description": "If true, keep the managedFields when printing objects in JSON or YAML format.",
+              "deprecated": false
+            },
+            {
+              "name": "--template",
+              "shorthand": null,
+              "type": "string",
+              "default": null,
+              "description": "Template string or path to template file to use when -o=go-template, -o=go-template-file. The template format is golang templates [http://golang.org/pkg/text/template/#pkg-overview].",
+              "deprecated": false
+            }
+          ],
+          "subcommands": []
+        }
+      ]
+    },
+    {
+      "name": "pipelinerun",
+      "flags": [
+        {
+          "name": "--context",
+          "shorthand": "-c",
+          "type": "string",
+          "default": null,
+          "description": "name of the kubeconfig context to use (default: kubectl config current-context)",
+          "deprecated": false
+        },
+        {
+          "name": "--help",
+          "shorthand": "-h",
+          "type": "bool",
+          "default": null,
+          "description": "help for pipelinerun",
+          "deprecated": false
+        },
+        {
+          "name": "--kubeconfig",
+          "shorthand": "-k",
+          "type": "string",
+          "default": null,
+          "description": "kubectl config file (default: $HOME/.kube/config)",
+          "deprecated": false
+        },
+        {
+          "name": "--namespace",
+          "shorthand": "-n",
+          "type": "string",
+          "default": null,
+          "description": "namespace to use (default: from $KUBECONFIG)",
+          "deprecated": false
+        },
+        {
+          "name": "--no-color",
+          "shorthand": "-C",
+          "type": "bool",
+          "default": null,
+          "description": "disable coloring (default: false)",
+          "deprecated": false
+        }
+      ],
+      "subcommands": [
+        {
+          "name": "cancel",
+          "flags": [
+            {
+              "name": "--context",
+              "shorthand": "-c",
+              "type": "string",
+              "default": null,
+              "description": "name of the kubeconfig context to use (default: kubectl config current-context)",
+              "deprecated": false
+            },
+            {
+              "name": "--kubeconfig",
+              "shorthand": "-k",
+              "type": "string",
+              "default": null,
+              "description": "kubectl config file (default: $HOME/.kube/config)",
+              "deprecated": false
+            },
+            {
+              "name": "--namespace",
+              "shorthand": "-n",
+              "type": "string",
+              "default": null,
+              "description": "namespace to use (default: from $KUBECONFIG)",
+              "deprecated": false
+            },
+            {
+              "name": "--no-color",
+              "shorthand": "-C",
+              "type": "bool",
+              "default": null,
+              "description": "disable coloring (default: false)",
+              "deprecated": false
+            },
+            {
+              "name": "--grace",
+              "shorthand": null,
+              "type": "string",
+              "default": null,
+              "description": "Gracefully cancel a PipelineRun",
+              "deprecated": false
+            },
+            {
+              "name": "--help",
+              "shorthand": "-h",
+              "type": "bool",
+              "default": null,
+              "description": "help for cancel",
+              "deprecated": false
+            }
+          ],
+          "subcommands": []
+        },
+        {
+          "name": "delete",
+          "flags": [
+            {
+              "name": "--context",
+              "shorthand": "-c",
+              "type": "string",
+              "default": null,
+              "description": "name of the kubeconfig context to use (default: kubectl config current-context)",
+              "deprecated": false
+            },
+            {
+              "name": "--kubeconfig",
+              "shorthand": "-k",
+              "type": "string",
+              "default": null,
+              "description": "kubectl config file (default: $HOME/.kube/config)",
+              "deprecated": false
+            },
+            {
+              "name": "--namespace",
+              "shorthand": "-n",
+              "type": "string",
+              "default": null,
+              "description": "namespace to use (default: from $KUBECONFIG)",
+              "deprecated": false
+            },
+            {
+              "name": "--no-color",
+              "shorthand": "-C",
+              "type": "bool",
+              "default": null,
+              "description": "disable coloring (default: false)",
+              "deprecated": false
+            },
+            {
+              "name": "--all",
+              "shorthand": null,
+              "type": "bool",
+              "default": null,
+              "description": "Delete all PipelineRuns in a namespace (default: false)",
+              "deprecated": false
+            },
+            {
+              "name": "--allow-missing-template-keys",
+              "shorthand": null,
+              "type": "bool",
+              "default": "true",
+              "description": "If true, ignore any errors in templates when a field or map key is missing in the template. Only applies to golang and jsonpath output formats. (default true)",
+              "deprecated": false
+            },
+            {
+              "name": "--force",
+              "shorthand": "-f",
+              "type": "bool",
+              "default": null,
+              "description": "Whether to force deletion (default: false)",
+              "deprecated": false
+            },
+            {
+              "name": "--help",
+              "shorthand": "-h",
+              "type": "bool",
+              "default": null,
+              "description": "help for delete",
+              "deprecated": false
+            },
+            {
+              "name": "--ignore-running",
+              "shorthand": "-i",
+              "type": "bool",
+              "default": "true",
+              "description": "ignore running PipelineRun (default true)",
+              "deprecated": false
+            },
+            {
+              "name": "--keep",
+              "shorthand": null,
+              "type": "int",
+              "default": null,
+              "description": "Keep n most recent number of PipelineRuns",
+              "deprecated": false
+            },
+            {
+              "name": "--keep-since",
+              "shorthand": null,
+              "type": "int",
+              "default": null,
+              "description": "When deleting all PipelineRuns keep the ones that has been completed since n minutes",
+              "deprecated": false
+            },
+            {
+              "name": "--label",
+              "shorthand": null,
+              "type": "string",
+              "default": null,
+              "description": "A selector (label query) to filter on when running with --all, supports '=', '==', and '!='",
+              "deprecated": false
+            },
+            {
+              "name": "--output",
+              "shorthand": "-o",
+              "type": "string",
+              "default": null,
+              "description": "Output format. One of: (json, yaml, name, go-template, go-template-file, template, templatefile, jsonpath, jsonpath-as-json, jsonpath-file).",
+              "deprecated": false
+            },
+            {
+              "name": "--pipeline",
+              "shorthand": "-p",
+              "type": "string",
+              "default": null,
+              "description": "The name of a Pipeline whose PipelineRuns should be deleted (does not delete the Pipeline)",
+              "deprecated": false
+            },
+            {
+              "name": "--show-managed-fields",
+              "shorthand": null,
+              "type": "bool",
+              "default": null,
+              "description": "If true, keep the managedFields when printing objects in JSON or YAML format.",
+              "deprecated": false
+            },
+            {
+              "name": "--template",
+              "shorthand": null,
+              "type": "string",
+              "default": null,
+              "description": "Template string or path to template file to use when -o=go-template, -o=go-template-file. The template format is golang templates [http://golang.org/pkg/text/template/#pkg-overview].",
+              "deprecated": false
+            }
+          ],
+          "subcommands": []
+        },
+        {
+          "name": "describe",
+          "flags": [
+            {
+              "name": "--context",
+              "shorthand": "-c",
+              "type": "string",
+              "default": null,
+              "description": "name of the kubeconfig context to use (default: kubectl config current-context)",
+              "deprecated": false
+            },
+            {
+              "name": "--kubeconfig",
+              "shorthand": "-k",
+              "type": "string",
+              "default": null,
+              "description": "kubectl config file (default: $HOME/.kube/config)",
+              "deprecated": false
+            },
+            {
+              "name": "--namespace",
+              "shorthand": "-n",
+              "type": "string",
+              "default": null,
+              "description": "namespace to use (default: from $KUBECONFIG)",
+              "deprecated": false
+            },
+            {
+              "name": "--no-color",
+              "shorthand": "-C",
+              "type": "bool",
+              "default": null,
+              "description": "disable coloring (default: false)",
+              "deprecated": false
+            },
+            {
+              "name": "--allow-missing-template-keys",
+              "shorthand": null,
+              "type": "bool",
+              "default": "true",
+              "description": "If true, ignore any errors in templates when a field or map key is missing in the template. Only applies to golang and jsonpath output formats. (default true)",
+              "deprecated": false
+            },
+            {
+              "name": "--fzf",
+              "shorthand": "-F",
+              "type": "bool",
+              "default": null,
+              "description": "use fzf to select a PipelineRun to describe",
+              "deprecated": false
+            },
+            {
+              "name": "--help",
+              "shorthand": "-h",
+              "type": "bool",
+              "default": null,
+              "description": "help for describe",
+              "deprecated": false
+            },
+            {
+              "name": "--last",
+              "shorthand": "-L",
+              "type": "bool",
+              "default": null,
+              "description": "show description for last PipelineRun",
+              "deprecated": false
+            },
+            {
+              "name": "--limit",
+              "shorthand": null,
+              "type": "int",
+              "default": "5",
+              "description": "lists number of PipelineRuns when selecting a PipelineRun to describe (default 5)",
+              "deprecated": false
+            },
+            {
+              "name": "--output",
+              "shorthand": "-o",
+              "type": "string",
+              "default": null,
+              "description": "Output format. One of: (json, yaml, name, go-template, go-template-file, template, templatefile, jsonpath, jsonpath-as-json, jsonpath-file).",
+              "deprecated": false
+            },
+            {
+              "name": "--show-managed-fields",
+              "shorthand": null,
+              "type": "bool",
+              "default": null,
+              "description": "If true, keep the managedFields when printing objects in JSON or YAML format.",
+              "deprecated": false
+            },
+            {
+              "name": "--template",
+              "shorthand": null,
+              "type": "string",
+              "default": null,
+              "description": "Template string or path to template file to use when -o=go-template, -o=go-template-file. The template format is golang templates [http://golang.org/pkg/text/template/#pkg-overview].",
+              "deprecated": false
+            }
+          ],
+          "subcommands": []
+        },
+        {
+          "name": "export",
+          "flags": [
+            {
+              "name": "--context",
+              "shorthand": "-c",
+              "type": "string",
+              "default": null,
+              "description": "name of the kubeconfig context to use (default: kubectl config current-context)",
+              "deprecated": false
+            },
+            {
+              "name": "--kubeconfig",
+              "shorthand": "-k",
+              "type": "string",
+              "default": null,
+              "description": "kubectl config file (default: $HOME/.kube/config)",
+              "deprecated": false
+            },
+            {
+              "name": "--namespace",
+              "shorthand": "-n",
+              "type": "string",
+              "default": null,
+              "description": "namespace to use (default: from $KUBECONFIG)",
+              "deprecated": false
+            },
+            {
+              "name": "--no-color",
+              "shorthand": "-C",
+              "type": "bool",
+              "default": null,
+              "description": "disable coloring (default: false)",
+              "deprecated": false
+            },
+            {
+              "name": "--allow-missing-template-keys",
+              "shorthand": null,
+              "type": "bool",
+              "default": "true",
+              "description": "If true, ignore any errors in templates when a field or map key is missing in the template. Only applies to golang and jsonpath output formats. (default true)",
+              "deprecated": false
+            },
+            {
+              "name": "--help",
+              "shorthand": "-h",
+              "type": "bool",
+              "default": null,
+              "description": "help for export",
+              "deprecated": false
+            },
+            {
+              "name": "--output",
+              "shorthand": "-o",
+              "type": "string",
+              "default": null,
+              "description": "Output format. One of: (json, yaml, name, go-template, go-template-file, template, templatefile, jsonpath, jsonpath-as-json, jsonpath-file).",
+              "deprecated": false
+            },
+            {
+              "name": "--show-managed-fields",
+              "shorthand": null,
+              "type": "bool",
+              "default": null,
+              "description": "If true, keep the managedFields when printing objects in JSON or YAML format.",
+              "deprecated": false
+            },
+            {
+              "name": "--template",
+              "shorthand": null,
+              "type": "string",
+              "default": null,
+              "description": "Template string or path to template file to use when -o=go-template, -o=go-template-file. The template format is golang templates [http://golang.org/pkg/text/template/#pkg-overview].",
+              "deprecated": false
+            }
+          ],
+          "subcommands": []
+        },
+        {
+          "name": "list",
+          "flags": [
+            {
+              "name": "--context",
+              "shorthand": "-c",
+              "type": "string",
+              "default": null,
+              "description": "name of the kubeconfig context to use (default: kubectl config current-context)",
+              "deprecated": false
+            },
+            {
+              "name": "--kubeconfig",
+              "shorthand": "-k",
+              "type": "string",
+              "default": null,
+              "description": "kubectl config file (default: $HOME/.kube/config)",
+              "deprecated": false
+            },
+            {
+              "name": "--namespace",
+              "shorthand": "-n",
+              "type": "string",
+              "default": null,
+              "description": "namespace to use (default: from $KUBECONFIG)",
+              "deprecated": false
+            },
+            {
+              "name": "--no-color",
+              "shorthand": "-C",
+              "type": "bool",
+              "default": null,
+              "description": "disable coloring (default: false)",
+              "deprecated": false
+            },
+            {
+              "name": "--all-namespaces",
+              "shorthand": "-A",
+              "type": "bool",
+              "default": null,
+              "description": "list PipelineRuns from all namespaces",
+              "deprecated": false
+            },
+            {
+              "name": "--allow-missing-template-keys",
+              "shorthand": null,
+              "type": "bool",
+              "default": "true",
+              "description": "If true, ignore any errors in templates when a field or map key is missing in the template. Only applies to golang and jsonpath output formats. (default true)",
+              "deprecated": false
+            },
+            {
+              "name": "--help",
+              "shorthand": "-h",
+              "type": "bool",
+              "default": null,
+              "description": "help for list",
+              "deprecated": false
+            },
+            {
+              "name": "--label",
+              "shorthand": null,
+              "type": "string",
+              "default": null,
+              "description": "A selector (label query) to filter on, supports '=', '==', and '!='",
+              "deprecated": false
+            },
+            {
+              "name": "--limit",
+              "shorthand": null,
+              "type": "int",
+              "default": null,
+              "description": "Limits the number of PipelineRuns. If the limit value is 0 returns all",
+              "deprecated": false
+            },
+            {
+              "name": "--no-headers",
+              "shorthand": null,
+              "type": "bool",
+              "default": "print column headers with output",
+              "description": "do not print column headers with output (default print column headers with output)",
+              "deprecated": false
+            },
+            {
+              "name": "--output",
+              "shorthand": "-o",
+              "type": "string",
+              "default": null,
+              "description": "Output format. One of: (json, yaml, name, go-template, go-template-file, template, templatefile, jsonpath, jsonpath-as-json, jsonpath-file).",
+              "deprecated": false
+            },
+            {
+              "name": "--reverse",
+              "shorthand": null,
+              "type": "bool",
+              "default": null,
+              "description": "list PipelineRuns in reverse order",
+              "deprecated": false
+            },
+            {
+              "name": "--show-managed-fields",
+              "shorthand": null,
+              "type": "bool",
+              "default": null,
+              "description": "If true, keep the managedFields when printing objects in JSON or YAML format.",
+              "deprecated": false
+            },
+            {
+              "name": "--template",
+              "shorthand": null,
+              "type": "string",
+              "default": null,
+              "description": "Template string or path to template file to use when -o=go-template, -o=go-template-file. The template format is golang templates [http://golang.org/pkg/text/template/#pkg-overview].",
+              "deprecated": false
+            }
+          ],
+          "subcommands": []
+        },
+        {
+          "name": "logs",
+          "flags": [
+            {
+              "name": "--context",
+              "shorthand": "-c",
+              "type": "string",
+              "default": null,
+              "description": "name of the kubeconfig context to use (default: kubectl config current-context)",
+              "deprecated": false
+            },
+            {
+              "name": "--kubeconfig",
+              "shorthand": "-k",
+              "type": "string",
+              "default": null,
+              "description": "kubectl config file (default: $HOME/.kube/config)",
+              "deprecated": false
+            },
+            {
+              "name": "--namespace",
+              "shorthand": "-n",
+              "type": "string",
+              "default": null,
+              "description": "namespace to use (default: from $KUBECONFIG)",
+              "deprecated": false
+            },
+            {
+              "name": "--no-color",
+              "shorthand": "-C",
+              "type": "bool",
+              "default": null,
+              "description": "disable coloring (default: false)",
+              "deprecated": false
+            },
+            {
+              "name": "--all",
+              "shorthand": "-a",
+              "type": "bool",
+              "default": null,
+              "description": "show all logs including init steps injected by tekton",
+              "deprecated": false
+            },
+            {
+              "name": "--exit-with-pipelinerun-error",
+              "shorthand": "-E",
+              "type": "bool",
+              "default": null,
+              "description": "exit with pipelinerun to the unix shell, 0 if success, 1 if error, 2 on unknown status",
+              "deprecated": false
+            },
+            {
+              "name": "--follow",
+              "shorthand": "-f",
+              "type": "bool",
+              "default": null,
+              "description": "stream live logs",
+              "deprecated": false
+            },
+            {
+              "name": "--fzf",
+              "shorthand": "-F",
+              "type": "bool",
+              "default": null,
+              "description": "use fzf to select a PipelineRun",
+              "deprecated": false
+            },
+            {
+              "name": "--help",
+              "shorthand": "-h",
+              "type": "bool",
+              "default": null,
+              "description": "help for logs",
+              "deprecated": false
+            },
+            {
+              "name": "--last",
+              "shorthand": "-L",
+              "type": "bool",
+              "default": null,
+              "description": "show logs for last PipelineRun",
+              "deprecated": false
+            },
+            {
+              "name": "--limit",
+              "shorthand": null,
+              "type": "int",
+              "default": "5",
+              "description": "lists number of PipelineRuns (default 5)",
+              "deprecated": false
+            },
+            {
+              "name": "--log-failed",
+              "shorthand": null,
+              "type": "bool",
+              "default": null,
+              "description": "show logs for failed tasks only",
+              "deprecated": false
+            },
+            {
+              "name": "--long",
+              "shorthand": null,
+              "type": "bool",
+              "default": null,
+              "description": "show logs with task display name (display name and step name)",
+              "deprecated": false
+            },
+            {
+              "name": "--prefix",
+              "shorthand": null,
+              "type": "bool",
+              "default": "true",
+              "description": "prefix each log line with the log source (task name and step name) (default true)",
+              "deprecated": false
+            },
+            {
+              "name": "--task",
+              "shorthand": "-t",
+              "type": "stringArray",
+              "default": null,
+              "description": "show logs for mentioned Tasks only",
+              "deprecated": false
+            },
+            {
+              "name": "--timestamps",
+              "shorthand": null,
+              "type": "bool",
+              "default": null,
+              "description": "show logs with timestamp",
+              "deprecated": false
+            }
+          ],
+          "subcommands": []
+        }
+      ]
+    },
+    {
+      "name": "task",
+      "flags": [
+        {
+          "name": "--context",
+          "shorthand": "-c",
+          "type": "string",
+          "default": null,
+          "description": "name of the kubeconfig context to use (default: kubectl config current-context)",
+          "deprecated": false
+        },
+        {
+          "name": "--help",
+          "shorthand": "-h",
+          "type": "bool",
+          "default": null,
+          "description": "help for task",
+          "deprecated": false
+        },
+        {
+          "name": "--kubeconfig",
+          "shorthand": "-k",
+          "type": "string",
+          "default": null,
+          "description": "kubectl config file (default: $HOME/.kube/config)",
+          "deprecated": false
+        },
+        {
+          "name": "--namespace",
+          "shorthand": "-n",
+          "type": "string",
+          "default": null,
+          "description": "namespace to use (default: from $KUBECONFIG)",
+          "deprecated": false
+        },
+        {
+          "name": "--no-color",
+          "shorthand": "-C",
+          "type": "bool",
+          "default": null,
+          "description": "disable coloring (default: false)",
+          "deprecated": false
+        }
+      ],
+      "subcommands": [
+        {
+          "name": "delete",
+          "flags": [
+            {
+              "name": "--context",
+              "shorthand": "-c",
+              "type": "string",
+              "default": null,
+              "description": "name of the kubeconfig context to use (default: kubectl config current-context)",
+              "deprecated": false
+            },
+            {
+              "name": "--kubeconfig",
+              "shorthand": "-k",
+              "type": "string",
+              "default": null,
+              "description": "kubectl config file (default: $HOME/.kube/config)",
+              "deprecated": false
+            },
+            {
+              "name": "--namespace",
+              "shorthand": "-n",
+              "type": "string",
+              "default": null,
+              "description": "namespace to use (default: from $KUBECONFIG)",
+              "deprecated": false
+            },
+            {
+              "name": "--no-color",
+              "shorthand": "-C",
+              "type": "bool",
+              "default": null,
+              "description": "disable coloring (default: false)",
+              "deprecated": false
+            },
+            {
+              "name": "--all",
+              "shorthand": null,
+              "type": "bool",
+              "default": null,
+              "description": "Delete all Tasks in a namespace (default: false)",
+              "deprecated": false
+            },
+            {
+              "name": "--allow-missing-template-keys",
+              "shorthand": null,
+              "type": "bool",
+              "default": "true",
+              "description": "If true, ignore any errors in templates when a field or map key is missing in the template. Only applies to golang and jsonpath output formats. (default true)",
+              "deprecated": false
+            },
+            {
+              "name": "--force",
+              "shorthand": "-f",
+              "type": "bool",
+              "default": null,
+              "description": "Whether to force deletion (default: false)",
+              "deprecated": false
+            },
+            {
+              "name": "--help",
+              "shorthand": "-h",
+              "type": "bool",
+              "default": null,
+              "description": "help for delete",
+              "deprecated": false
+            },
+            {
+              "name": "--output",
+              "shorthand": "-o",
+              "type": "string",
+              "default": null,
+              "description": "Output format. One of: (json, yaml, name, go-template, go-template-file, template, templatefile, jsonpath, jsonpath-as-json, jsonpath-file).",
+              "deprecated": false
+            },
+            {
+              "name": "--show-managed-fields",
+              "shorthand": null,
+              "type": "bool",
+              "default": null,
+              "description": "If true, keep the managedFields when printing objects in JSON or YAML format.",
+              "deprecated": false
+            },
+            {
+              "name": "--template",
+              "shorthand": null,
+              "type": "string",
+              "default": null,
+              "description": "Template string or path to template file to use when -o=go-template, -o=go-template-file. The template format is golang templates [http://golang.org/pkg/text/template/#pkg-overview].",
+              "deprecated": false
+            },
+            {
+              "name": "--trs",
+              "shorthand": null,
+              "type": "bool",
+              "default": null,
+              "description": "Whether to delete Task(s) and related resources (TaskRuns) (default: false)",
+              "deprecated": false
+            }
+          ],
+          "subcommands": []
+        },
+        {
+          "name": "describe",
+          "flags": [
+            {
+              "name": "--context",
+              "shorthand": "-c",
+              "type": "string",
+              "default": null,
+              "description": "name of the kubeconfig context to use (default: kubectl config current-context)",
+              "deprecated": false
+            },
+            {
+              "name": "--kubeconfig",
+              "shorthand": "-k",
+              "type": "string",
+              "default": null,
+              "description": "kubectl config file (default: $HOME/.kube/config)",
+              "deprecated": false
+            },
+            {
+              "name": "--namespace",
+              "shorthand": "-n",
+              "type": "string",
+              "default": null,
+              "description": "namespace to use (default: from $KUBECONFIG)",
+              "deprecated": false
+            },
+            {
+              "name": "--no-color",
+              "shorthand": "-C",
+              "type": "bool",
+              "default": null,
+              "description": "disable coloring (default: false)",
+              "deprecated": false
+            },
+            {
+              "name": "--allow-missing-template-keys",
+              "shorthand": null,
+              "type": "bool",
+              "default": "true",
+              "description": "If true, ignore any errors in templates when a field or map key is missing in the template. Only applies to golang and jsonpath output formats. (default true)",
+              "deprecated": false
+            },
+            {
+              "name": "--help",
+              "shorthand": "-h",
+              "type": "bool",
+              "default": null,
+              "description": "help for describe",
+              "deprecated": false
+            },
+            {
+              "name": "--output",
+              "shorthand": "-o",
+              "type": "string",
+              "default": null,
+              "description": "Output format. One of: (json, yaml, name, go-template, go-template-file, template, templatefile, jsonpath, jsonpath-as-json, jsonpath-file).",
+              "deprecated": false
+            },
+            {
+              "name": "--show-managed-fields",
+              "shorthand": null,
+              "type": "bool",
+              "default": null,
+              "description": "If true, keep the managedFields when printing objects in JSON or YAML format.",
+              "deprecated": false
+            },
+            {
+              "name": "--template",
+              "shorthand": null,
+              "type": "string",
+              "default": null,
+              "description": "Template string or path to template file to use when -o=go-template, -o=go-template-file. The template format is golang templates [http://golang.org/pkg/text/template/#pkg-overview].",
+              "deprecated": false
+            }
+          ],
+          "subcommands": []
+        },
+        {
+          "name": "list",
+          "flags": [
+            {
+              "name": "--context",
+              "shorthand": "-c",
+              "type": "string",
+              "default": null,
+              "description": "name of the kubeconfig context to use (default: kubectl config current-context)",
+              "deprecated": false
+            },
+            {
+              "name": "--kubeconfig",
+              "shorthand": "-k",
+              "type": "string",
+              "default": null,
+              "description": "kubectl config file (default: $HOME/.kube/config)",
+              "deprecated": false
+            },
+            {
+              "name": "--namespace",
+              "shorthand": "-n",
+              "type": "string",
+              "default": null,
+              "description": "namespace to use (default: from $KUBECONFIG)",
+              "deprecated": false
+            },
+            {
+              "name": "--no-color",
+              "shorthand": "-C",
+              "type": "bool",
+              "default": null,
+              "description": "disable coloring (default: false)",
+              "deprecated": false
+            },
+            {
+              "name": "--all-namespaces",
+              "shorthand": "-A",
+              "type": "bool",
+              "default": null,
+              "description": "list Tasks from all namespaces",
+              "deprecated": false
+            },
+            {
+              "name": "--allow-missing-template-keys",
+              "shorthand": null,
+              "type": "bool",
+              "default": "true",
+              "description": "If true, ignore any errors in templates when a field or map key is missing in the template. Only applies to golang and jsonpath output formats. (default true)",
+              "deprecated": false
+            },
+            {
+              "name": "--help",
+              "shorthand": "-h",
+              "type": "bool",
+              "default": null,
+              "description": "help for list",
+              "deprecated": false
+            },
+            {
+              "name": "--no-headers",
+              "shorthand": null,
+              "type": "bool",
+              "default": "print column headers with output",
+              "description": "do not print column headers with output (default print column headers with output)",
+              "deprecated": false
+            },
+            {
+              "name": "--output",
+              "shorthand": "-o",
+              "type": "string",
+              "default": null,
+              "description": "Output format. One of: (json, yaml, name, go-template, go-template-file, template, templatefile, jsonpath, jsonpath-as-json, jsonpath-file).",
+              "deprecated": false
+            },
+            {
+              "name": "--show-managed-fields",
+              "shorthand": null,
+              "type": "bool",
+              "default": null,
+              "description": "If true, keep the managedFields when printing objects in JSON or YAML format.",
+              "deprecated": false
+            },
+            {
+              "name": "--template",
+              "shorthand": null,
+              "type": "string",
+              "default": null,
+              "description": "Template string or path to template file to use when -o=go-template, -o=go-template-file. The template format is golang templates [http://golang.org/pkg/text/template/#pkg-overview].",
+              "deprecated": false
+            }
+          ],
+          "subcommands": []
+        },
+        {
+          "name": "logs",
+          "flags": [
+            {
+              "name": "--context",
+              "shorthand": "-c",
+              "type": "string",
+              "default": null,
+              "description": "name of the kubeconfig context to use (default: kubectl config current-context)",
+              "deprecated": false
+            },
+            {
+              "name": "--kubeconfig",
+              "shorthand": "-k",
+              "type": "string",
+              "default": null,
+              "description": "kubectl config file (default: $HOME/.kube/config)",
+              "deprecated": false
+            },
+            {
+              "name": "--namespace",
+              "shorthand": "-n",
+              "type": "string",
+              "default": null,
+              "description": "namespace to use (default: from $KUBECONFIG)",
+              "deprecated": false
+            },
+            {
+              "name": "--no-color",
+              "shorthand": "-C",
+              "type": "bool",
+              "default": null,
+              "description": "disable coloring (default: false)",
+              "deprecated": false
+            },
+            {
+              "name": "--all",
+              "shorthand": "-a",
+              "type": "bool",
+              "default": null,
+              "description": "show all logs including init steps injected by tekton",
+              "deprecated": false
+            },
+            {
+              "name": "--follow",
+              "shorthand": "-f",
+              "type": "bool",
+              "default": null,
+              "description": "stream live logs",
+              "deprecated": false
+            },
+            {
+              "name": "--help",
+              "shorthand": "-h",
+              "type": "bool",
+              "default": null,
+              "description": "help for logs",
+              "deprecated": false
+            },
+            {
+              "name": "--last",
+              "shorthand": "-L",
+              "type": "bool",
+              "default": null,
+              "description": "show logs for last TaskRun",
+              "deprecated": false
+            },
+            {
+              "name": "--limit",
+              "shorthand": null,
+              "type": "int",
+              "default": "5",
+              "description": "lists number of TaskRuns (default 5)",
+              "deprecated": false
+            },
+            {
+              "name": "--timestamps",
+              "shorthand": "-t",
+              "type": "bool",
+              "default": null,
+              "description": "show logs with timestamp",
+              "deprecated": false
+            }
+          ],
+          "subcommands": []
+        },
+        {
+          "name": "sign",
+          "flags": [
+            {
+              "name": "--context",
+              "shorthand": "-c",
+              "type": "string",
+              "default": null,
+              "description": "name of the kubeconfig context to use (default: kubectl config current-context)",
+              "deprecated": false
+            },
+            {
+              "name": "--kubeconfig",
+              "shorthand": "-k",
+              "type": "string",
+              "default": null,
+              "description": "kubectl config file (default: $HOME/.kube/config)",
+              "deprecated": false
+            },
+            {
+              "name": "--namespace",
+              "shorthand": "-n",
+              "type": "string",
+              "default": null,
+              "description": "namespace to use (default: from $KUBECONFIG)",
+              "deprecated": false
+            },
+            {
+              "name": "--no-color",
+              "shorthand": "-C",
+              "type": "bool",
+              "default": null,
+              "description": "disable coloring (default: false)",
+              "deprecated": false
+            },
+            {
+              "name": "--allow-missing-template-keys",
+              "shorthand": null,
+              "type": "bool",
+              "default": "true",
+              "description": "If true, ignore any errors in templates when a field or map key is missing in the template. Only applies to golang and jsonpath output formats. (default true)",
+              "deprecated": false
+            },
+            {
+              "name": "--file-name",
+              "shorthand": "-f",
+              "type": "string",
+              "default": null,
+              "description": "file name of the signed task, using the original file name will overwrite the file",
+              "deprecated": false
+            },
+            {
+              "name": "--help",
+              "shorthand": "-h",
+              "type": "bool",
+              "default": null,
+              "description": "help for sign",
+              "deprecated": false
+            },
+            {
+              "name": "--key-file",
+              "shorthand": "-K",
+              "type": "string",
+              "default": null,
+              "description": "Key file",
+              "deprecated": false
+            },
+            {
+              "name": "--kms-key",
+              "shorthand": "-m",
+              "type": "string",
+              "default": null,
+              "description": "KMS key url",
+              "deprecated": false
+            },
+            {
+              "name": "--output",
+              "shorthand": "-o",
+              "type": "string",
+              "default": null,
+              "description": "Output format. One of: (json, yaml, name, go-template, go-template-file, template, templatefile, jsonpath, jsonpath-as-json, jsonpath-file).",
+              "deprecated": false
+            },
+            {
+              "name": "--show-managed-fields",
+              "shorthand": null,
+              "type": "bool",
+              "default": null,
+              "description": "If true, keep the managedFields when printing objects in JSON or YAML format.",
+              "deprecated": false
+            },
+            {
+              "name": "--template",
+              "shorthand": null,
+              "type": "string",
+              "default": null,
+              "description": "Template string or path to template file to use when -o=go-template, -o=go-template-file. The template format is golang templates [http://golang.org/pkg/text/template/#pkg-overview].",
+              "deprecated": false
+            }
+          ],
+          "subcommands": []
+        },
+        {
+          "name": "start",
+          "flags": [
+            {
+              "name": "--context",
+              "shorthand": "-c",
+              "type": "string",
+              "default": null,
+              "description": "name of the kubeconfig context to use (default: kubectl config current-context)",
+              "deprecated": false
+            },
+            {
+              "name": "--kubeconfig",
+              "shorthand": "-k",
+              "type": "string",
+              "default": null,
+              "description": "kubectl config file (default: $HOME/.kube/config)",
+              "deprecated": false
+            },
+            {
+              "name": "--namespace",
+              "shorthand": "-n",
+              "type": "string",
+              "default": null,
+              "description": "namespace to use (default: from $KUBECONFIG)",
+              "deprecated": false
+            },
+            {
+              "name": "--no-color",
+              "shorthand": "-C",
+              "type": "bool",
+              "default": null,
+              "description": "disable coloring (default: false)",
+              "deprecated": false
+            },
+            {
+              "name": "--dry-run",
+              "shorthand": null,
+              "type": "bool",
+              "default": null,
+              "description": "preview TaskRun without running it",
+              "deprecated": false
+            },
+            {
+              "name": "--filename",
+              "shorthand": "-f",
+              "type": "string",
+              "default": null,
+              "description": "local or remote file name containing a Task definition to start a TaskRun",
+              "deprecated": false
+            },
+            {
+              "name": "--help",
+              "shorthand": "-h",
+              "type": "bool",
+              "default": null,
+              "description": "help for start",
+              "deprecated": false
+            },
+            {
+              "name": "--image",
+              "shorthand": "-i",
+              "type": "string",
+              "default": null,
+              "description": "use an oci bundle",
+              "deprecated": false
+            },
+            {
+              "name": "--labels",
+              "shorthand": "-l",
+              "type": "stringArray",
+              "default": null,
+              "description": "pass labels as label=value.",
+              "deprecated": false
+            },
+            {
+              "name": "--last",
+              "shorthand": "-L",
+              "type": "bool",
+              "default": null,
+              "description": "re-run the Task using last TaskRun values",
+              "deprecated": false
+            },
+            {
+              "name": "--output",
+              "shorthand": null,
+              "type": "string",
+              "default": null,
+              "description": "format of TaskRun (yaml or json)",
+              "deprecated": false
+            },
+            {
+              "name": "--param",
+              "shorthand": "-p",
+              "type": "stringArray",
+              "default": null,
+              "description": "pass the param as key=value for string type, or key=value1,value2,... for array type, or key=\"key1:value1, key2:value2\" for object type",
+              "deprecated": false
+            },
+            {
+              "name": "--pod-template",
+              "shorthand": null,
+              "type": "string",
+              "default": null,
+              "description": "local or remote file containing a PodTemplate definition",
+              "deprecated": false
+            },
+            {
+              "name": "--prefix-name",
+              "shorthand": null,
+              "type": "string",
+              "default": null,
+              "description": "specify a prefix for the TaskRun name (must be lowercase alphanumeric characters)",
+              "deprecated": false
+            },
+            {
+              "name": "--remote-bearer",
+              "shorthand": null,
+              "type": "string",
+              "default": null,
+              "description": "A Bearer token to authenticate against the repository",
+              "deprecated": false
+            },
+            {
+              "name": "--remote-password",
+              "shorthand": null,
+              "type": "string",
+              "default": null,
+              "description": "A password to pass to the registry for basic auth. Must be used with --remote-username",
+              "deprecated": false
+            },
+            {
+              "name": "--remote-skip-tls",
+              "shorthand": null,
+              "type": "bool",
+              "default": null,
+              "description": "Skip TLS certificate verification and allow plain-HTTP connections to the registry (opt-in insecure mode)",
+              "deprecated": false
+            },
+            {
+              "name": "--remote-username",
+              "shorthand": null,
+              "type": "string",
+              "default": null,
+              "description": "A username to pass to the registry for basic auth. Must be used with --remote-password",
+              "deprecated": false
+            },
+            {
+              "name": "--serviceaccount",
+              "shorthand": "-s",
+              "type": "string",
+              "default": null,
+              "description": "pass the serviceaccount name",
+              "deprecated": false
+            },
+            {
+              "name": "--showlog",
+              "shorthand": null,
+              "type": "bool",
+              "default": null,
+              "description": "show logs right after starting the Task",
+              "deprecated": false
+            },
+            {
+              "name": "--skip-optional-workspace",
+              "shorthand": null,
+              "type": "bool",
+              "default": null,
+              "description": "skips the prompt for optional workspaces",
+              "deprecated": false
+            },
+            {
+              "name": "--timeout",
+              "shorthand": null,
+              "type": "string",
+              "default": null,
+              "description": "timeout for TaskRun",
+              "deprecated": false
+            },
+            {
+              "name": "--use-param-defaults",
+              "shorthand": null,
+              "type": "bool",
+              "default": null,
+              "description": "use default parameter values without prompting for input",
+              "deprecated": false
+            },
+            {
+              "name": "--use-taskrun",
+              "shorthand": null,
+              "type": "string",
+              "default": null,
+              "description": "specify a TaskRun name to use its values to re-run the TaskRun",
+              "deprecated": false
+            },
+            {
+              "name": "--workspace",
+              "shorthand": "-w",
+              "type": "stringArray",
+              "default": null,
+              "description": "pass one or more workspaces to map to the corresponding physical volumes",
+              "deprecated": false
+            }
+          ],
+          "subcommands": []
+        },
+        {
+          "name": "verify",
+          "flags": [
+            {
+              "name": "--context",
+              "shorthand": "-c",
+              "type": "string",
+              "default": null,
+              "description": "name of the kubeconfig context to use (default: kubectl config current-context)",
+              "deprecated": false
+            },
+            {
+              "name": "--kubeconfig",
+              "shorthand": "-k",
+              "type": "string",
+              "default": null,
+              "description": "kubectl config file (default: $HOME/.kube/config)",
+              "deprecated": false
+            },
+            {
+              "name": "--namespace",
+              "shorthand": "-n",
+              "type": "string",
+              "default": null,
+              "description": "namespace to use (default: from $KUBECONFIG)",
+              "deprecated": false
+            },
+            {
+              "name": "--no-color",
+              "shorthand": "-C",
+              "type": "bool",
+              "default": null,
+              "description": "disable coloring (default: false)",
+              "deprecated": false
+            },
+            {
+              "name": "--allow-missing-template-keys",
+              "shorthand": null,
+              "type": "bool",
+              "default": "true",
+              "description": "If true, ignore any errors in templates when a field or map key is missing in the template. Only applies to golang and jsonpath output formats. (default true)",
+              "deprecated": false
+            },
+            {
+              "name": "--help",
+              "shorthand": "-h",
+              "type": "bool",
+              "default": null,
+              "description": "help for verify",
+              "deprecated": false
+            },
+            {
+              "name": "--key-file",
+              "shorthand": "-K",
+              "type": "string",
+              "default": null,
+              "description": "Key file",
+              "deprecated": false
+            },
+            {
+              "name": "--kms-key",
+              "shorthand": "-m",
+              "type": "string",
+              "default": null,
+              "description": "KMS key url",
+              "deprecated": false
+            },
+            {
+              "name": "--output",
+              "shorthand": "-o",
+              "type": "string",
+              "default": null,
+              "description": "Output format. One of: (json, yaml, name, go-template, go-template-file, template, templatefile, jsonpath, jsonpath-as-json, jsonpath-file).",
+              "deprecated": false
+            },
+            {
+              "name": "--show-managed-fields",
+              "shorthand": null,
+              "type": "bool",
+              "default": null,
+              "description": "If true, keep the managedFields when printing objects in JSON or YAML format.",
+              "deprecated": false
+            },
+            {
+              "name": "--template",
+              "shorthand": null,
+              "type": "string",
+              "default": null,
+              "description": "Template string or path to template file to use when -o=go-template, -o=go-template-file. The template format is golang templates [http://golang.org/pkg/text/template/#pkg-overview].",
+              "deprecated": false
+            }
+          ],
+          "subcommands": []
+        }
+      ]
+    },
+    {
+      "name": "taskrun",
+      "flags": [
+        {
+          "name": "--context",
+          "shorthand": "-c",
+          "type": "string",
+          "default": null,
+          "description": "name of the kubeconfig context to use (default: kubectl config current-context)",
+          "deprecated": false
+        },
+        {
+          "name": "--help",
+          "shorthand": "-h",
+          "type": "bool",
+          "default": null,
+          "description": "help for taskrun",
+          "deprecated": false
+        },
+        {
+          "name": "--kubeconfig",
+          "shorthand": "-k",
+          "type": "string",
+          "default": null,
+          "description": "kubectl config file (default: $HOME/.kube/config)",
+          "deprecated": false
+        },
+        {
+          "name": "--namespace",
+          "shorthand": "-n",
+          "type": "string",
+          "default": null,
+          "description": "namespace to use (default: from $KUBECONFIG)",
+          "deprecated": false
+        },
+        {
+          "name": "--no-color",
+          "shorthand": "-C",
+          "type": "bool",
+          "default": null,
+          "description": "disable coloring (default: false)",
+          "deprecated": false
+        }
+      ],
+      "subcommands": [
+        {
+          "name": "cancel",
+          "flags": [
+            {
+              "name": "--context",
+              "shorthand": "-c",
+              "type": "string",
+              "default": null,
+              "description": "name of the kubeconfig context to use (default: kubectl config current-context)",
+              "deprecated": false
+            },
+            {
+              "name": "--kubeconfig",
+              "shorthand": "-k",
+              "type": "string",
+              "default": null,
+              "description": "kubectl config file (default: $HOME/.kube/config)",
+              "deprecated": false
+            },
+            {
+              "name": "--namespace",
+              "shorthand": "-n",
+              "type": "string",
+              "default": null,
+              "description": "namespace to use (default: from $KUBECONFIG)",
+              "deprecated": false
+            },
+            {
+              "name": "--no-color",
+              "shorthand": "-C",
+              "type": "bool",
+              "default": null,
+              "description": "disable coloring (default: false)",
+              "deprecated": false
+            },
+            {
+              "name": "--help",
+              "shorthand": "-h",
+              "type": "bool",
+              "default": null,
+              "description": "help for cancel",
+              "deprecated": false
+            }
+          ],
+          "subcommands": []
+        },
+        {
+          "name": "delete",
+          "flags": [
+            {
+              "name": "--context",
+              "shorthand": "-c",
+              "type": "string",
+              "default": null,
+              "description": "name of the kubeconfig context to use (default: kubectl config current-context)",
+              "deprecated": false
+            },
+            {
+              "name": "--kubeconfig",
+              "shorthand": "-k",
+              "type": "string",
+              "default": null,
+              "description": "kubectl config file (default: $HOME/.kube/config)",
+              "deprecated": false
+            },
+            {
+              "name": "--namespace",
+              "shorthand": "-n",
+              "type": "string",
+              "default": null,
+              "description": "namespace to use (default: from $KUBECONFIG)",
+              "deprecated": false
+            },
+            {
+              "name": "--no-color",
+              "shorthand": "-C",
+              "type": "bool",
+              "default": null,
+              "description": "disable coloring (default: false)",
+              "deprecated": false
+            },
+            {
+              "name": "--all",
+              "shorthand": null,
+              "type": "bool",
+              "default": null,
+              "description": "Delete all TaskRuns in a namespace (default: false)",
+              "deprecated": false
+            },
+            {
+              "name": "--allow-missing-template-keys",
+              "shorthand": null,
+              "type": "bool",
+              "default": "true",
+              "description": "If true, ignore any errors in templates when a field or map key is missing in the template. Only applies to golang and jsonpath output formats. (default true)",
+              "deprecated": false
+            },
+            {
+              "name": "--force",
+              "shorthand": "-f",
+              "type": "bool",
+              "default": null,
+              "description": "Whether to force deletion (default: false)",
+              "deprecated": false
+            },
+            {
+              "name": "--help",
+              "shorthand": "-h",
+              "type": "bool",
+              "default": null,
+              "description": "help for delete",
+              "deprecated": false
+            },
+            {
+              "name": "--ignore-running",
+              "shorthand": "-i",
+              "type": "bool",
+              "default": "true",
+              "description": "ignore running TaskRun (default true)",
+              "deprecated": false
+            },
+            {
+              "name": "--ignore-running-pipelinerun",
+              "shorthand": null,
+              "type": "bool",
+              "default": "true",
+              "description": "ignore deleting taskruns of a running PipelineRun (default true)",
+              "deprecated": false
+            },
+            {
+              "name": "--keep",
+              "shorthand": null,
+              "type": "int",
+              "default": null,
+              "description": "Keep n most recent number of TaskRuns",
+              "deprecated": false
+            },
+            {
+              "name": "--keep-since",
+              "shorthand": null,
+              "type": "int",
+              "default": null,
+              "description": "When deleting all TaskRuns keep the ones that has been completed since n minutes",
+              "deprecated": false
+            },
+            {
+              "name": "--output",
+              "shorthand": "-o",
+              "type": "string",
+              "default": null,
+              "description": "Output format. One of: (json, yaml, name, go-template, go-template-file, template, templatefile, jsonpath, jsonpath-as-json, jsonpath-file).",
+              "deprecated": false
+            },
+            {
+              "name": "--show-managed-fields",
+              "shorthand": null,
+              "type": "bool",
+              "default": null,
+              "description": "If true, keep the managedFields when printing objects in JSON or YAML format.",
+              "deprecated": false
+            },
+            {
+              "name": "--task",
+              "shorthand": "-t",
+              "type": "string",
+              "default": null,
+              "description": "The name of a Task whose TaskRuns should be deleted (does not delete the task)",
+              "deprecated": false
+            },
+            {
+              "name": "--template",
+              "shorthand": null,
+              "type": "string",
+              "default": null,
+              "description": "Template string or path to template file to use when -o=go-template, -o=go-template-file. The template format is golang templates [http://golang.org/pkg/text/template/#pkg-overview].",
+              "deprecated": false
+            }
+          ],
+          "subcommands": []
+        },
+        {
+          "name": "describe",
+          "flags": [
+            {
+              "name": "--context",
+              "shorthand": "-c",
+              "type": "string",
+              "default": null,
+              "description": "name of the kubeconfig context to use (default: kubectl config current-context)",
+              "deprecated": false
+            },
+            {
+              "name": "--kubeconfig",
+              "shorthand": "-k",
+              "type": "string",
+              "default": null,
+              "description": "kubectl config file (default: $HOME/.kube/config)",
+              "deprecated": false
+            },
+            {
+              "name": "--namespace",
+              "shorthand": "-n",
+              "type": "string",
+              "default": null,
+              "description": "namespace to use (default: from $KUBECONFIG)",
+              "deprecated": false
+            },
+            {
+              "name": "--no-color",
+              "shorthand": "-C",
+              "type": "bool",
+              "default": null,
+              "description": "disable coloring (default: false)",
+              "deprecated": false
+            },
+            {
+              "name": "--allow-missing-template-keys",
+              "shorthand": null,
+              "type": "bool",
+              "default": "true",
+              "description": "If true, ignore any errors in templates when a field or map key is missing in the template. Only applies to golang and jsonpath output formats. (default true)",
+              "deprecated": false
+            },
+            {
+              "name": "--fzf",
+              "shorthand": "-F",
+              "type": "bool",
+              "default": null,
+              "description": "use fzf to select a taskrun to describe",
+              "deprecated": false
+            },
+            {
+              "name": "--help",
+              "shorthand": "-h",
+              "type": "bool",
+              "default": null,
+              "description": "help for describe",
+              "deprecated": false
+            },
+            {
+              "name": "--last",
+              "shorthand": "-L",
+              "type": "bool",
+              "default": null,
+              "description": "show description for last TaskRun",
+              "deprecated": false
+            },
+            {
+              "name": "--limit",
+              "shorthand": null,
+              "type": "int",
+              "default": "5",
+              "description": "lists number of TaskRuns when selecting a TaskRun to describe (default 5)",
+              "deprecated": false
+            },
+            {
+              "name": "--output",
+              "shorthand": "-o",
+              "type": "string",
+              "default": null,
+              "description": "Output format. One of: (json, yaml, name, go-template, go-template-file, template, templatefile, jsonpath, jsonpath-as-json, jsonpath-file).",
+              "deprecated": false
+            },
+            {
+              "name": "--show-managed-fields",
+              "shorthand": null,
+              "type": "bool",
+              "default": null,
+              "description": "If true, keep the managedFields when printing objects in JSON or YAML format.",
+              "deprecated": false
+            },
+            {
+              "name": "--template",
+              "shorthand": null,
+              "type": "string",
+              "default": null,
+              "description": "Template string or path to template file to use when -o=go-template, -o=go-template-file. The template format is golang templates [http://golang.org/pkg/text/template/#pkg-overview].",
+              "deprecated": false
+            }
+          ],
+          "subcommands": []
+        },
+        {
+          "name": "export",
+          "flags": [
+            {
+              "name": "--context",
+              "shorthand": "-c",
+              "type": "string",
+              "default": null,
+              "description": "name of the kubeconfig context to use (default: kubectl config current-context)",
+              "deprecated": false
+            },
+            {
+              "name": "--kubeconfig",
+              "shorthand": "-k",
+              "type": "string",
+              "default": null,
+              "description": "kubectl config file (default: $HOME/.kube/config)",
+              "deprecated": false
+            },
+            {
+              "name": "--namespace",
+              "shorthand": "-n",
+              "type": "string",
+              "default": null,
+              "description": "namespace to use (default: from $KUBECONFIG)",
+              "deprecated": false
+            },
+            {
+              "name": "--no-color",
+              "shorthand": "-C",
+              "type": "bool",
+              "default": null,
+              "description": "disable coloring (default: false)",
+              "deprecated": false
+            },
+            {
+              "name": "--allow-missing-template-keys",
+              "shorthand": null,
+              "type": "bool",
+              "default": "true",
+              "description": "If true, ignore any errors in templates when a field or map key is missing in the template. Only applies to golang and jsonpath output formats. (default true)",
+              "deprecated": false
+            },
+            {
+              "name": "--help",
+              "shorthand": "-h",
+              "type": "bool",
+              "default": null,
+              "description": "help for export",
+              "deprecated": false
+            },
+            {
+              "name": "--output",
+              "shorthand": "-o",
+              "type": "string",
+              "default": null,
+              "description": "Output format. One of: (json, yaml, name, go-template, go-template-file, template, templatefile, jsonpath, jsonpath-as-json, jsonpath-file).",
+              "deprecated": false
+            },
+            {
+              "name": "--show-managed-fields",
+              "shorthand": null,
+              "type": "bool",
+              "default": null,
+              "description": "If true, keep the managedFields when printing objects in JSON or YAML format.",
+              "deprecated": false
+            },
+            {
+              "name": "--template",
+              "shorthand": null,
+              "type": "string",
+              "default": null,
+              "description": "Template string or path to template file to use when -o=go-template, -o=go-template-file. The template format is golang templates [http://golang.org/pkg/text/template/#pkg-overview].",
+              "deprecated": false
+            }
+          ],
+          "subcommands": []
+        },
+        {
+          "name": "list",
+          "flags": [
+            {
+              "name": "--context",
+              "shorthand": "-c",
+              "type": "string",
+              "default": null,
+              "description": "name of the kubeconfig context to use (default: kubectl config current-context)",
+              "deprecated": false
+            },
+            {
+              "name": "--kubeconfig",
+              "shorthand": "-k",
+              "type": "string",
+              "default": null,
+              "description": "kubectl config file (default: $HOME/.kube/config)",
+              "deprecated": false
+            },
+            {
+              "name": "--namespace",
+              "shorthand": "-n",
+              "type": "string",
+              "default": null,
+              "description": "namespace to use (default: from $KUBECONFIG)",
+              "deprecated": false
+            },
+            {
+              "name": "--no-color",
+              "shorthand": "-C",
+              "type": "bool",
+              "default": null,
+              "description": "disable coloring (default: false)",
+              "deprecated": false
+            },
+            {
+              "name": "--all-namespaces",
+              "shorthand": "-A",
+              "type": "bool",
+              "default": null,
+              "description": "list TaskRuns from all namespaces",
+              "deprecated": false
+            },
+            {
+              "name": "--allow-missing-template-keys",
+              "shorthand": null,
+              "type": "bool",
+              "default": "true",
+              "description": "If true, ignore any errors in templates when a field or map key is missing in the template. Only applies to golang and jsonpath output formats. (default true)",
+              "deprecated": false
+            },
+            {
+              "name": "--help",
+              "shorthand": "-h",
+              "type": "bool",
+              "default": null,
+              "description": "help for list",
+              "deprecated": false
+            },
+            {
+              "name": "--label",
+              "shorthand": null,
+              "type": "string",
+              "default": null,
+              "description": "A selector (label query) to filter on, supports '=', '==', and '!='",
+              "deprecated": false
+            },
+            {
+              "name": "--limit",
+              "shorthand": null,
+              "type": "int",
+              "default": null,
+              "description": "Limits the number of TaskRuns. If the limit value is 0 returns all",
+              "deprecated": false
+            },
+            {
+              "name": "--no-headers",
+              "shorthand": null,
+              "type": "bool",
+              "default": "print column headers with output",
+              "description": "do not print column headers with output (default print column headers with output)",
+              "deprecated": false
+            },
+            {
+              "name": "--output",
+              "shorthand": "-o",
+              "type": "string",
+              "default": null,
+              "description": "Output format. One of: (json, yaml, name, go-template, go-template-file, template, templatefile, jsonpath, jsonpath-as-json, jsonpath-file).",
+              "deprecated": false
+            },
+            {
+              "name": "--reverse",
+              "shorthand": null,
+              "type": "bool",
+              "default": null,
+              "description": "list TaskRuns in reverse order",
+              "deprecated": false
+            },
+            {
+              "name": "--show-managed-fields",
+              "shorthand": null,
+              "type": "bool",
+              "default": null,
+              "description": "If true, keep the managedFields when printing objects in JSON or YAML format.",
+              "deprecated": false
+            },
+            {
+              "name": "--template",
+              "shorthand": null,
+              "type": "string",
+              "default": null,
+              "description": "Template string or path to template file to use when -o=go-template, -o=go-template-file. The template format is golang templates [http://golang.org/pkg/text/template/#pkg-overview].",
+              "deprecated": false
+            }
+          ],
+          "subcommands": []
+        },
+        {
+          "name": "logs",
+          "flags": [
+            {
+              "name": "--context",
+              "shorthand": "-c",
+              "type": "string",
+              "default": null,
+              "description": "name of the kubeconfig context to use (default: kubectl config current-context)",
+              "deprecated": false
+            },
+            {
+              "name": "--kubeconfig",
+              "shorthand": "-k",
+              "type": "string",
+              "default": null,
+              "description": "kubectl config file (default: $HOME/.kube/config)",
+              "deprecated": false
+            },
+            {
+              "name": "--namespace",
+              "shorthand": "-n",
+              "type": "string",
+              "default": null,
+              "description": "namespace to use (default: from $KUBECONFIG)",
+              "deprecated": false
+            },
+            {
+              "name": "--no-color",
+              "shorthand": "-C",
+              "type": "bool",
+              "default": null,
+              "description": "disable coloring (default: false)",
+              "deprecated": false
+            },
+            {
+              "name": "--all",
+              "shorthand": "-a",
+              "type": "bool",
+              "default": null,
+              "description": "show all logs including init steps injected by tekton",
+              "deprecated": false
+            },
+            {
+              "name": "--follow",
+              "shorthand": "-f",
+              "type": "bool",
+              "default": null,
+              "description": "stream live logs",
+              "deprecated": false
+            },
+            {
+              "name": "--fzf",
+              "shorthand": "-F",
+              "type": "bool",
+              "default": null,
+              "description": "use fzf to select a TaskRun",
+              "deprecated": false
+            },
+            {
+              "name": "--help",
+              "shorthand": "-h",
+              "type": "bool",
+              "default": null,
+              "description": "help for logs",
+              "deprecated": false
+            },
+            {
+              "name": "--last",
+              "shorthand": "-L",
+              "type": "bool",
+              "default": null,
+              "description": "show logs for last TaskRun",
+              "deprecated": false
+            },
+            {
+              "name": "--limit",
+              "shorthand": null,
+              "type": "int",
+              "default": "5",
+              "description": "lists number of TaskRuns (default 5)",
+              "deprecated": false
+            },
+            {
+              "name": "--prefix",
+              "shorthand": null,
+              "type": "bool",
+              "default": "true",
+              "description": "prefix each log line with the log source (step name) (default true)",
+              "deprecated": false
+            },
+            {
+              "name": "--step",
+              "shorthand": "-s",
+              "type": "stringArray",
+              "default": null,
+              "description": "show logs for mentioned steps only",
+              "deprecated": false
+            },
+            {
+              "name": "--timestamps",
+              "shorthand": "-t",
+              "type": "bool",
+              "default": null,
+              "description": "show logs with timestamp",
+              "deprecated": false
+            }
+          ],
+          "subcommands": []
+        }
+      ]
+    },
+    {
+      "name": "triggerbinding",
+      "flags": [
+        {
+          "name": "--context",
+          "shorthand": "-c",
+          "type": "string",
+          "default": null,
+          "description": "name of the kubeconfig context to use (default: kubectl config current-context)",
+          "deprecated": false
+        },
+        {
+          "name": "--help",
+          "shorthand": "-h",
+          "type": "bool",
+          "default": null,
+          "description": "help for triggerbinding",
+          "deprecated": false
+        },
+        {
+          "name": "--kubeconfig",
+          "shorthand": "-k",
+          "type": "string",
+          "default": null,
+          "description": "kubectl config file (default: $HOME/.kube/config)",
+          "deprecated": false
+        },
+        {
+          "name": "--namespace",
+          "shorthand": "-n",
+          "type": "string",
+          "default": null,
+          "description": "namespace to use (default: from $KUBECONFIG)",
+          "deprecated": false
+        },
+        {
+          "name": "--no-color",
+          "shorthand": "-C",
+          "type": "bool",
+          "default": null,
+          "description": "disable coloring (default: false)",
+          "deprecated": false
+        }
+      ],
+      "subcommands": [
+        {
+          "name": "delete",
+          "flags": [
+            {
+              "name": "--context",
+              "shorthand": "-c",
+              "type": "string",
+              "default": null,
+              "description": "name of the kubeconfig context to use (default: kubectl config current-context)",
+              "deprecated": false
+            },
+            {
+              "name": "--kubeconfig",
+              "shorthand": "-k",
+              "type": "string",
+              "default": null,
+              "description": "kubectl config file (default: $HOME/.kube/config)",
+              "deprecated": false
+            },
+            {
+              "name": "--namespace",
+              "shorthand": "-n",
+              "type": "string",
+              "default": null,
+              "description": "namespace to use (default: from $KUBECONFIG)",
+              "deprecated": false
+            },
+            {
+              "name": "--no-color",
+              "shorthand": "-C",
+              "type": "bool",
+              "default": null,
+              "description": "disable coloring (default: false)",
+              "deprecated": false
+            },
+            {
+              "name": "--all",
+              "shorthand": null,
+              "type": "bool",
+              "default": null,
+              "description": "Delete all TriggerBindings in a namespace (default: false)",
+              "deprecated": false
+            },
+            {
+              "name": "--allow-missing-template-keys",
+              "shorthand": null,
+              "type": "bool",
+              "default": "true",
+              "description": "If true, ignore any errors in templates when a field or map key is missing in the template. Only applies to golang and jsonpath output formats. (default true)",
+              "deprecated": false
+            },
+            {
+              "name": "--force",
+              "shorthand": "-f",
+              "type": "bool",
+              "default": null,
+              "description": "Whether to force deletion (default: false)",
+              "deprecated": false
+            },
+            {
+              "name": "--help",
+              "shorthand": "-h",
+              "type": "bool",
+              "default": null,
+              "description": "help for delete",
+              "deprecated": false
+            },
+            {
+              "name": "--output",
+              "shorthand": "-o",
+              "type": "string",
+              "default": null,
+              "description": "Output format. One of: (json, yaml, name, go-template, go-template-file, template, templatefile, jsonpath, jsonpath-as-json, jsonpath-file).",
+              "deprecated": false
+            },
+            {
+              "name": "--show-managed-fields",
+              "shorthand": null,
+              "type": "bool",
+              "default": null,
+              "description": "If true, keep the managedFields when printing objects in JSON or YAML format.",
+              "deprecated": false
+            },
+            {
+              "name": "--template",
+              "shorthand": null,
+              "type": "string",
+              "default": null,
+              "description": "Template string or path to template file to use when -o=go-template, -o=go-template-file. The template format is golang templates [http://golang.org/pkg/text/template/#pkg-overview].",
+              "deprecated": false
+            }
+          ],
+          "subcommands": []
+        },
+        {
+          "name": "describe",
+          "flags": [
+            {
+              "name": "--context",
+              "shorthand": "-c",
+              "type": "string",
+              "default": null,
+              "description": "name of the kubeconfig context to use (default: kubectl config current-context)",
+              "deprecated": false
+            },
+            {
+              "name": "--kubeconfig",
+              "shorthand": "-k",
+              "type": "string",
+              "default": null,
+              "description": "kubectl config file (default: $HOME/.kube/config)",
+              "deprecated": false
+            },
+            {
+              "name": "--namespace",
+              "shorthand": "-n",
+              "type": "string",
+              "default": null,
+              "description": "namespace to use (default: from $KUBECONFIG)",
+              "deprecated": false
+            },
+            {
+              "name": "--no-color",
+              "shorthand": "-C",
+              "type": "bool",
+              "default": null,
+              "description": "disable coloring (default: false)",
+              "deprecated": false
+            },
+            {
+              "name": "--allow-missing-template-keys",
+              "shorthand": null,
+              "type": "bool",
+              "default": "true",
+              "description": "If true, ignore any errors in templates when a field or map key is missing in the template. Only applies to golang and jsonpath output formats. (default true)",
+              "deprecated": false
+            },
+            {
+              "name": "--help",
+              "shorthand": "-h",
+              "type": "bool",
+              "default": null,
+              "description": "help for describe",
+              "deprecated": false
+            },
+            {
+              "name": "--output",
+              "shorthand": "-o",
+              "type": "string",
+              "default": null,
+              "description": "Output format. One of: (json, yaml, name, go-template, go-template-file, template, templatefile, jsonpath, jsonpath-as-json, jsonpath-file).",
+              "deprecated": false
+            },
+            {
+              "name": "--show-managed-fields",
+              "shorthand": null,
+              "type": "bool",
+              "default": null,
+              "description": "If true, keep the managedFields when printing objects in JSON or YAML format.",
+              "deprecated": false
+            },
+            {
+              "name": "--template",
+              "shorthand": null,
+              "type": "string",
+              "default": null,
+              "description": "Template string or path to template file to use when -o=go-template, -o=go-template-file. The template format is golang templates [http://golang.org/pkg/text/template/#pkg-overview].",
+              "deprecated": false
+            }
+          ],
+          "subcommands": []
+        },
+        {
+          "name": "list",
+          "flags": [
+            {
+              "name": "--context",
+              "shorthand": "-c",
+              "type": "string",
+              "default": null,
+              "description": "name of the kubeconfig context to use (default: kubectl config current-context)",
+              "deprecated": false
+            },
+            {
+              "name": "--kubeconfig",
+              "shorthand": "-k",
+              "type": "string",
+              "default": null,
+              "description": "kubectl config file (default: $HOME/.kube/config)",
+              "deprecated": false
+            },
+            {
+              "name": "--namespace",
+              "shorthand": "-n",
+              "type": "string",
+              "default": null,
+              "description": "namespace to use (default: from $KUBECONFIG)",
+              "deprecated": false
+            },
+            {
+              "name": "--no-color",
+              "shorthand": "-C",
+              "type": "bool",
+              "default": null,
+              "description": "disable coloring (default: false)",
+              "deprecated": false
+            },
+            {
+              "name": "--all-namespaces",
+              "shorthand": "-A",
+              "type": "bool",
+              "default": null,
+              "description": "list TriggerBindings from all namespaces",
+              "deprecated": false
+            },
+            {
+              "name": "--allow-missing-template-keys",
+              "shorthand": null,
+              "type": "bool",
+              "default": "true",
+              "description": "If true, ignore any errors in templates when a field or map key is missing in the template. Only applies to golang and jsonpath output formats. (default true)",
+              "deprecated": false
+            },
+            {
+              "name": "--help",
+              "shorthand": "-h",
+              "type": "bool",
+              "default": null,
+              "description": "help for list",
+              "deprecated": false
+            },
+            {
+              "name": "--no-headers",
+              "shorthand": null,
+              "type": "bool",
+              "default": "print column headers with output",
+              "description": "do not print column headers with output (default print column headers with output)",
+              "deprecated": false
+            },
+            {
+              "name": "--output",
+              "shorthand": "-o",
+              "type": "string",
+              "default": null,
+              "description": "Output format. One of: (json, yaml, name, go-template, go-template-file, template, templatefile, jsonpath, jsonpath-as-json, jsonpath-file).",
+              "deprecated": false
+            },
+            {
+              "name": "--show-managed-fields",
+              "shorthand": null,
+              "type": "bool",
+              "default": null,
+              "description": "If true, keep the managedFields when printing objects in JSON or YAML format.",
+              "deprecated": false
+            },
+            {
+              "name": "--template",
+              "shorthand": null,
+              "type": "string",
+              "default": null,
+              "description": "Template string or path to template file to use when -o=go-template, -o=go-template-file. The template format is golang templates [http://golang.org/pkg/text/template/#pkg-overview].",
+              "deprecated": false
+            }
+          ],
+          "subcommands": []
+        }
+      ]
+    },
+    {
+      "name": "triggertemplate",
+      "flags": [
+        {
+          "name": "--context",
+          "shorthand": "-c",
+          "type": "string",
+          "default": null,
+          "description": "name of the kubeconfig context to use (default: kubectl config current-context)",
+          "deprecated": false
+        },
+        {
+          "name": "--help",
+          "shorthand": "-h",
+          "type": "bool",
+          "default": null,
+          "description": "help for triggertemplate",
+          "deprecated": false
+        },
+        {
+          "name": "--kubeconfig",
+          "shorthand": "-k",
+          "type": "string",
+          "default": null,
+          "description": "kubectl config file (default: $HOME/.kube/config)",
+          "deprecated": false
+        },
+        {
+          "name": "--namespace",
+          "shorthand": "-n",
+          "type": "string",
+          "default": null,
+          "description": "namespace to use (default: from $KUBECONFIG)",
+          "deprecated": false
+        },
+        {
+          "name": "--no-color",
+          "shorthand": "-C",
+          "type": "bool",
+          "default": null,
+          "description": "disable coloring (default: false)",
+          "deprecated": false
+        }
+      ],
+      "subcommands": [
+        {
+          "name": "delete",
+          "flags": [
+            {
+              "name": "--context",
+              "shorthand": "-c",
+              "type": "string",
+              "default": null,
+              "description": "name of the kubeconfig context to use (default: kubectl config current-context)",
+              "deprecated": false
+            },
+            {
+              "name": "--kubeconfig",
+              "shorthand": "-k",
+              "type": "string",
+              "default": null,
+              "description": "kubectl config file (default: $HOME/.kube/config)",
+              "deprecated": false
+            },
+            {
+              "name": "--namespace",
+              "shorthand": "-n",
+              "type": "string",
+              "default": null,
+              "description": "namespace to use (default: from $KUBECONFIG)",
+              "deprecated": false
+            },
+            {
+              "name": "--no-color",
+              "shorthand": "-C",
+              "type": "bool",
+              "default": null,
+              "description": "disable coloring (default: false)",
+              "deprecated": false
+            },
+            {
+              "name": "--all",
+              "shorthand": null,
+              "type": "bool",
+              "default": null,
+              "description": "Delete all TriggerTemplates in a namespace (default: false)",
+              "deprecated": false
+            },
+            {
+              "name": "--allow-missing-template-keys",
+              "shorthand": null,
+              "type": "bool",
+              "default": "true",
+              "description": "If true, ignore any errors in templates when a field or map key is missing in the template. Only applies to golang and jsonpath output formats. (default true)",
+              "deprecated": false
+            },
+            {
+              "name": "--force",
+              "shorthand": "-f",
+              "type": "bool",
+              "default": null,
+              "description": "Whether to force deletion (default: false)",
+              "deprecated": false
+            },
+            {
+              "name": "--help",
+              "shorthand": "-h",
+              "type": "bool",
+              "default": null,
+              "description": "help for delete",
+              "deprecated": false
+            },
+            {
+              "name": "--output",
+              "shorthand": "-o",
+              "type": "string",
+              "default": null,
+              "description": "Output format. One of: (json, yaml, name, go-template, go-template-file, template, templatefile, jsonpath, jsonpath-as-json, jsonpath-file).",
+              "deprecated": false
+            },
+            {
+              "name": "--show-managed-fields",
+              "shorthand": null,
+              "type": "bool",
+              "default": null,
+              "description": "If true, keep the managedFields when printing objects in JSON or YAML format.",
+              "deprecated": false
+            },
+            {
+              "name": "--template",
+              "shorthand": null,
+              "type": "string",
+              "default": null,
+              "description": "Template string or path to template file to use when -o=go-template, -o=go-template-file. The template format is golang templates [http://golang.org/pkg/text/template/#pkg-overview].",
+              "deprecated": false
+            }
+          ],
+          "subcommands": []
+        },
+        {
+          "name": "describe",
+          "flags": [
+            {
+              "name": "--context",
+              "shorthand": "-c",
+              "type": "string",
+              "default": null,
+              "description": "name of the kubeconfig context to use (default: kubectl config current-context)",
+              "deprecated": false
+            },
+            {
+              "name": "--kubeconfig",
+              "shorthand": "-k",
+              "type": "string",
+              "default": null,
+              "description": "kubectl config file (default: $HOME/.kube/config)",
+              "deprecated": false
+            },
+            {
+              "name": "--namespace",
+              "shorthand": "-n",
+              "type": "string",
+              "default": null,
+              "description": "namespace to use (default: from $KUBECONFIG)",
+              "deprecated": false
+            },
+            {
+              "name": "--no-color",
+              "shorthand": "-C",
+              "type": "bool",
+              "default": null,
+              "description": "disable coloring (default: false)",
+              "deprecated": false
+            },
+            {
+              "name": "--allow-missing-template-keys",
+              "shorthand": null,
+              "type": "bool",
+              "default": "true",
+              "description": "If true, ignore any errors in templates when a field or map key is missing in the template. Only applies to golang and jsonpath output formats. (default true)",
+              "deprecated": false
+            },
+            {
+              "name": "--help",
+              "shorthand": "-h",
+              "type": "bool",
+              "default": null,
+              "description": "help for describe",
+              "deprecated": false
+            },
+            {
+              "name": "--output",
+              "shorthand": "-o",
+              "type": "string",
+              "default": null,
+              "description": "Output format. One of: (json, yaml, name, go-template, go-template-file, template, templatefile, jsonpath, jsonpath-as-json, jsonpath-file).",
+              "deprecated": false
+            },
+            {
+              "name": "--show-managed-fields",
+              "shorthand": null,
+              "type": "bool",
+              "default": null,
+              "description": "If true, keep the managedFields when printing objects in JSON or YAML format.",
+              "deprecated": false
+            },
+            {
+              "name": "--template",
+              "shorthand": null,
+              "type": "string",
+              "default": null,
+              "description": "Template string or path to template file to use when -o=go-template, -o=go-template-file. The template format is golang templates [http://golang.org/pkg/text/template/#pkg-overview].",
+              "deprecated": false
+            }
+          ],
+          "subcommands": []
+        },
+        {
+          "name": "list",
+          "flags": [
+            {
+              "name": "--context",
+              "shorthand": "-c",
+              "type": "string",
+              "default": null,
+              "description": "name of the kubeconfig context to use (default: kubectl config current-context)",
+              "deprecated": false
+            },
+            {
+              "name": "--kubeconfig",
+              "shorthand": "-k",
+              "type": "string",
+              "default": null,
+              "description": "kubectl config file (default: $HOME/.kube/config)",
+              "deprecated": false
+            },
+            {
+              "name": "--namespace",
+              "shorthand": "-n",
+              "type": "string",
+              "default": null,
+              "description": "namespace to use (default: from $KUBECONFIG)",
+              "deprecated": false
+            },
+            {
+              "name": "--no-color",
+              "shorthand": "-C",
+              "type": "bool",
+              "default": null,
+              "description": "disable coloring (default: false)",
+              "deprecated": false
+            },
+            {
+              "name": "--all-namespaces",
+              "shorthand": "-A",
+              "type": "bool",
+              "default": null,
+              "description": "list TriggerTemplates from all namespaces",
+              "deprecated": false
+            },
+            {
+              "name": "--allow-missing-template-keys",
+              "shorthand": null,
+              "type": "bool",
+              "default": "true",
+              "description": "If true, ignore any errors in templates when a field or map key is missing in the template. Only applies to golang and jsonpath output formats. (default true)",
+              "deprecated": false
+            },
+            {
+              "name": "--help",
+              "shorthand": "-h",
+              "type": "bool",
+              "default": null,
+              "description": "help for list",
+              "deprecated": false
+            },
+            {
+              "name": "--no-headers",
+              "shorthand": null,
+              "type": "bool",
+              "default": "print column headers with output",
+              "description": "do not print column headers with output (default print column headers with output)",
+              "deprecated": false
+            },
+            {
+              "name": "--output",
+              "shorthand": "-o",
+              "type": "string",
+              "default": null,
+              "description": "Output format. One of: (json, yaml, name, go-template, go-template-file, template, templatefile, jsonpath, jsonpath-as-json, jsonpath-file).",
+              "deprecated": false
+            },
+            {
+              "name": "--show-managed-fields",
+              "shorthand": null,
+              "type": "bool",
+              "default": null,
+              "description": "If true, keep the managedFields when printing objects in JSON or YAML format.",
+              "deprecated": false
+            },
+            {
+              "name": "--template",
+              "shorthand": null,
+              "type": "string",
+              "default": null,
+              "description": "Template string or path to template file to use when -o=go-template, -o=go-template-file. The template format is golang templates [http://golang.org/pkg/text/template/#pkg-overview].",
+              "deprecated": false
+            }
+          ],
+          "subcommands": []
+        }
+      ]
+    },
+    {
+      "name": "version",
+      "flags": [
+        {
+          "name": "--check",
+          "shorthand": null,
+          "type": "bool",
+          "default": null,
+          "description": "check if a newer version is available",
+          "deprecated": false
+        },
+        {
+          "name": "--component",
+          "shorthand": null,
+          "type": "string",
+          "default": null,
+          "description": "provide a particular component name for its version (client|chains|pipeline|triggers|dashboard)",
+          "deprecated": false
+        },
+        {
+          "name": "--context",
+          "shorthand": "-c",
+          "type": "string",
+          "default": null,
+          "description": "name of the kubeconfig context to use (default: kubectl config current-context)",
+          "deprecated": false
+        },
+        {
+          "name": "--help",
+          "shorthand": "-h",
+          "type": "bool",
+          "default": null,
+          "description": "help for version",
+          "deprecated": false
+        },
+        {
+          "name": "--kubeconfig",
+          "shorthand": "-k",
+          "type": "string",
+          "default": null,
+          "description": "kubectl config file (default: $HOME/.kube/config)",
+          "deprecated": false
+        },
+        {
+          "name": "--namespace",
+          "shorthand": "-n",
+          "type": "string",
+          "default": null,
+          "description": "namespace to check installed controller version",
+          "deprecated": false
+        },
+        {
+          "name": "--no-color",
+          "shorthand": "-C",
+          "type": "bool",
+          "default": null,
+          "description": "disable coloring (default: false)",
+          "deprecated": false
+        }
+      ],
+      "subcommands": []
+    }
+  ],
+  "version": "0.46"
+}
