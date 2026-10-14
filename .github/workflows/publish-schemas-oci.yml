@@ -28,10 +28,10 @@ jobs:
       - name: Package and push schemas
         run: |
           tag="${GITHUB_REF_NAME}"
-          tar -czf /tmp/schemas.tar.gz -C schemas .
+          tar -czf schemas.tar.gz -C schemas .
           oras push \
             "quay.io/takinosh/cli-schema-mcp:${tag}" \
-            /tmp/schemas.tar.gz:application/vnd.cli-schema-mcp.schemas.v1.tar+gzip
+            schemas.tar.gz:application/vnd.cli-schema-mcp.schemas.v1.tar+gzip
           oras push \
             "quay.io/takinosh/cli-schema-mcp:latest" \
-            /tmp/schemas.tar.gz:application/vnd.cli-schema-mcp.schemas.v1.tar+gzip
+            schemas.tar.gz:application/vnd.cli-schema-mcp.schemas.v1.tar+gzip
