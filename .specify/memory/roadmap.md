@@ -170,7 +170,7 @@ parallel with equal weight.
   via the `help` subcommand recursion in large CLIs like helm.
   Debrief: `specs/002-schema-extract-ci/roadmap-reviews/debrief-2026-10-13T193652Z.md`.
 
-### 003 — OCI Artifact Publishing  [status: planned]
+### 003 — OCI Artifact Publishing  [status: implemented]
 
 - **Description:** GitHub Actions release workflow that packages the `schemas/` directory as an
   OCI artifact and pushes it to a container registry (e.g. quay.io) on each tagged release.
@@ -185,11 +185,13 @@ parallel with equal weight.
   directory structure.
 - **Depends on:** 001, 002
 - **Governed by:** C-02, C-07
-- **Notes:** Corresponds to FR-013 and convergence task T013. Deferred to Phase 3 by spec
-  assumption. **Registry decided 2026-10-14: `quay.io/takinosh/cli-schema-mcp`.** Workflow
-  file `.github/workflows/publish-schemas-oci.yml` was added while closing 001 task T013 and
-  currently targets GHCR — must be updated to quay.io. Spec 003 is now unblocked; run
-  `/speckit-specify 003` to write the spec and `/speckit-implement 003` to deliver it.
+- **Spec dir:** specs/003-oci-publishing/
+- **Notes:** Implemented 2026-10-14. Registry: `quay.io/takinosh/cli-schema-mcp`. First
+  release `v0.1.1` pushed successfully (layer digest sha256:35d09f9b…). Artifact is publicly
+  pullable; `:latest` and versioned tags both live. README updated with `oras pull` example
+  and `SCHEMA_REGISTRY_PATH` docs. Containerfile updated with commented OCI build alternative.
+  Status advances to `verified` after a real air-gapped pull + MCP server start is observed
+  in a disconnected environment.
 
 ### Integrations
 
@@ -276,4 +278,4 @@ parallel with equal weight.
 
 ---
 
-**Version**: 1.2.4 | **Ratified**: 2026-10-12 | **Last Amended**: 2026-10-14
+**Version**: 1.2.5 | **Ratified**: 2026-10-12 | **Last Amended**: 2026-10-14
