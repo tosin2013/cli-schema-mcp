@@ -17,6 +17,7 @@ Community contributors are encouraged to maintain the CLIs they add.
 | `kubectl` | 1.31–1.35 | community |
 | `kustomize` | 5.3–5.5 | community |
 | `podman` | 5.2–5.4 | community |
+| `tkn` | 0.45–0.46 | community |
 
 ## Becoming a CLI Maintainer
 

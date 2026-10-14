@@ -5,9 +5,9 @@
 ```mermaid
 graph TB
     subgraph "External Clients"
-        A[Claude Code/LLM Client]
+        A[Claude Code / AI Agent]
         B[Custom MCP Client]
-        C[Development Tools]
+        C[LangGraph / Automation]
     end
 
     subgraph "Network Layer"
@@ -15,7 +15,7 @@ graph TB
         E[SSL Termination]
     end
 
-    subgraph "Template MCP Server"
+    subgraph "cli-schema-mcp Server"
         subgraph "Application Layer"
             F[FastAPI Application<br/>api.py]
             G[Health Check Endpoint<br/>/health]
@@ -23,37 +23,46 @@ graph TB
         end
 
         subgraph "MCP Core"
-            I[TemplateMCPServer<br/>mcp.py]
+            I[CLISchemaMCPServer<br/>mcp.py]
             J[FastMCP Instance<br/>Protocol Implementation]
             K[Tool Registry<br/>Dynamic Registration]
         end
 
         subgraph "Tool Layer"
-            L[Mathematical Tools<br/>multiply_numbers]
-            M[Logo Tool<br/>get_redhat_logo]
-            N[Code Review Tool<br/>generate_code_review_prompt]
-            O[Custom Tools<br/>Extensible]
+            L[get_flags<br/>Flag lookup by command + version]
+            M[list_subcommands<br/>Subcommand tree traversal]
+            N[validate_command<br/>Hallucination rejection]
+            O[detect_version<br/>Version string parsing]
+            P[list_supported<br/>Registry enumeration]
+        end
+
+        subgraph "Schema Registry"
+            Q[schema_registry.py<br/>JSON catalog loader]
+            R[schemas/<br/>oc/, kubectl/, kustomize/<br/>podman/, tkn/ ...]
         end
 
         subgraph "Infrastructure Layer"
-            P[Configuration Management<br/>settings.py]
-            Q[Structured Logging<br/>pylogger.py]
-            R[Error Handling<br/>Exception Management]
-            S[Asset Management<br/>Static Resources]
+            S[Configuration Management<br/>settings.py]
+            T[Structured Logging<br/>pylogger.py]
+            U[Error Handling<br/>Exception Management]
         end
 
         subgraph "Transport Layer"
-            T[HTTP Transport]
-            U[SSE Transport]
-            V[Streamable HTTP Transport]
+            V[HTTP Transport]
+            W[SSE Transport]
+            X[Streamable HTTP Transport]
         end
     end
 
-    subgraph "External Dependencies"
-        W[Environment Variables<br/>.env]
-        X[SSL Certificates<br/>TLS/HTTPS]
-        Y[Static Assets<br/>Images/Files]
-        Z[Container Runtime<br/>Docker/Podman]
+    subgraph "Build-time Only"
+        Y[extractor/<br/>obtain.py, refresh.py<br/>cobra adapter]
+        Z[clis/*.yaml<br/>CLI registrations]
+        AA[CI: extract-schemas.yml<br/>auto-extracts on clis/ change]
+    end
+
+    subgraph "External"
+        BB[Environment Variables<br/>.env]
+        CC[OCI Artifact<br/>quay.io/takinosh/cli-schema-mcp]
     end
 
     A --> D
@@ -70,38 +79,51 @@ graph TB
     K --> M
     K --> N
     K --> O
-    I --> P
-    I --> Q
-    I --> R
-    M --> S
-    F --> T
-    F --> U
+    K --> P
+    L --> Q
+    M --> Q
+    N --> Q
+    O --> Q
+    P --> Q
+    Q --> R
+    I --> S
+    I --> T
+    I --> U
     F --> V
-    P --> W
-    E --> X
-    S --> Y
-    Z --> F
+    F --> W
+    F --> X
+    S --> BB
+    AA --> R
+    Z --> AA
+    Y --> AA
+    CC -.->|oras pull| R
 
     classDef client fill:#e3f2fd
     classDef network fill:#f3e5f5
     classDef application fill:#e8f5e8
     classDef core fill:#fff3e0
     classDef tools fill:#fce4ec
+    classDef registry fill:#e1f5fe
     classDef infrastructure fill:#f1f8e9
     classDef transport fill:#fef7e0
-    classDef external fill:#f5f5f5
+    classDef buildtime fill:#f5f5f5
+    classDef external fill:#eeeeee
 
     class A,B,C client
     class D,E network
     class F,G,H application
     class I,J,K core
-    class L,M,N,O tools
-    class P,Q,R,S infrastructure
-    class T,U,V transport
-    class W,X,Y,Z external
+    class L,M,N,O,P tools
+    class Q,R registry
+    class S,T,U infrastructure
+    class V,W,X transport
+    class Y,Z,AA buildtime
+    class BB,CC external
 ```
 
-## Control Flow
+**Key architectural invariant**: The `extractor/` package is **build-time only**. It is never imported by the MCP server at runtime. Schemas are pre-extracted JSON files on the filesystem.
+
+## Request Flow
 
 ```mermaid
 flowchart TD
@@ -110,189 +132,135 @@ flowchart TD
     B -->|HTTP/Streamable-HTTP| C[FastAPI App<br/>api.py]
     B -->|SSE| D[SSE App<br/>create_sse_app]
 
-    C --> E[Health Check?]
+    C --> E{Path?}
     D --> E
 
     E -->|/health| F[Health Endpoint<br/>Return Status]
     E -->|/mcp| G[MCP Request Handler<br/>FastMCP Instance]
 
-    G --> H{MCP Method Type?}
+    G --> H{MCP Method?}
 
-    H -->|tools/list| I[List Available Tools<br/>Return tool definitions]
-    H -->|tools/call| J[Tool Execution Router<br/>mcp.py]
+    H -->|tools/list| I[Return 5 tool definitions]
+    H -->|tools/call| J[Tool Router<br/>mcp.py]
 
     J --> K{Which Tool?}
 
-    K -->|multiply_numbers| L[Multiply Tool<br/>multiply_tool.py]
-    K -->|get_redhat_logo| M[Logo Tool<br/>redhat_logo_tool.py]
-    K -->|generate_code_review_prompt| N[Code Review Tool<br/>code_review_tool.py]
+    K -->|get_flags| L[get_flags_tool.py<br/>Load schema → filter by command]
+    K -->|list_subcommands| M[list_subcommands_tool.py<br/>Load schema → return subtree]
+    K -->|validate_command| N[validate_command_tool.py<br/>Parse command → check flags]
+    K -->|detect_version| O[detect_version_tool.py<br/>Match version string]
+    K -->|list_supported| P[list_supported_tool.py<br/>Enumerate schemas/ dirs]
 
-    L --> O[Validate Input<br/>Check numeric types]
-    M --> P[Read Asset File<br/>Base64 encode PNG]
-    N --> Q[Generate Prompt<br/>Format code review template]
+    L --> Q[schema_registry.py<br/>load_schema tool version]
+    M --> Q
+    N --> Q
+    O --> Q
+    P --> Q
 
-    O --> R[Perform Calculation<br/>a * b]
-    P --> S[Return Image Data<br/>MIME type + base64]
-    Q --> T[Return Prompt Array<br/>Structured messages]
+    Q --> R[schemas/tool/version.json<br/>Pre-extracted flag catalog]
 
-    R --> U[Log Result<br/>Structured logging]
-    S --> U
-    T --> U
+    R --> S[Return structured response<br/>Dict with status + data]
+    S --> T[Send to MCP Client]
 
-    U --> V[Return Success Response<br/>JSON format]
-
-    V --> W[Send to MCP Client<br/>Complete request cycle]
-
-    F --> W
-    I --> W
-
-    X[Configuration Loading<br/>settings.py] --> Y[Environment Variables<br/>.env file]
-    Y --> Z[Pydantic Validation<br/>Type checking & defaults]
-    Z --> AA[Server Startup<br/>main.py]
-    AA --> C
-    AA --> D
-
-    BB[Error Handling] --> CC[Structured Logging<br/>pylogger.py]
-    CC --> DD[JSON Output<br/>Timestamp + Context]
-
-    O --> BB
-    P --> BB
-    Q --> BB
+    F --> T
+    I --> T
 
     classDef request fill:#e3f2fd
     classDef routing fill:#f3e5f5
     classDef tools fill:#e8f5e8
-    classDef config fill:#fff3e0
-    classDef logging fill:#fce4ec
+    classDef registry fill:#e1f5fe
+    classDef response fill:#fff3e0
 
     class A,B,E,H,K request
     class C,D,G,J routing
-    class L,M,N,O,P,Q,R,S,T tools
-    class X,Y,Z,AA config
-    class BB,CC,DD logging
+    class L,M,N,O,P tools
+    class Q,R registry
+    class S,T,F,I response
 ```
 
 ## Code Structure
 
 ```
-template-mcp-server/
-├── template_mcp_server/           # Main package directory
+cli-schema-mcp/
+├── cli_schema_mcp/              # MCP server package (runtime)
 │   ├── __init__.py
-│   ├── src/                       # Core source code
-│   │   ├── __init__.py
-│   │   ├── main.py               # Application entry point & startup logic
-│   │   ├── api.py                # FastAPI application & transport setup
-│   │   ├── mcp.py                # MCP server implementation & tool registration
-│   │   ├── settings.py           # Pydantic-based configuration management
-│   │   ├── assets/               # Static resource files
-│   │   │   └── redhat.png        # Example image asset
-│   │   ├── oauth/                # OAuth integration
-│   │   │   ├── __init__.py
-│   │   │   ├── controller.py     # OAuth controller logic
-│   │   │   ├── handler.py        # OAuth request handlers
-│   │   │   ├── models.py         # OAuth data models
-│   │   │   ├── routes.py         # OAuth route definitions
-│   │   │   └── service.py        # OAuth service layer
-│   │   ├── storage/              # Persistent storage
-│   │   │   ├── __init__.py
-│   │   │   └── storage_service.py # PostgreSQL token storage
-│   │   └── tools/                # MCP tool implementations
-│   │       ├── __init__.py
-│   │       ├── multiply_tool.py          # Mathematical operations tool
-│   │       ├── code_review_tool.py       # Code review prompt generator
-│   │       └── redhat_logo_tool.py       # Base64 image resource handler
-│   └── utils/                    # Shared utilities
-│       ├── __init__.py
-│       └── pylogger.py          # Structured logging with structlog
-├── tests/                        # Comprehensive test suite
-│   ├── conftest.py              # Pytest fixtures and configuration
-│   ├── test_api.py              # API endpoint tests
-│   ├── test_basic.py            # Basic integration tests
-│   ├── test_main.py             # Entry point tests
-│   ├── test_mcp.py              # MCP server tests
-│   ├── test_oauth_controller.py # OAuth controller tests
-│   ├── test_oauth_handler.py    # OAuth handler tests
-│   ├── test_oauth_service.py    # OAuth service tests
-│   ├── test_settings.py         # Configuration tests
-│   ├── test_storage_init.py     # Storage init tests
-│   ├── test_storage_service.py  # Storage service tests
-│   ├── test_tools.py            # Tool unit tests
-│   └── test_utils.py            # Utility tests
-├── examples/                     # Client examples
-│   ├── fastmcp_client.py        # FastMCP client example
-│   └── langgraph_client.py      # LangGraph client example
-├── deployment/                   # Deployment configurations
-│   └── openshift/               # OpenShift manifests
-├── .github/                      # GitHub configuration
-│   ├── ISSUE_TEMPLATE/          # Issue templates
-│   ├── PULL_REQUEST_TEMPLATE.md # PR template
-│   ├── dependabot.yml           # Dependency automation
-│   ├── labeler.yml              # Auto-labeling rules
-│   └── workflows/               # CI/CD workflows
-├── pyproject.toml               # Project metadata & dependencies
-├── Makefile                     # Development commands
-├── Containerfile                # Red Hat UBI-based container build
-├── compose.yaml                 # Podman/Docker Compose orchestration
-├── CONTRIBUTING.md              # Contribution guide
-├── SECURITY.md                  # Security policy
-├── CHANGELOG.md                 # Release history
-├── LICENSE                      # Apache 2.0
-└── README.md                    # Project documentation
+│   ├── src/
+│   │   ├── main.py              # Application entry point
+│   │   ├── api.py               # FastAPI app + transport setup
+│   │   ├── mcp.py               # MCP server + tool registration
+│   │   ├── schema_registry.py   # JSON catalog loader (lru_cache)
+│   │   ├── settings.py          # Pydantic configuration
+│   │   ├── oauth/               # OAuth integration (off by default)
+│   │   ├── storage/             # PostgreSQL token storage (auth only)
+│   │   └── tools/               # One file per MCP tool
+│   │       ├── get_flags_tool.py
+│   │       ├── list_subcommands_tool.py
+│   │       ├── validate_command_tool.py
+│   │       ├── detect_version_tool.py
+│   │       └── list_supported_tool.py
+│   └── utils/
+│       └── pylogger.py          # Structured logging
+│
+├── extractor/                   # Build-time only — never imported by server
+│   ├── cli_config.py            # YAML registration parser + ObtainConfig
+│   ├── obtain.py                # Download, SHA-256 verify, unpack
+│   ├── refresh.py               # Change detection + all-or-nothing publish
+│   ├── main.py                  # python -m extractor <cli> <version>
+│   └── adapters/
+│       ├── cobra.py             # Cobra __complete + help-text extraction
+│       └── help_parser.py       # Regex-based help text parser
+│
+├── clis/                        # CLI registrations (one YAML per CLI)
+│   ├── oc.yaml
+│   ├── kubectl.yaml
+│   ├── kustomize.yaml
+│   ├── podman.yaml
+│   └── tkn.yaml
+│
+├── schemas/                     # Pre-extracted flag catalogs (committed)
+│   ├── oc/          4.18.json … 4.22.json
+│   ├── kubectl/     1.31.json … 1.35.json
+│   ├── kustomize/   5.3.json … 5.5.json
+│   ├── podman/      5.2.json … 5.4.json
+│   └── tkn/         0.45.json, 0.46.json
+│
+├── tests/                       # Test suite (355 tests, 84%+ coverage)
+├── .github/workflows/
+│   ├── test.yml                 # Tests + coverage gate
+│   ├── pre-commit.yml           # Linting, mypy, bandit
+│   ├── extract-schemas.yml      # Auto-extract on clis/ change
+│   └── publish-schemas-oci.yml  # Publish to quay.io on v* tag
+├── Containerfile
+├── pyproject.toml
+└── README.md
 ```
 
 ## Key Components
 
-- **`main.py`**: Application entry point with configuration validation, error handling, and uvicorn server startup
-- **`api.py`**: FastAPI application setup with transport protocol selection (HTTP/SSE/streamable-HTTP) and health endpoints
-- **`mcp.py`**: Core MCP server class that registers tools using FastMCP decorators
-- **`settings.py`**: Environment-based configuration using Pydantic BaseSettings with validation
-- **`tools/`**: MCP tool implementations demonstrating arithmetic, prompts, and resource access patterns
-- **`oauth/`**: OAuth 2.0 integration — controller, handler, models, routes, service (see [Authentication Guide](authentication.md))
-- **`storage/storage_service.py`**: PostgreSQL-backed `StorageService` for persistent token and client storage. Used by the OAuth layer to store authorization codes, access tokens, refresh tokens, and registered clients. Requires PostgreSQL when auth is enabled; initialized at server startup via `oauth/service.py`
-- **`utils/pylogger.py`**: Structured JSON logging using structlog with comprehensive processors
+- **`schema_registry.py`**: Loads `schemas/<tool>/<version>.json` with `lru_cache` on first access. `SCHEMA_REGISTRY_PATH` env var overrides the default `schemas/` directory (used with OCI pull for air-gapped deployments).
+- **`mcp.py`**: Registers all five tools with FastMCP. Tools always return `Dict[str, Any]` with a `status` field and never raise.
+- **`extractor/refresh.py`**: Entry point `python -m extractor.refresh --base <rev> --head <rev>`. Detects changed `clis/` registrations, downloads + verifies each declared version's binary, runs the extractor, and publishes `schemas/` only after all versions succeed (all-or-nothing).
+- **`obtain.py`**: Downloads artifact from `artifact_url`, verifies SHA-256 against `checksum_url`, unpacks `raw`/`tar.gz`/`zip` formats with up to 3-layer unwrap.
+- **`settings.py`**: Pydantic-based configuration. `ENABLE_AUTH` defaults to `False`. `SCHEMA_REGISTRY_PATH` overrides the schema directory.
+- **`oauth/`**, **`storage/`**: OAuth 2.0 + PostgreSQL token storage — available but off by default. See [Authentication Guide](authentication.md).
 
-## Current MCP Tools
+## MCP Tools
 
-1. **`multiply_numbers`**: Demonstrates basic arithmetic operations with error handling
-2. **`get_redhat_logo`**: Shows resource access patterns with base64 encoding
-3. **`generate_code_review_prompt`**: Illustrates prompt generation for code analysis
+| Tool | Input | Output |
+|------|-------|--------|
+| `get_flags` | `tool`, `version`, optional `flag_prefix` | List of flag objects (name, type, shorthand, default, deprecated) |
+| `list_subcommands` | `tool`, `version`, optional `command_path` | List of subcommand names + descriptions |
+| `validate_command` | `tool`, `version`, `command_string` | `valid` bool + list of invalid flags if any |
+| `detect_version` | `tool`, `version_output` | Matched version string or error |
+| `list_supported` | — | Dict of supported tools → version list |
 
 ## HTTP Endpoints
 
-The FastAPI application (`api.py`) exposes the following HTTP routes. OAuth routes are registered conditionally when `ENABLE_AUTH=True`.
-
-### Core Routes
-
 | Method | Path | Description |
 |--------|------|-------------|
-| `GET` | `/health` | Health check — returns `{"status": "healthy"}` |
-| `POST` | `/mcp` | MCP JSON-RPC endpoint (tools/list, tools/call, etc.) |
-| `GET` | `/.well-known/oauth-protected-resource` | RFC 8414 resource server metadata (auth only) |
-| `GET` | `/.well-known/oauth-authorization-server` | RFC 8414 authorization server metadata (auth only) |
+| `GET` | `/health` | Health check — `{"status": "healthy"}` |
+| `POST` | `/mcp` | MCP JSON-RPC (tools/list, tools/call) |
+| `GET` | `/.well-known/oauth-protected-resource` | RFC 8414 metadata (auth only) |
+| `GET` | `/.well-known/oauth-authorization-server` | RFC 8414 metadata (auth only) |
 
-### OAuth Routes (prefix: `/auth`)
-
-Registered when `ENABLE_AUTH=True` via `register_oauth_routes()`.
-
-| Method | Path | Description |
-|--------|------|-------------|
-| `GET` | `/auth/authorize` | Start the authorization code flow |
-| `GET` | `/auth/callback/oidc` | OAuth callback — exchanges code for token |
-| `POST` | `/auth/token` | Token endpoint (issue / refresh tokens) |
-| `POST` | `/auth/register` | Dynamic client registration |
-| `POST` | `/auth/introspect` | Token introspection |
-
-> **Note:** The MCP endpoint accepts JSON-RPC requests. `tools/list` is exempt from auth so that agents can discover tools without a token; `tools/call` requires a valid bearer token.
-
-## Error Handling
-
-The server uses a layered error handling strategy:
-
-| Layer | Mechanism | Example |
-|-------|-----------|---------|
-| **Startup** | `main.py` validates settings and catches `SystemExit`, `KeyboardInterrupt`, and unexpected exceptions before the event loop starts | Missing required env var → logged + exit(1) |
-| **Middleware** | `AuthorizationMiddleware` / `LocalDevelopmentAuthorizationMiddleware` intercept requests and return `401` or `403` JSON responses for invalid or missing tokens | Expired bearer token → `{"detail": "Unauthorized"}` |
-| **Health** | `/health` returns `200` with `{"status": "healthy"}` — no auth required | Used by container probes and load balancers |
-| **Tool-level** | Each MCP tool validates its own inputs (type checks, value ranges) and raises descriptive errors that the MCP protocol returns to the client | `multiply_numbers` with non-numeric input → error message in MCP response |
-| **OAuth** | OAuth controller methods catch provider errors and return appropriate OAuth error responses (`invalid_grant`, `invalid_client`, etc.) | Bad authorization code → `{"error": "invalid_grant"}` |
-| **Logging** | All layers log via structlog with JSON output, including request IDs and error context | Structured `error` level entries with stack traces |
+OAuth routes (`/auth/*`) are registered only when `ENABLE_AUTH=True`.

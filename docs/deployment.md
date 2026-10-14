@@ -9,8 +9,8 @@
 
 2. **Or build manually:**
    ```bash
-   podman build -t template-mcp-server .
-   podman run -p 5001:5001 --env-file .env template-mcp-server
+   podman build -t cli-schema-mcp .
+   podman run -p 5001:5001 --env-file .env cli-schema-mcp
    ```
 
 ## Deploying to OpenShift
@@ -59,14 +59,31 @@ The `Containerfile` uses a multi-stage approach on a Red Hat UBI base:
 |-------|-------------|
 | **Base image** | `registry.access.redhat.com/ubi9/python-312:latest` — Red Hat UBI 9 with Python 3.12 |
 | **Dependency install** | Switches to `root`, copies `pyproject.toml`, installs `uv`, creates a venv, and installs runtime deps via `uv pip install -r pyproject.toml` |
-| **Source copy** | Copies `template_mcp_server/` into `/app` (dev deps and tests are excluded) |
+| **Source copy** | Copies `cli_schema_mcp/`, `clis/`, `schemas/` into `/app` |
 | **Environment** | Sets `VIRTUAL_ENV`, prepends venv to `PATH`, sets `PYTHONPATH=/app` |
 | **User** | Drops back to `default` (non-root) for runtime security |
-| **Entrypoint** | `CMD ["/app/.venv/bin/python", "-m", "template_mcp_server.src.main"]` |
+| **Entrypoint** | `CMD ["/app/.venv/bin/python", "-m", "cli_schema_mcp.src.main"]` |
 
 Port **5001** is exposed via `EXPOSE 5001`.
 
-> **Rename note:** When forking the template, update the `COPY` source path and the `CMD` module path in `Containerfile` to match your package name.
+### Air-gapped OCI deployment
+
+For environments without internet access at runtime, pull the schema registry as an OCI
+artifact at image build time instead of using `COPY schemas`:
+
+```bash
+# Pull the schema registry artifact
+mkdir /tmp/schemas-pull
+oras pull quay.io/takinosh/cli-schema-mcp:latest --output /tmp/schemas-pull
+mkdir /opt/cli-schemas
+tar -xzf /tmp/schemas-pull/schemas.tar.gz -C /opt/cli-schemas
+
+# Start the server against the pulled registry
+SCHEMA_REGISTRY_PATH=/opt/cli-schemas cli-schema-mcp
+```
+
+The `Containerfile` includes a commented block showing the equivalent build-time pattern.
+See the README [Air-gapped deployment section](../README.md#air-gapped-deployment-oci) for details.
 
 ## Container Configuration
 

@@ -8,6 +8,8 @@ This project uses GitHub Actions for automated CI/CD workflows to ensure code qu
 |----------|---------|---------|
 | **Tests** | Push to main, PRs | Run test suite with coverage (80% minimum) |
 | **Pre-commit** | Push to main, PRs | Linting, formatting, type checking, security scans |
+| **Extract schemas** | Push/PR touching `clis/**` | Download, verify, and extract CLI schemas; commit to branch or reject fork PR |
+| **Publish schemas OCI** | Tag push (`v*`) | Package `schemas/` and push to `quay.io/takinosh/cli-schema-mcp` |
 | **Labeler** | PR opened/updated | Auto-label PRs by changed file paths |
 | **Release** | Tag push (`v*`) | Create GitHub Release with auto-generated notes |
 | **Stale** | Weekly (Monday) | Mark and close inactive issues/PRs |
@@ -51,15 +53,18 @@ uv pip install -e ".[dev]"
 pre-commit run --all-files
 
 # Run tests with coverage
-pytest --cov=template_mcp_server --cov-fail-under=80
+pytest --cov=cli_schema_mcp --cov-fail-under=80
 
 # Run security checks
-bandit -r template_mcp_server/
+bandit -r cli_schema_mcp/
 safety check
 
 # Build and test container
-podman build -t template-mcp-server .
-podman run --rm template-mcp-server python -c "import template_mcp_server; print('OK')"
+podman build -t cli-schema-mcp .
+podman run --rm cli-schema-mcp python -c "import cli_schema_mcp; print('OK')"
+
+# Test schema extraction locally (clis/ change)
+python -m extractor.refresh --base HEAD --head WORKTREE
 ```
 
 ## Branch Protection

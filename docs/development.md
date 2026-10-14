@@ -27,8 +27,8 @@
 2. **Clone the repository:**
 
    ```bash
-   git clone https://github.com/redhat-data-and-ai/template-mcp-server
-   cd template-mcp-server
+   git clone https://github.com/tosin2013/cli-schema-mcp
+   cd cli-schema-mcp
    ```
 3. **Create and activate a virtual environment with uv:**
 

@@ -1,203 +1,130 @@
-# Your First Tool in 5 Minutes
+# Adding Your First CLI in 5 Minutes
 
-Build and register a custom MCP tool from scratch. By the end you will have a working `greet_user` tool that any MCP client can discover and call.
+Register a new CLI in the schema registry. By the end you will have a working
+registration that CI automatically extracts into a flag catalog — no Python code
+required.
 
-> **Note:** The `greet_user` tool in this tutorial is a hands-on exercise for you to build. It is **not** included in the template — the template ships with `multiply_numbers`, `generate_code_review_prompt`, and `get_redhat_logo`. Follow along to learn the pattern, then delete or keep it as you wish.
-
-**Prerequisites** -- the server runs locally:
+**Prerequisites** — the server runs locally:
 
 ```bash
+git clone https://github.com/tosin2013/cli-schema-mcp
+cd cli-schema-mcp
 uv venv && source .venv/bin/activate
-uv pip install -e '.[dev]'
-cp .env.example .env
+uv pip install -e ".[dev]"
 ```
 
 ---
 
-## Step 1: Create the Tool File
+## Step 1: Create the registration file
 
-Create `template_mcp_server/src/tools/greet_tool.py`:
+Create `clis/tkn.yaml` (Tekton CLI is used here as an example — skip if it already exists):
 
-```python
-"""Greet tool for the Template MCP Server.
-
-Returns a personalised greeting for the given name.
-"""
-
-from typing import Any, Dict
-
-from template_mcp_server.utils.pylogger import get_python_logger
-
-logger = get_python_logger()
-
-
-def greet_user(
-    name: str,
-) -> Dict[str, Any]:
-    """Greet a user by name.
-
-    TOOL_NAME=greet_user
-    DISPLAY_NAME=User Greeting
-    USECASE=Generate a personalised greeting for a given user name
-    INSTRUCTIONS=1. Provide a name string, 2. Call function, 3. Receive greeting
-    INPUT_DESCRIPTION=One parameter: name (non-empty string). Examples: "Alice", "Bob"
-    OUTPUT_DESCRIPTION=Dictionary with status, operation, name, greeting, and message
-    EXAMPLES=greet_user("Alice"), greet_user("Bob")
-    PREREQUISITES=None - standalone operation
-    RELATED_TOOLS=None
-
-    CPU-bound operation - uses def for computational tasks.
-
-    Args:
-        name: The name of the person to greet.
-
-    Returns:
-        Dictionary containing the greeting result.
-
-    Raises:
-        ValueError: If name is empty or not a string.
-    """
-    try:
-        if not isinstance(name, str) or not name.strip():
-            raise ValueError("name must be a non-empty string")
-
-        greeting = f"Hello, {name.strip()}! Welcome to the MCP server."
-
-        logger.info(f"Greet tool called for: {name}")
-
-        return {
-            "status": "success",
-            "operation": "greet_user",
-            "name": name.strip(),
-            "greeting": greeting,
-            "message": f"Successfully greeted {name.strip()}",
-        }
-
-    except Exception as e:
-        logger.error(f"Error in greet tool: {e}")
-        return {
-            "status": "error",
-            "operation": "greet_user",
-            "error": str(e),
-            "message": "Failed to generate greeting",
-        }
+```yaml
+name: tkn
+display_name: "Tekton CLI"
+description: "CLI for Tekton Pipelines and related resources"
+binary: tkn
+adapter: cobra
+versions:
+  - "0.45"
+  - "0.46"
+version_command: "tkn version"
+version_parse: "Client version: {version}"
+upstream_repo: "https://github.com/tektoncd/cli"
+maintainers:
+  - "your-github-username"
+obtain:
+  version_url: "https://api.github.com/repos/tektoncd/cli/releases?per_page=10"
+  version_match: "v({version}\\.\\d+)[^\"-]"
+  artifact_url: "https://github.com/tektoncd/cli/releases/download/v{resolved}/tkn_{resolved}_Linux_x86_64.tar.gz"
+  checksum_url: "https://github.com/tektoncd/cli/releases/download/v{resolved}/checksums.txt"
+  format: "tar.gz"
+  binary: "tkn"
 ```
 
-**What is happening here:**
+**What each field does:**
 
-| Element | Why |
-|---|---|
-| `Dict[str, Any]` return | Every tool returns a structured dict so clients can parse results uniformly. |
-| Docstring metadata block | `TOOL_NAME`, `USECASE`, etc. are read by agents to decide *when* to call your tool. |
-| `try / except` wrapping | Tools must never raise. Return `{"status": "error", ...}` instead. |
-| `logger` calls | Structured logging lets you trace tool invocations in production. |
-| Input validation first | Fail fast with a clear message before doing any work. |
+| Field | Purpose |
+|-------|---------|
+| `adapter: cobra` | Use the Cobra `__complete` extractor (works for any Cobra-based CLI) |
+| `versions` | Which minor versions to maintain catalogs for |
+| `obtain.version_url` | URL to fetch to resolve the patch version (optional) |
+| `obtain.version_match` | Regex with one capture group — the capture is `{resolved}` |
+| `obtain.artifact_url` | Download URL with `{version}` and/or `{resolved}` tokens |
+| `obtain.checksum_url` | SHA-256 checksum file — verified before the binary runs |
+| `obtain.format` | `raw`, `tar.gz`, or `zip` |
+| `obtain.binary` | Binary name (`raw`) or archive member path |
 
 ---
 
-## Step 2: Register the Tool
+## Step 2: Test the registration locally
 
-Open `template_mcp_server/src/mcp.py` and make two edits.
-
-**Add the import** (with the other tool imports near the top):
-
-```python
-from template_mcp_server.src.tools.greet_tool import greet_user
-```
-
-**Register in `_register_mcp_tools`** (add one line):
-
-```python
-def _register_mcp_tools(self) -> None:
-    self.mcp.tool()(multiply_numbers)
-    self.mcp.tool()(generate_code_review_prompt)
-    self.mcp.tool()(get_redhat_logo)
-    self.mcp.tool()(greet_user)          # <-- new
-```
-
-**Why `self.mcp.tool()(fn)`?** FastMCP's `tool()` returns a decorator. Calling it with the function as the argument is equivalent to `@mcp.tool()` but lets you register functions imported from other modules without modifying them.
-
----
-
-## Step 3: Write a Test
-
-Add a new test class to `tests/test_tools.py`:
-
-```python
-from template_mcp_server.src.tools.greet_tool import greet_user
-
-
-class TestGreetTool:
-    """Test the greet_user tool."""
-
-    def test_greet_user_success(self):
-        result = greet_user("Alice")
-        assert result["status"] == "success"
-        assert result["name"] == "Alice"
-        assert "Hello, Alice!" in result["greeting"]
-
-    def test_greet_user_strips_whitespace(self):
-        result = greet_user("  Bob  ")
-        assert result["status"] == "success"
-        assert result["name"] == "Bob"
-
-    def test_greet_user_empty_string(self):
-        result = greet_user("")
-        assert result["status"] == "error"
-        assert "non-empty string" in result["error"]
-
-    def test_greet_user_whitespace_only(self):
-        result = greet_user("   ")
-        assert result["status"] == "error"
-
-    def test_greet_user_invalid_type(self):
-        result = greet_user(42)
-        assert result["status"] == "error"
-
-    def test_greet_user_return_structure(self):
-        result = greet_user("Test")
-        assert isinstance(result, dict)
-        for key in ("status", "operation", "name", "greeting", "message"):
-            assert key in result
-```
-
-**Pattern**: Every test class mirrors the tool name. Arrange/Act/Assert. Cover the happy path, edge cases (whitespace, empty), and invalid types.
-
----
-
-## Step 4: Run and Verify
+With `tkn` in your PATH (or downloaded to a temp dir):
 
 ```bash
-# Run just your new tests
-python -m pytest tests/test_tools.py::TestGreetTool -v
+# Refresh schemas for the changed registration
+python -m extractor.refresh --base HEAD --head WORKTREE
 
-# Run the full suite to make sure nothing else broke
-make test
+# Or extract a single version directly (binary must be in PATH)
+python -m extractor tkn 0.45
 
-# Start the server
-template-mcp-server
-
-# In another terminal -- list tools (SSE transport example)
-curl http://localhost:5001/health
+# Verify the output
+cat schemas/tkn/0.45.json | python -m json.tool | head -20
 ```
 
-If using one of the [example clients](../examples/), the `greet_user` tool will appear in the tool list automatically.
+Expected output shows `"name": "tkn"`, `"version": "0.45"`, and a non-empty `"subcommands"` list.
+
+---
+
+## Step 3: Confirm the schema loads in the server
+
+```bash
+# Start the server
+cli-schema-mcp
+
+# In another terminal
+curl -s http://localhost:5001/health
+# {"status": "healthy"}
+```
+
+Call `list_supported` via an MCP client to confirm `tkn` appears in the registry.
+
+---
+
+## Step 4: Open a Pull Request
+
+```bash
+git checkout -b feat/add-tkn
+git add clis/tkn.yaml
+git commit -m "feat: add tkn CLI registration (0.45, 0.46)"
+git push origin feat/add-tkn
+```
+
+When the PR is opened against `main`, CI runs `extract-schemas.yml`:
+
+1. Detects `clis/tkn.yaml` as changed
+2. Downloads `tkn 0.45.x` and `tkn 0.46.x` from GitHub releases
+3. Verifies SHA-256 checksums
+4. Runs the Cobra extractor on each binary
+5. Commits `schemas/tkn/0.45.json` and `schemas/tkn/0.46.json` to the branch automatically
+
+The maintainer reviews the PR and the schema diff — no manual extraction step.
 
 ---
 
 ## What You Just Learned
 
-1. **Tool file** -- one function per file in `template_mcp_server/src/tools/`.
-2. **Registration** -- two lines in `mcp.py`: one import, one `self.mcp.tool()()` call.
-3. **Testing** -- class in `test_tools.py` covering success, edge, and error paths.
-4. **Convention** -- structured dict returns, metadata docstrings, input validation, logging.
+1. **Registration** — one YAML file in `clis/` is all that's needed.
+2. **Obtain block** — tells CI how to download, verify, and unpack the binary.
+3. **CI handles extraction** — you never run the extractor manually in production.
+4. **Zero Python changes** — adding a CLI is a configuration-only contribution.
 
 ## What's Next
 
 | Topic | Link |
-|---|---|
-| Full architecture and tool patterns | [Architecture](architecture.md) |
-| Async tools, OAuth, storage | [Development Guide](development.md) |
-| Client examples (FastMCP, LangGraph) | [Examples](../examples/) |
-| Tool documentation format reference | [Tools README](../template_mcp_server/src/tools/README.md) |
-| Container and OpenShift deployment | [Deployment](deployment.md) |
+|-------|-------|
+| Full obtain block field reference | [CONTRIBUTING.md](../CONTRIBUTING.md) |
+| Architecture and schema registry | [Architecture](architecture.md) |
+| How the extractor works | [Development Guide](development.md) |
+| Deploying the server | [Deployment](deployment.md) |
+| CI workflows | [CI/CD](ci-cd.md) |
