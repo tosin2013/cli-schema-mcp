@@ -1,8 +1,12 @@
 <!--
 SYNC IMPACT REPORT
 ==================
-Version change: 1.2.2 → 1.2.3
-Bump rationale: PATCH — entry 002 status transition (implemented → verified) after
+Version change: 1.2.3 → 1.2.4
+Bump rationale: PATCH — registry destination decided for entry 003 (quay.io/takinosh/cli-schema-mcp);
+workflow updated from GHCR to quay.io. Entry 002 verified (previous revision).
+Version change: 1.2.3 → 1.2.4 (this revision)
+
+Prior bump rationale (1.2.2 → 1.2.3): entry 002 status transition (implemented → verified) after
 GitHub Actions successfully ran extract-schemas.yml on a clis/ change, downloaded and
 verified tkn 0.45/0.46 binaries, and committed schemas/tkn/0.45.json and
 schemas/tkn/0.46.json to main. Also records cobra adapter fix (seen-set).
@@ -182,10 +186,10 @@ parallel with equal weight.
 - **Depends on:** 001, 002
 - **Governed by:** C-02, C-07
 - **Notes:** Corresponds to FR-013 and convergence task T013. Deferred to Phase 3 by spec
-  assumption. Quay.io org (tosin2013 or RedHatOfficial) TBD based on adoption path. Workflow
+  assumption. **Registry decided 2026-10-14: `quay.io/takinosh/cli-schema-mcp`.** Workflow
   file `.github/workflows/publish-schemas-oci.yml` was added while closing 001 task T013 and
-  currently targets GHCR, not a decided quay.io org. Status stays `planned` until the registry
-  destination and Containerfile/README pull docs are settled and a tagged publish has been observed.
+  currently targets GHCR — must be updated to quay.io. Spec 003 is now unblocked; run
+  `/speckit-specify 003` to write the spec and `/speckit-implement 003` to deliver it.
 
 ### Integrations
 
@@ -272,4 +276,4 @@ parallel with equal weight.
 
 ---
 
-**Version**: 1.2.3 | **Ratified**: 2026-10-12 | **Last Amended**: 2026-10-14
+**Version**: 1.2.4 | **Ratified**: 2026-10-12 | **Last Amended**: 2026-10-14
