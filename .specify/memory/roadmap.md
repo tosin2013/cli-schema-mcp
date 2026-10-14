@@ -1,18 +1,18 @@
 <!--
 SYNC IMPACT REPORT
 ==================
-Version change: 1.2.1 → 1.2.2
-Bump rationale: PATCH — entry 002 status transition (planned → implemented) and wording
-amendments to reflect actual implementation approach (obtain block, extractor/refresh.py,
-no matrix strategy). No new specs, constraints, or vision changes.
+Version change: 1.2.2 → 1.2.3
+Bump rationale: PATCH — entry 002 status transition (implemented → verified) after
+GitHub Actions successfully ran extract-schemas.yml on a clis/ change, downloaded and
+verified tkn 0.45/0.46 binaries, and committed schemas/tkn/0.45.json and
+schemas/tkn/0.46.json to main. Also records cobra adapter fix (seen-set).
 
 Changes this revision:
-  - Entry 002 status: planned → implemented
-  - Entry 002 description, scope-in, and Notes updated to reflect the obtain-block model
-    and python -m extractor.refresh entry point (settled during spec 002 clarification)
-  - Cross-cutting note annotated: extractor/obtain.py and extractor/refresh.py confirmed
-    absent from cli_schema_mcp/ (C-02 boundary verified 2026-10-13)
-  - Prior SYNC IMPACT REPORT preserved below for traceability
+  - Entry 002 status: implemented → verified
+  - Entry 002 notes updated with verification date and tkn registration as proof
+  - cobra adapter fix noted (branch_seen → shared seen prevents exponential blowup)
+
+Prior SYNC IMPACT REPORT (1.2.1 → 1.2.2):
 
 Prior SYNC IMPACT REPORT (1.2.0 → 1.2.1):
   - Q1 resolved: help-parser stays for CLIs without __complete; podman uses cobra adapter
@@ -132,7 +132,7 @@ parallel with equal weight.
   in the working tree and still needs a git commit before a clone matches this outcome. Debrief:
   `specs/001-cli-schema-mcp/roadmap-reviews/debrief-2026-10-12T134911Z.md`.
 
-### 002 — Schema Extraction CI Pipeline  [status: implemented]
+### 002 — Schema Extraction CI Pipeline  [status: verified]
 
 - **Description:** Generic, config-driven schema refresh pipeline: each `clis/<name>.yaml`
   registration carries one `obtain` block (artifact URL, checksum URL, archive format, member
@@ -157,12 +157,14 @@ parallel with equal weight.
 - **Depends on:** 001 (status: verified)
 - **Governed by:** C-03, C-02
 - **Spec dir:** specs/002-schema-extract-ci/
-- **Notes:** Implemented 2026-10-13. All 22 tasks [X]; 355 tests passing. C-02 boundary
-  verified: `extractor/obtain.py` and `extractor/refresh.py` are not imported anywhere in
-  `cli_schema_mcp/`. No matrix strategy was needed — a single `python -m extractor.refresh`
-  run handles all changed registrations in one pass. Status will advance to `verified` after a
-  real `clis/` change PR is observed running on GitHub Actions and committing catalog JSON.
-  Pre-implementation brief: `specs/002-schema-extract-ci/roadmap-reviews/brief-2026-10-13T140150Z.md`.
+- **Notes:** Implemented 2026-10-13. Verified 2026-10-14. All 22 tasks [X]; 355 tests
+  passing. C-02 boundary verified. GitHub Actions run `38559288553` detected `clis/tkn.yaml`
+  as a new registration, downloaded tkn 0.45.2 and 0.46.1, verified SHA-256, extracted
+  schemas, and committed `schemas/tkn/0.45.json` and `schemas/tkn/0.46.json` to main in 18s.
+  Also fixed a cobra adapter bug: `branch_seen = seen | {key}` was replaced with
+  `seen.add(key)` (shared mutable set) to prevent exponential blowup from revisiting nodes
+  via the `help` subcommand recursion in large CLIs like helm.
+  Debrief: `specs/002-schema-extract-ci/roadmap-reviews/debrief-2026-10-13T193652Z.md`.
 
 ### 003 — OCI Artifact Publishing  [status: planned]
 
@@ -270,4 +272,4 @@ parallel with equal weight.
 
 ---
 
-**Version**: 1.2.2 | **Ratified**: 2026-10-12 | **Last Amended**: 2026-10-13
+**Version**: 1.2.3 | **Ratified**: 2026-10-12 | **Last Amended**: 2026-10-14
