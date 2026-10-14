@@ -5,7 +5,7 @@
 - Python 3.12 or higher
 - [uv](https://docs.astral.sh/uv/) (fast Python package installer and resolver)
 - make (macOS: `xcode-select --install`, Linux: `sudo apt install make` or `sudo dnf install make`)
-- [Podman](https://podman.io/docs/installation) and [podman-compose](https://github.com/containers/podman-compose#installation) (required for containerized deployment and local PostgreSQL)
+- [Podman](https://podman.io/docs/installation) and [podman-compose](https://github.com/containers/podman-compose#installation) (optional — for containerised deployment and local PostgreSQL)
 
 ## Setup
 
@@ -15,237 +15,223 @@
    # On macOS/Linux:
    curl -LsSf https://astral.sh/uv/install.sh | sh
 
-   # On MacOS using brew
+   # On macOS using brew:
    brew install uv
 
    # On Windows:
    powershell -c "irm https://astral.sh/uv/install.ps1 | iex"
-
-   # Or with pip:
-   pip install uv
    ```
+
 2. **Clone the repository:**
 
    ```bash
    git clone https://github.com/tosin2013/cli-schema-mcp
    cd cli-schema-mcp
    ```
-3. **Create and activate a virtual environment with uv:**
+
+3. **Create and activate a virtual environment:**
 
    ```bash
    uv venv
-
-   # Activate the virtual environment:
-   # On macOS/Linux:
-   source .venv/bin/activate
-
-   # On Windows:
-   .venv\Scripts\activate
+   source .venv/bin/activate   # macOS/Linux
+   .venv\Scripts\activate      # Windows
    ```
+
 4. **Install the package and development dependencies:**
 
    ```bash
-   # Install in editable mode with dev dependencies (pytest, ruff, mypy, pre-commit, etc.)
    uv pip install -e ".[dev]"
    ```
-5. **Configure environment variables:**
+
+5. **Install pre-commit hooks:**
+
+   ```bash
+   pre-commit install
+   ```
+
+6. **Configure environment variables:**
 
    ```bash
    cp .env.example .env
-   # Edit .env file with your configuration
+   # ENABLE_AUTH=False by default — no SSO provider needed to start
    ```
-6. **Run the server:**
+
+7. **Run the server:**
 
    ```bash
-   # Using the installed console script
-   template-mcp-server
+   # Console script
+   cli-schema-mcp
 
-   # Or directly with Python module
-   python -m template_mcp_server.src.main
-
-   # Or using uv to run directly
-   uv run python -m template_mcp_server.src.main
+   # Or via Python module
+   python -m cli_schema_mcp.src.main
    ```
-
-## Configuration Options
-
-The server configuration is managed through environment variables:
-
-| Variable                      | Default                   | Description                                                               |
-| ----------------------------- | ------------------------- | ------------------------------------------------------------------------- |
-| `MCP_HOST`                  | `localhost`             | Server bind address                                                       |
-| `MCP_PORT`                  | `5001`                  | Server port (1024-65535)                                                  |
-| `MCP_TRANSPORT_PROTOCOL`    | `http`                  | Transport protocol (`http`, `sse`, `streamable-http`)               |
-| `MCP_HOST_ENDPOINT`         | `http://localhost:5001` | Public-facing host URL (used in OAuth discovery responses)                |
-| `MCP_SSL_KEYFILE`           | `None`                  | SSL private key file path                                                 |
-| `MCP_SSL_CERTFILE`          | `None`                  | SSL certificate file path                                                 |
-| `PYTHON_LOG_LEVEL`          | `INFO`                  | Logging level (`DEBUG`, `INFO`, `WARNING`, `ERROR`, `CRITICAL`) |
-| `ENVIRONMENT`               | `development`           | Deployment environment identifier                                         |
-| `ENABLE_AUTH`               | `False`                 | Enable OAuth authentication (see[Auth Guide](authentication.md))             |
-| `USE_EXTERNAL_BROWSER_AUTH` | `False`                 | Browser-based OAuth for local dev                                         |
-| `COMPATIBLE_WITH_CURSOR`    | `False`                 | Cursor IDE OAuth2 compatibility mode                                      |
-| `CORS_ENABLED`              | `False`                 | Enable CORS middleware                                                    |
-| `CORS_ORIGINS`              | `["*"]`                 | Allowed CORS origins                                                      |
-
-See the [Authentication Guide](authentication.md) for the full list of `SSO_*` and `POSTGRES_*` variables.
-
-## Authentication
-
-By default, `.env.example` ships with `ENABLE_AUTH=False` so you can start developing without an SSO provider. When you are ready to test the OAuth flow, see the [Authentication Guide](authentication.md) for:
-
-- How the three auth modes work
-- How to configure an OIDC provider (Keycloak, Auth0, Okta, etc.)
-- Environment variable reference
-- Troubleshooting 401 errors
 
 ## Verify Installation
 
-1. **Health check:**
+```bash
+# Health check
+curl http://localhost:5001/health
+# {"status": "healthy"}
 
-   ```bash
-   curl http://localhost:5001/health
-   ```
-2. **Test MCP tools:**
+# List all supported CLIs and versions
+curl -s -X POST http://localhost:5001/mcp \
+  -H "Content-Type: application/json" \
+  -d '{"jsonrpc":"2.0","id":1,"method":"tools/call","params":{"name":"list_supported","arguments":{}}}' \
+  | python -m json.tool
 
-   ```bash
-   # Test multiply tool via MCP endpoint
-   curl -X POST "http://localhost:5001/mcp" \
-        -H "Content-Type: application/json" \
-        -d '{"method": "tools/call", "params": {"name": "multiply_numbers", "arguments": {"a": 5, "b": 3}}}'
-   ```
+# Validate a command (hallucination check)
+curl -s -X POST http://localhost:5001/mcp \
+  -H "Content-Type: application/json" \
+  -d '{"jsonrpc":"2.0","id":2,"method":"tools/call","params":{"name":"validate_command","arguments":{"tool":"oc","version":"4.22","command_string":"oc rollout restart deployment/myapp -n prod"}}}' \
+  | python -m json.tool
+```
+
+## Configuration Options
+
+| Variable | Default | Description |
+|----------|---------|-------------|
+| `MCP_HOST` | `localhost` | Server bind address (`0.0.0.0` for containers) |
+| `MCP_PORT` | `5001` | Server port (1024-65535) |
+| `MCP_TRANSPORT_PROTOCOL` | `http` | `http`, `sse`, or `streamable-http` |
+| `MCP_HOST_ENDPOINT` | `http://localhost:5001` | Public URL (used in OAuth discovery) |
+| `MCP_SSL_KEYFILE` | `None` | SSL private key file path |
+| `MCP_SSL_CERTFILE` | `None` | SSL certificate file path |
+| `SCHEMA_REGISTRY_PATH` | *(unset)* | Override schema directory for air-gapped OCI deployments |
+| `PYTHON_LOG_LEVEL` | `INFO` | `DEBUG`, `INFO`, `WARNING`, `ERROR`, `CRITICAL` |
+| `ENVIRONMENT` | `development` | Deployment environment identifier |
+| `ENABLE_AUTH` | `False` | Enable OAuth authentication |
+| `USE_EXTERNAL_BROWSER_AUTH` | `False` | Browser-based OAuth for local dev |
+| `CORS_ENABLED` | `False` | Enable CORS middleware |
+| `CORS_ORIGINS` | `["*"]` | Allowed CORS origins |
+
+See the [Authentication Guide](authentication.md) for `SSO_*` and `POSTGRES_*` variables.
+
+## Schema Development Workflow
+
+### Working with CLI registrations
+
+Registrations live in `clis/*.yaml`. Each file declares one CLI with an `obtain` block
+that tells CI how to download, verify, and extract its binary.
+
+```bash
+# After editing or adding a clis/*.yaml file, refresh schemas locally:
+python -m extractor.refresh --base HEAD --head WORKTREE
+
+# Or extract a single version (binary must be in PATH):
+python -m extractor oc 4.22
+
+# Verify the output:
+cat schemas/oc/4.22.json | python -m json.tool | head -20
+```
+
+### Extractor package
+
+The `extractor/` package is **build-time only** — it is never imported by the server at
+runtime. The key entry points:
+
+```bash
+# Refresh changed registrations (used by CI):
+python -m extractor.refresh --base <rev> --head <rev> [--no-push]
+
+# Extract a single CLI version:
+python -m extractor <cli-name> <version>
+```
+
+`extractor.refresh` options:
+
+| Flag | Description |
+|------|-------------|
+| `--base` | Base git revision to compare against |
+| `--head` | Head revision or `WORKTREE` (default) |
+| `--no-push` | Report catalog differences instead of publishing (fork PR mode) |
+| `--clis-dir` | Path to CLI registrations (default: `clis/`) |
+| `--schemas-dir` | Path to output catalogs (default: `schemas/`) |
+
+Exit codes: `0` = success, `1` = extraction failure, `2` = catalogs differ (no-push mode).
+
+### Schema registry
+
+The server reads `schemas/<tool>/<version>.json` at startup via `schema_registry.py`.
+To add a new CLI tool to the live server during development:
+
+1. Add `clis/<name>.yaml` with an `obtain` block
+2. Run `python -m extractor <name> <version>` (binary in PATH) or `python -m extractor.refresh`
+3. Restart the server — it picks up the new JSON on startup
 
 ## Running Tests
 
-### Development Environment Setup
-
-If you followed the [Setup](#setup) steps above, dev dependencies and pre-commit hooks are already installed. Otherwise:
-
 ```bash
-uv pip install -e ".[dev]"
-pre-commit install
+# Run all tests
+pytest
+
+# With coverage (80% minimum enforced in CI)
+pytest --cov=cli_schema_mcp --cov-report=html --cov-report=term
+
+# Specific test files
+pytest tests/test_tools.py -v        # MCP tool tests (get_flags, validate_command, etc.)
+pytest tests/test_schema_registry.py -v
+pytest tests/test_obtain.py -v       # Extractor download + checksum + unpack
+pytest tests/test_refresh.py -v      # Extractor change detection + publish
+pytest tests/test_extractor.py -v
+pytest tests/test_settings.py -v
+pytest tests/test_api.py -v
+pytest tests/test_mcp.py -v
+
+# Verbose / quiet
+pytest -v
+pytest -q
+pytest --tb=short
 ```
-
-### Test Commands
-
-The project includes a comprehensive test suite covering unit tests, integration tests, and various edge cases. To see the current count, run `pytest --collect-only -q`.
-
-1. **Run all tests:**
-
-   ```bash
-   pytest
-   ```
-2. **Run tests with coverage reporting:**
-
-   ```bash
-   pytest --cov=template_mcp_server --cov-report=html --cov-report=term
-   ```
-3. **Run tests by category:**
-
-   ```bash
-   # Unit tests only
-   pytest -m unit
-
-   # Integration tests only
-   pytest -m integration
-
-   # Slow running tests
-   pytest -m slow
-
-   # Tests requiring network access
-   pytest -m network
-   ```
-4. **Run specific test modules:**
-
-   ```bash
-   # Test individual components
-   pytest tests/test_tools.py -v
-   pytest tests/test_settings.py -v
-   pytest tests/test_mcp.py -v
-   pytest tests/test_api.py -v
-   pytest tests/test_oauth_service.py -v
-
-   # Run basic integration tests
-   pytest tests/test_basic.py -v
-   ```
-5. **Run tests with different output formats:**
-
-   ```bash
-   # Verbose output with detailed test names
-   pytest -v
-
-   # Short traceback format
-   pytest --tb=short
-
-   # Quiet output (minimal)
-   pytest -q
-   ```
 
 ### Test Suite Overview
 
-| Test Category               | Count    | Description                               |
-| --------------------------- | -------- | ----------------------------------------- |
-| **Unit Tests**        | Majority | Individual component testing with mocking |
-| **Integration Tests** | ~10%     | End-to-end workflow testing               |
+| Test File | What It Covers |
+|-----------|---------------|
+| `test_tools.py` | All 5 MCP tools (get_flags, list_subcommands, validate_command, detect_version, list_supported) |
+| `test_schema_registry.py` | Schema loading, caching, path resolution |
+| `test_obtain.py` | Token fill, SHA-256 verify, raw/tar.gz/zip unpack |
+| `test_refresh.py` | Change detection, all-or-nothing publish, no-push mode, version retirement |
+| `test_extractor.py` | Extractor CLI entry point |
+| `test_settings.py` | Configuration and environment variable validation |
+| `test_mcp.py` | MCP server initialisation and tool registration |
+| `test_api.py` | FastAPI endpoints and health check |
+| `test_main.py` | Application entry point |
+| `test_oauth_*.py` | OAuth controller, handler, and service |
+| `test_storage_*.py` | Storage initialisation and service |
+| `test_basic.py` | Integration and package structure |
+| `test_utils.py` | Utility and logging |
 
-**Test Files:**
+## Code Quality
 
-- `test_tools.py` - Tool unit tests (multiply, code review, logo)
-- `test_settings.py` - Configuration and environment variable tests
-- `test_mcp.py` - MCP server initialization and tool registration tests
-- `test_api.py` - FastAPI endpoint and health check tests
-- `test_main.py` - Application entry point tests
-- `test_oauth_*.py` - OAuth controller, handler, and service tests
-- `test_storage_*.py` - Storage initialization and service tests
-- `test_basic.py` - Integration and package structure tests
-- `test_utils.py` - Utility and logging tests
+```bash
+# Run all pre-commit checks (ruff, mypy, pydocstyle, bandit, yaml, json)
+pre-commit run --all-files
 
-**Test Features:**
+# Lint and format with Ruff
+ruff check .
+ruff check . --fix
+ruff format .
 
-- Comprehensive error handling validation
-- Async function testing support
-- Mock external dependencies
-- Environment isolation with fixtures
-- Performance testing for large data
-- Concurrent usage simulation
-- Configuration validation testing
+# Type checking
+mypy cli_schema_mcp/
 
-## Code Quality Checks
+# Docstring validation
+pydocstyle cli_schema_mcp/ --convention=google
 
-1. **Linting and formatting with Ruff:**
+# Security scan
+bandit -r cli_schema_mcp/
+```
 
-   ```bash
-   # Check for issues
-   ruff check .
+## Authentication
 
-   # Auto-fix issues
-   ruff check . --fix
-
-   # Format code
-   ruff format .
-   ```
-2. **Type checking with MyPy:**
-
-   ```bash
-   mypy template_mcp_server/
-   ```
-3. **Docstring validation:**
-
-   ```bash
-   pydocstyle template_mcp_server/ --convention=google
-   ```
-4. **Run all pre-commit checks:**
-
-   ```bash
-   pre-commit run --all-files
-   ```
+By default `ENABLE_AUTH=False` — no SSO provider is needed for local development.
+When you are ready to test the OAuth flow, see the [Authentication Guide](authentication.md).
 
 ## Makefile Targets
 
-Run `make help` to see all available commands:
-
 ```bash
 make help       # Show all targets
-make install    # Install dependencies
+make install    # Install dependencies + pre-commit hooks
 make test       # Run test suite
 make lint       # Run linters
 make format     # Format code
