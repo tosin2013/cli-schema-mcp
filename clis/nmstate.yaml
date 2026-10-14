@@ -1,0 +1,16 @@
+name: nmstate
+display_name: "nmstate"
+description: "Declarative network state management CLI for Linux"
+binary: nmstatectl
+adapter: help-parser
+versions:
+  - "2.2"
+version_command: "nmstatectl version"
+version_parse: "{version}."
+upstream_repo: "https://github.com/nmstate/nmstate"
+maintainers:
+  - "tosin2013"
+# No obtain block — nmstate is a system package (dnf install nmstate).
+# Schemas are extracted locally and committed manually.
+# Install: sudo dnf install nmstate
+# Extract: python -m extractor nmstate 2.2

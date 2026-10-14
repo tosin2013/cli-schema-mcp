@@ -210,7 +210,9 @@ def main() -> None:
                 continue
 
             if config.obtain is None:
-                failures.append(f"FAIL {tool} <config> missing obtain block")
+                # No obtain block — registration is manually extracted.
+                # Skip silently; CI does not manage this CLI's schemas.
+                print(f"SKIP {tool} (no obtain block — manually extracted)")
                 continue
 
             ob: ObtainConfig = config.obtain
