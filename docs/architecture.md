@@ -34,6 +34,7 @@ graph TB
             N[validate_command<br/>Hallucination rejection]
             O[detect_version<br/>Version string parsing]
             P[list_supported<br/>Registry enumeration]
+            PA[get_download_info<br/>Download URLs from registration]
         end
 
         subgraph "Schema Registry"
@@ -140,7 +141,7 @@ flowchart TD
 
     G --> H{MCP Method?}
 
-    H -->|tools/list| I[Return 5 tool definitions]
+    H -->|tools/list| I[Return 6 tool definitions]
     H -->|tools/call| J[Tool Router<br/>mcp.py]
 
     J --> K{Which Tool?}
@@ -150,6 +151,7 @@ flowchart TD
     K -->|validate_command| N[validate_command_tool.py<br/>Parse command → check flags]
     K -->|detect_version| O[detect_version_tool.py<br/>Match version string]
     K -->|list_supported| P[list_supported_tool.py<br/>Enumerate schemas/ dirs]
+    K -->|get_download_info| PA[get_download_info_tool.py<br/>Read clis/*.yaml obtain block]
 
     L --> Q[schema_registry.py<br/>load_schema tool version]
     M --> Q
@@ -197,7 +199,8 @@ cli-schema-mcp/
 │   │       ├── list_subcommands_tool.py
 │   │       ├── validate_command_tool.py
 │   │       ├── detect_version_tool.py
-│   │       └── list_supported_tool.py
+│   │       ├── list_supported_tool.py
+│   │       └── get_download_info_tool.py
 │   └── utils/
 │       └── pylogger.py          # Structured logging
 │
@@ -238,7 +241,7 @@ cli-schema-mcp/
 ## Key Components
 
 - **`schema_registry.py`**: Loads `schemas/<tool>/<version>.json` with `lru_cache` on first access. `SCHEMA_REGISTRY_PATH` env var overrides the default `schemas/` directory (used with OCI pull for air-gapped deployments).
-- **`mcp.py`**: Registers all five tools with FastMCP. Tools always return `Dict[str, Any]` with a `status` field and never raise.
+- **`mcp.py`**: Registers all six tools with FastMCP. Tools always return `Dict[str, Any]` with a `status` field and never raise.
 - **`extractor/refresh.py`**: Entry point `python -m extractor.refresh --base <rev> --head <rev>`. Detects changed `clis/` registrations, downloads + verifies each declared version's binary, runs the extractor, and publishes `schemas/` only after all versions succeed (all-or-nothing).
 - **`obtain.py`**: Downloads artifact from `artifact_url`, verifies SHA-256 against `checksum_url`, unpacks `raw`/`tar.gz`/`zip` formats with up to 3-layer unwrap.
 - **`settings.py`**: Pydantic-based configuration. `ENABLE_AUTH` defaults to `False`. `SCHEMA_REGISTRY_PATH` overrides the schema directory.
@@ -251,8 +254,9 @@ cli-schema-mcp/
 | `get_flags` | `tool`, `version`, optional `flag_prefix` | List of flag objects (name, type, shorthand, default, deprecated) |
 | `list_subcommands` | `tool`, `version`, optional `command_path` | List of subcommand names + descriptions |
 | `validate_command` | `tool`, `version`, `command_string` | `valid` bool + list of invalid flags if any |
-| `detect_version` | `tool`, `version_output` | Matched version string or error |
+| `detect_version` | `tool` | Matched version string, or `binary_not_found` with `install_hint` when the CLI is not in PATH |
 | `list_supported` | — | Dict of supported tools → version list |
+| `get_download_info` | `tool`, optional `version` | Download URLs, archive format, binary path, and install guidance from `clis/<tool>.yaml` — no binary or network required |
 
 ## HTTP Endpoints
 

@@ -52,7 +52,7 @@ Add the server to your Claude Code MCP configuration (`~/.claude/mcp.json`):
 }
 ```
 
-Claude Code will now have access to all five tools when you work in any project.
+Claude Code will now have access to all six tools when you work in any project.
 
 ---
 
@@ -262,7 +262,68 @@ detect_version("oc")   # runs `oc version --client` and parses it
 }
 ```
 
-Use this when the user hasn't specified a version. If the binary isn't installed, the agent falls back to asking the user which version they're running.
+When the binary is **not installed** (common in containerized deployments where the MCP server has no CLIs), `detect_version` returns `binary_not_found` with install guidance:
+
+```json
+{
+  "status": "binary_not_found",
+  "tool": "oc",
+  "message": "'oc' is not installed in this environment.",
+  "install_hint": "Download from https://mirror.openshift.com/pub/openshift-v4/clients/ or run: dnf install openshift-clients",
+  "suggestion": "Call get_download_info('oc') for version-specific download URLs, or ask the user to install the CLI before retrying."
+}
+```
+
+---
+
+### Tool: `get_download_info`
+
+Return download URLs and install guidance from the CLI registration — no binary or network
+required. Designed for containerized deployments where the agent needs to guide the user.
+
+```python
+from cli_schema_mcp.src.tools.get_download_info_tool import get_download_info
+get_download_info("oc", "4.22")
+```
+
+```json
+{
+  "status": "success",
+  "tool": "oc",
+  "upstream_repo": "https://github.com/openshift/oc",
+  "versions": [
+    {
+      "version": "4.22",
+      "artifact_url": "https://mirror.openshift.com/pub/openshift-v4/clients/ocp/latest-4.22/openshift-client-linux.tar.gz",
+      "checksum_url": "https://mirror.openshift.com/pub/openshift-v4/clients/ocp/latest-4.22/sha256sum.txt",
+      "format": "tar.gz",
+      "binary": "oc"
+    }
+  ],
+  "install_notes": "Download the artifact, verify the checksum, and place the binary in your PATH."
+}
+```
+
+For system-package CLIs (like `nmstate`) with no automated download:
+
+```json
+{
+  "status": "success",
+  "tool": "nmstate",
+  "install_method": "system_package",
+  "install_notes": "Install via your package manager (e.g. dnf install nmstate) or see https://github.com/nmstate/nmstate"
+}
+```
+
+**Containerized agent workflow:**
+
+```
+detect_version("oc") → binary_not_found + install_hint
+get_download_info("oc", "4.22") → artifact_url, checksum_url, install_notes
+Agent → presents download URL and instructions to user
+User installs oc in their environment
+Agent → retries the original command
+```
 
 ---
 

@@ -27,8 +27,9 @@ Adding a new CLI requires only a YAML config file — no Python code changes.
 | `get_flags` | Return all flags for a CLI command and version |
 | `list_subcommands` | List available subcommands for a CLI |
 | `validate_command` | Reject commands with hallucinated flags |
-| `detect_version` | Identify the CLI version from output |
+| `detect_version` | Identify the installed CLI version; returns `binary_not_found` with install guidance when not installed |
 | `list_supported` | List all supported CLIs and versions |
+| `get_download_info` | Return download URLs and install guidance for a CLI (works without any binary installed; designed for containerized deployments) |
 
 ## Quick Start
 

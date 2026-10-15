@@ -114,7 +114,9 @@ def get_download_info(tool: str, version: str | None = None) -> dict[str, Any]:
             if checksum and not skip_checksum:
                 entry["checksum_url"] = checksum
             if skip_checksum:
-                entry["checksum_note"] = "This CLI does not publish a checksum file. Verify the download via the upstream release page."
+                entry["checksum_note"] = (
+                    "This CLI does not publish a checksum file. Verify the download via the upstream release page."
+                )
             if version_url_template:
                 entry["patch_resolution"] = {
                     "version_url": version_url_template.replace("{version}", v),
@@ -124,9 +126,9 @@ def get_download_info(tool: str, version: str | None = None) -> dict[str, Any]:
             version_entries.append(entry)
 
         upstream = config.get("upstream_repo", "")
-        install_notes = f"Download the artifact, verify the checksum (if provided), and place the binary in your PATH."
+        install_notes = "Download the artifact, verify the checksum (if provided), and place the binary in your PATH."
         if skip_checksum:
-            install_notes = f"Download the artifact from the release page and place the binary in your PATH. No checksum file is published by this project."
+            install_notes = "Download the artifact from the release page and place the binary in your PATH. No checksum file is published by this project."
 
         logger.info(f"get_download_info: {tool} versions={target_versions}")
         return {
