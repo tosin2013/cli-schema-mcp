@@ -4,6 +4,21 @@ All notable changes to cli-schema-mcp are documented here.
 
 Detailed release notes are available at [GitHub Releases](https://github.com/tosin2013/cli-schema-mcp/releases).
 
+## [0.1.4] - 2026-10-15
+
+### Added
+
+- New MCP tool: `get_download_info(tool, version=None)` — returns artifact download URLs,
+  checksum URLs, archive format, and binary path from `clis/*.yaml` registrations. Works
+  entirely from the registration file with no binary or network required. Returns
+  `system_package` guidance for CLIs without an obtain block (e.g. nmstate). Designed for
+  containerized deployments where the agent needs to guide the user to install a CLI.
+- `detect_version` now returns `status=binary_not_found` (instead of a bare error) when
+  the CLI binary is not in PATH. Includes `install_hint` and a `suggestion` to call
+  `get_download_info()`, so agents can surface actionable install guidance.
+
+---
+
 ## [0.1.3] - 2026-10-15
 
 ### Fixed
