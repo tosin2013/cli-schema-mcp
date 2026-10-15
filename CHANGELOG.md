@@ -4,6 +4,24 @@ All notable changes to cli-schema-mcp are documented here.
 
 Detailed release notes are available at [GitHub Releases](https://github.com/tosin2013/cli-schema-mcp/releases).
 
+## [0.1.5] - 2026-10-15
+
+### Added
+
+- `helm` 4.2 and 4.3 schemas — 25 subcommands (install, upgrade, rollback, template, lint, etc.), ~16 MB each. Extracted locally from helm v4.2.4 and v4.3.1.
+- `virtctl` (KubeVirt) 1.8 and 1.9 schemas — 35 subcommands, 22 top-level flags.
+
+### Fixed
+
+- cobra adapter: `_MAX_NODES` reduced from 8000 → 500, preventing schema JSON files from exceeding GitHub's 100 MB file size limit on large CLIs like helm (previously produced 3.2 GB per version).
+- cobra adapter: `_MAX_DESC_LEN = 200` caps flag descriptions to keep JSON bounded.
+- `extractor/refresh.py`: `schema['name']` now always set to `config.name`, preventing CI-extracted schemas from storing the temp binary path as the name (affected tkn and virtctl).
+- `schemas/tkn/0.45.json`, `0.46.json`: fixed name field (was `/tmp/.../tkn`, now `tkn`).
+- `schemas/virtctl/1.8.json`, `1.9.json`: fixed name field (was `/tmp/.../virtctl`, now `virtctl`).
+- `nmstatectl`: renamed from `nmstate` to match binary name — LLM tool calls now consistent: `list_supported()` returns `"nmstatectl"`, matching `nmstatectl apply ...` commands.
+
+---
+
 ## [0.1.4] - 2026-10-15
 
 ### Added
