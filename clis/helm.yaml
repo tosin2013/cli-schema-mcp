@@ -18,3 +18,4 @@ obtain:
   checksum_url: "https://get.helm.sh/helm-v{resolved}-linux-amd64.tar.gz.sha256sum"
   format: "tar.gz"
   binary: "linux-amd64/helm"
+
