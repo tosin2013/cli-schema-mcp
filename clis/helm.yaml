@@ -11,6 +11,12 @@ version_parse: "v{version}"
 upstream_repo: "https://github.com/helm/helm"
 maintainers:
   - "community"
+# NOTE: helm has a very large command tree. The extractor caps at _MAX_NODES=500 unique
+# command paths (~16 MB per version), which covers the main workflows (install, upgrade,
+# rollback, template, lint, repo, search, show, package, test, etc.) but not every
+# deeply-nested subcommand combination. If you need fuller coverage, run the extractor
+# locally with a higher _MAX_NODES and serve it via SCHEMA_REGISTRY_PATH.
+# See CONTRIBUTING.md — "Schema size and the node cap" for details.
 obtain:
   version_url: "https://api.github.com/repos/helm/helm/releases?per_page=10"
   version_match: "v({version}\\.\\d+)[^\"-]"

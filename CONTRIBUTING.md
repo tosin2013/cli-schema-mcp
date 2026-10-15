@@ -133,6 +133,36 @@ cat schemas/tkn/0.38.json | python -m json.tool | head -40
 
 Compare the output against `tkn pipeline --help` to verify flag accuracy.
 
+#### Schema size and the node cap
+
+The cobra adapter limits extraction to **500 unique command paths** (`_MAX_NODES = 500`)
+to keep schema JSON files under ~20 MB so they can be committed to git. This is plenty
+for most CLIs but intentionally truncates very large command trees (helm has hundreds of
+subcommands and sub-subcommands).
+
+**What you get in the repo**: the most-commonly-used command paths, sufficient for
+`validate_command`, `get_flags`, and `list_subcommands` on the main workflows.
+
+**If you need deeper coverage** (all subcommands, including rarely-used ones), build the
+schema yourself with a higher limit:
+
+```bash
+# Set a higher node limit for local use (do not commit files >50 MB to the repo)
+python3 -c "
+from extractor.adapters import cobra
+cobra._MAX_NODES = 2000   # adjust as needed
+from extractor.main import main
+import sys; sys.argv = ['extractor', 'helm', '4.3']
+main()
+"
+```
+
+> **Warning for large CLIs (helm, argocd, operator-sdk):** schemas above ~50 MB cannot be
+> committed to this repository (GitHub enforces a 100 MB hard limit; our pre-commit
+> hooks will reject files over 50 MB as a safety margin). If you need a full schema for
+> internal use, run the extractor locally in your own environment and serve it via
+> `SCHEMA_REGISTRY_PATH` rather than committing it here.
+
 ### Step 4: Submit a PR
 
 Include both the `clis/tkn.yaml` config and the extracted `schemas/tkn/*.json` files.
@@ -144,6 +174,7 @@ CI will validate the YAML schema, run an extraction smoke test, and check JSON i
 - Flag types, shorthands, and defaults are correct
 - All declared versions have extracted schema files
 - YAML config is complete (all required fields present)
+- Schema file size is under 50 MB per version (large CLIs: note the node cap above)
 
 ## Getting Started
 

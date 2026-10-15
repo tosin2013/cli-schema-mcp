@@ -105,6 +105,12 @@ python -m extractor.refresh --base HEAD --head WORKTREE
 python -m extractor oc 4.22
 ```
 
+> **Large CLIs (helm, argocd, etc.):** The extractor caps at 500 unique command paths
+> to keep schema files under ~20 MB for git. This covers the main workflows but not every
+> deeply-nested subcommand. Need fuller coverage? Run the extractor locally with a higher
+> `_MAX_NODES` and serve it via `SCHEMA_REGISTRY_PATH`. See
+> [CONTRIBUTING.md](CONTRIBUTING.md) — *Schema size and the node cap* for instructions.
+
 ## Air-gapped deployment (OCI)
 
 The schema registry is published as an OCI artifact to
