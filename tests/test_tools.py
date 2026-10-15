@@ -454,6 +454,61 @@ class TestValidateCommandTool:
         assert result["status"] == "error"
         assert result["error"] == "empty command string"
 
+    def test_hyphenated_filename_not_flagged(self):
+        """Hyphens inside positional args (filenames) are not treated as flags."""
+        with self._patched(SAMPLE_SCHEMA) as fn:
+            # -f is a valid flag; vector-tuning.yaml is a positional arg, not a flag
+            result = fn("oc", "4.22", "oc rollout restart -f vector-tuning.yaml")
+        assert result["status"] == "success"
+        assert result["valid"] is True
+        assert result["errors"] == []
+
+    def test_hyphenated_flag_value_not_flagged(self):
+        """Hyphens inside flag values are not treated as flags."""
+        with self._patched(SAMPLE_SCHEMA) as fn:
+            # --selector is valid; component=openshift-logging is its value, not a flag
+            result = fn(
+                "oc",
+                "4.22",
+                "oc rollout restart deployment/myapp --selector component=openshift-logging",
+            )
+        assert result["status"] == "success"
+        assert result["valid"] is True
+        assert result["errors"] == []
+
+    def test_posix_double_dash_separator_not_flagged(self):
+        """'--' is treated as end-of-flags separator, not an unknown flag."""
+        with self._patched(SAMPLE_SCHEMA) as fn:
+            # everything after -- is a literal subcommand; -- itself is not a flag
+            result = fn(
+                "oc", "4.22", "oc rollout restart deployment/myapp -- cat /var/log/file"
+            )
+        assert result["status"] == "success"
+        assert result["valid"] is True
+        assert not any(
+            "--" in e and "not a valid flag" in e for e in result.get("errors", [])
+        )
+
+    def test_flag_with_equals_value_parsed_correctly(self):
+        """Flags written as --flag=value still extract just --flag."""
+        with self._patched(SAMPLE_SCHEMA) as fn:
+            result = fn(
+                "oc",
+                "4.22",
+                "oc rollout restart deployment/myapp --selector=app=frontend",
+            )
+        assert result["status"] == "success"
+        assert result["valid"] is True
+
+    def test_hyphenated_resource_name_before_double_dash(self):
+        """A hyphenated resource name is not mis-parsed as a flag."""
+        with self._patched(SAMPLE_SCHEMA) as fn:
+            # vector-abc123 is a positional arg (resource name), not a flag
+            result = fn("oc", "4.22", "oc rollout restart vector-abc123")
+        assert result["status"] == "success"
+        assert result["valid"] is True
+        assert not any("abc123" in e for e in result.get("errors", []))
+
 
 # ---------------------------------------------------------------------------
 # TestDetectVersionTool

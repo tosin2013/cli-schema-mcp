@@ -1,6 +1,6 @@
 """MCP tool: validate_command — validate a fully-formed CLI command string against the schema."""
 
-import re
+import shlex
 from typing import Any
 
 from cli_schema_mcp.src.schema_registry import (
@@ -11,12 +11,25 @@ from cli_schema_mcp.utils.pylogger import get_python_logger
 
 logger = get_python_logger()
 
-_FLAG_RE = re.compile(r"--?([\w-]+)(?:=\S*)?")
-
 
 def _parse_flags_from_string(command_string: str) -> list[str]:
-    """Extract flag names (without values) from a command string."""
-    return [m.group(0).split("=")[0] for m in _FLAG_RE.finditer(command_string)]
+    """Extract flag names (without values) from a command string.
+
+    Tokenizes on whitespace so that hyphens inside positional arguments
+    (namespaces, filenames, pod names) are never mistaken for flags.
+    Treats '--' as the POSIX end-of-flags separator and stops there.
+    """
+    try:
+        tokens = shlex.split(command_string)
+    except ValueError:
+        tokens = command_string.split()
+    flags = []
+    for tok in tokens:
+        if tok == "--":
+            break  # everything after -- is a literal subcommand, not flags
+        if tok.startswith("-") and tok != "-":
+            flags.append(tok.split("=", 1)[0])
+    return flags
 
 
 def _find_subcommand_path(
