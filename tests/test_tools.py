@@ -528,22 +528,23 @@ class TestDetectVersionTool:
         assert result["status"] == "error"
         assert "config" in result["error"].lower()
 
-    def test_returns_error_when_binary_not_found(self, tmp_path):
-        """detect_version returns error when binary is absent from PATH."""
+    def test_returns_binary_not_found_when_binary_absent(self, tmp_path):
+        """detect_version returns binary_not_found with install guidance when binary missing."""
         cfg = tmp_path / "fakecli.yaml"
         cfg.write_text(
-            "name: fakecli\nbinary: fakecli\nversion_command: fakecli version\nversion_parse: 'v{version}'\nadapter: cobra\nversions: ['1.0']\n"
+            "name: fakecli\nbinary: fakecli\nversion_command: fakecli version\n"
+            "version_parse: 'v{version}'\nadapter: cobra\nversions: ['1.0']\n"
+            "upstream_repo: 'https://github.com/example/fakecli'\n"
         )
         with patch("cli_schema_mcp.src.tools.detect_version_tool._CLIS_DIR", tmp_path):
             from cli_schema_mcp.src.tools.detect_version_tool import detect_version
 
             result = detect_version("fakecli")
 
-        assert result["status"] == "error"
-        assert (
-            "not found" in result["error"].lower()
-            or "error" in result["message"].lower()
-        )
+        assert result["status"] == "binary_not_found"
+        assert "install_hint" in result
+        assert "suggestion" in result
+        assert "get_download_info" in result["suggestion"]
 
     def test_always_returns_dict_with_status(self, tmp_path):
         """detect_version always returns a dict with a status field."""
@@ -551,5 +552,144 @@ class TestDetectVersionTool:
             from cli_schema_mcp.src.tools.detect_version_tool import detect_version
 
             result = detect_version("anything")
+
+        assert "status" in result
+
+
+# ---------------------------------------------------------------------------
+# TestGetDownloadInfoTool
+# ---------------------------------------------------------------------------
+
+
+class TestGetDownloadInfoTool:
+    """Tests for get_download_info()."""
+
+    def _make_registration(
+        self, tmp_path, name="mytool", obtain=True, skip_checksum=False
+    ):
+        obtain_block = ""
+        if obtain:
+            obtain_block = (
+                f"\nobtain:\n"
+                f"  artifact_url: 'https://example.com/{{version}}/{name}.tar.gz'\n"
+                f"  checksum_url: 'https://example.com/{{version}}/sha256sum.txt'\n"
+                f"  format: tar.gz\n"
+                f"  binary: {name}\n"
+            )
+            if skip_checksum:
+                obtain_block += "  skip_checksum: true\n"
+        cfg = tmp_path / f"{name}.yaml"
+        cfg.write_text(
+            f"name: {name}\nbinary: {name}\nadapter: cobra\nversions: ['1.0', '2.0']\n"
+            f"version_command: '{name} version'\nversion_parse: 'v{{version}}'\n"
+            f"upstream_repo: 'https://github.com/example/{name}'\n" + obtain_block
+        )
+        return cfg
+
+    def test_returns_download_info_for_specific_version(self, tmp_path):
+        """Returns artifact_url and checksum_url for a specific version."""
+        self._make_registration(tmp_path)
+        with patch(
+            "cli_schema_mcp.src.tools.get_download_info_tool._CLIS_DIR", tmp_path
+        ):
+            from cli_schema_mcp.src.tools.get_download_info_tool import (
+                get_download_info,
+            )
+
+            result = get_download_info("mytool", "1.0")
+
+        assert result["status"] == "success"
+        assert len(result["versions"]) == 1
+        assert result["versions"][0]["version"] == "1.0"
+        assert "1.0" in result["versions"][0]["artifact_url"]
+        assert "checksum_url" in result["versions"][0]
+
+    def test_returns_all_versions_when_version_omitted(self, tmp_path):
+        """Returns download info for all declared versions when version is None."""
+        self._make_registration(tmp_path)
+        with patch(
+            "cli_schema_mcp.src.tools.get_download_info_tool._CLIS_DIR", tmp_path
+        ):
+            from cli_schema_mcp.src.tools.get_download_info_tool import (
+                get_download_info,
+            )
+
+            result = get_download_info("mytool")
+
+        assert result["status"] == "success"
+        assert len(result["versions"]) == 2
+
+    def test_returns_error_for_unknown_tool(self, tmp_path):
+        """Returns error when tool has no registration file."""
+        with patch(
+            "cli_schema_mcp.src.tools.get_download_info_tool._CLIS_DIR", tmp_path
+        ):
+            from cli_schema_mcp.src.tools.get_download_info_tool import (
+                get_download_info,
+            )
+
+            result = get_download_info("ghost")
+
+        assert result["status"] == "error"
+        assert "not registered" in result["message"].lower()
+
+    def test_returns_error_for_unknown_version(self, tmp_path):
+        """Returns error when requested version is not declared."""
+        self._make_registration(tmp_path)
+        with patch(
+            "cli_schema_mcp.src.tools.get_download_info_tool._CLIS_DIR", tmp_path
+        ):
+            from cli_schema_mcp.src.tools.get_download_info_tool import (
+                get_download_info,
+            )
+
+            result = get_download_info("mytool", "9.9")
+
+        assert result["status"] == "error"
+        assert "9.9" in result["error"]
+
+    def test_skip_checksum_shown_in_note(self, tmp_path):
+        """skip_checksum registrations include a checksum_note instead of checksum_url."""
+        self._make_registration(tmp_path, skip_checksum=True)
+        with patch(
+            "cli_schema_mcp.src.tools.get_download_info_tool._CLIS_DIR", tmp_path
+        ):
+            from cli_schema_mcp.src.tools.get_download_info_tool import (
+                get_download_info,
+            )
+
+            result = get_download_info("mytool", "1.0")
+
+        assert result["status"] == "success"
+        entry = result["versions"][0]
+        assert "checksum_note" in entry
+        assert "checksum_url" not in entry
+
+    def test_system_package_returns_install_notes(self, tmp_path):
+        """Registrations without obtain block return system_package install guidance."""
+        self._make_registration(tmp_path, obtain=False)
+        with patch(
+            "cli_schema_mcp.src.tools.get_download_info_tool._CLIS_DIR", tmp_path
+        ):
+            from cli_schema_mcp.src.tools.get_download_info_tool import (
+                get_download_info,
+            )
+
+            result = get_download_info("mytool")
+
+        assert result["status"] == "success"
+        assert result["install_method"] == "system_package"
+        assert "package manager" in result["install_notes"].lower()
+
+    def test_always_returns_status(self, tmp_path):
+        """get_download_info always returns a dict with a status field."""
+        with patch(
+            "cli_schema_mcp.src.tools.get_download_info_tool._CLIS_DIR", tmp_path
+        ):
+            from cli_schema_mcp.src.tools.get_download_info_tool import (
+                get_download_info,
+            )
+
+            result = get_download_info("anything")
 
         assert "status" in result

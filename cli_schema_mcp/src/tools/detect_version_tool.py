@@ -33,6 +33,24 @@ def _load_cli_config(tool: str) -> dict[str, Any] | None:
         return None
 
 
+def _install_hint(config: dict[str, Any]) -> str:
+    """Return a short install suggestion derived from the CLI registration."""
+    upstream = config.get("upstream_repo", "")
+    name = config.get("name", "")
+    obtain = config.get("obtain") or {}
+    artifact_url = obtain.get("artifact_url", "")
+    # Surface the most useful hint we can derive without network access
+    if "mirror.openshift.com" in artifact_url:
+        return "Download from https://mirror.openshift.com/pub/openshift-v4/clients/ or run: dnf install openshift-clients"
+    if "dl.k8s.io" in artifact_url:
+        return "See https://kubernetes.io/docs/tasks/tools/ or run: curl -LO https://dl.k8s.io/release/stable.txt"
+    if "github.com" in artifact_url and upstream:
+        return f"Download from {upstream}/releases or check your package manager."
+    if upstream:
+        return f"See {upstream} for installation instructions."
+    return f"Install '{name}' via your package manager or from the upstream project."
+
+
 def detect_version(tool: str) -> dict[str, Any]:
     """
     TOOL_NAME=detect_version
@@ -41,9 +59,10 @@ def detect_version(tool: str) -> dict[str, Any]:
     to the nearest schema version in the registry. Use at the start of a session to auto-select
     the correct schema version without requiring the user to specify one.
     INSTRUCTIONS=1. Call with the tool name. 2. Use matched_schema as the version argument for
-    subsequent get_flags, list_subcommands, and validate_command calls. 3. If status=error,
-    either the binary is not installed or the version could not be parsed — fall back to
-    list_supported() and ask the user which version to use.
+    subsequent get_flags, list_subcommands, and validate_command calls. 3. If
+    status=binary_not_found, the CLI is not installed — use install_hint to guide the user,
+    or call get_download_info() for version-specific URLs. 4. If status=error, the binary ran
+    but the version could not be parsed — fall back to list_supported() and ask the user.
     INPUT_DESCRIPTION=tool (str): CLI tool name, e.g. 'oc', 'kubectl', 'helm'.
     OUTPUT_DESCRIPTION=Dictionary with status, tool, version (raw detected string),
     matched_schema (schema version to use), and message.
@@ -82,11 +101,18 @@ def detect_version(tool: str) -> dict[str, Any]:
             )
             output = result.stdout + result.stderr
         except FileNotFoundError:
+            # Binary not installed — return structured guidance instead of a bare error
+            # so agents can surface install instructions to the user.
+            install_hint = _install_hint(config)
             return {
-                "status": "error",
+                "status": "binary_not_found",
                 "tool": tool,
-                "error": f"Binary '{tool}' not found in PATH. Ensure it is installed.",
-                "message": "Binary not found",
+                "message": f"'{tool}' is not installed in this environment.",
+                "install_hint": install_hint,
+                "suggestion": (
+                    f"Call get_download_info('{tool}') for version-specific download URLs, "
+                    "or ask the user to install the CLI before retrying."
+                ),
             }
         except subprocess.TimeoutExpired:
             return {

@@ -4,6 +4,7 @@ from fastmcp import FastMCP
 
 from cli_schema_mcp.src.settings import settings
 from cli_schema_mcp.src.tools.detect_version_tool import detect_version
+from cli_schema_mcp.src.tools.get_download_info_tool import get_download_info
 from cli_schema_mcp.src.tools.get_flags_tool import get_flags
 from cli_schema_mcp.src.tools.list_subcommands_tool import list_subcommands
 from cli_schema_mcp.src.tools.list_supported_tool import list_supported
@@ -35,9 +36,10 @@ class CliSchemaMCPServer:
             raise
 
     def _register_mcp_tools(self) -> None:
-        """Register all five CLI schema tools with FastMCP."""
+        """Register all CLI schema tools with FastMCP."""
         self.mcp.tool()(list_supported)
         self.mcp.tool()(get_flags)
         self.mcp.tool()(list_subcommands)
         self.mcp.tool()(validate_command)
         self.mcp.tool()(detect_version)
+        self.mcp.tool()(get_download_info)
