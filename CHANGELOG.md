@@ -4,6 +4,18 @@ All notable changes to cli-schema-mcp are documented here.
 
 Detailed release notes are available at [GitHub Releases](https://github.com/tosin2013/cli-schema-mcp/releases).
 
+## [0.1.3] - 2026-10-15
+
+### Fixed
+
+- `validate_command` false-positive flag matches on hyphenated positional arguments
+  (filenames, namespace names, pod names, resource identifiers) — fixes #16.
+  `_parse_flags_from_string` now tokenizes on whitespace with `shlex.split` before
+  classifying each token, instead of regex-scanning the raw string.
+  The `--` POSIX end-of-flags separator is also now recognized correctly.
+
+---
+
 ## [0.1.2] - 2026-10-14
 
 ### Added
