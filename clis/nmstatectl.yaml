@@ -1,5 +1,5 @@
-name: nmstate
-display_name: "nmstate"
+name: nmstatectl
+display_name: "nmstate (nmstatectl)"
 description: "Declarative network state management CLI for Linux"
 binary: nmstatectl
 adapter: help-parser

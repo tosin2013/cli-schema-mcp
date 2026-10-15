@@ -33,13 +33,13 @@ nmstatectl version
 If you're using an AI agent that calls `get_download_info`, it will tell you exactly this:
 
 ```python
-get_download_info("nmstate")
+get_download_info("nmstatectl")
 ```
 
 ```json
 {
   "status": "success",
-  "tool": "nmstate",
+  "tool": "nmstatectl",
   "install_method": "system_package",
   "install_notes": "'nmstate' is a system package with no automated download URL. Install via your package manager (e.g. dnf install nmstate) or see https://github.com/nmstate/nmstate for instructions.",
   "upstream_repo": "https://github.com/nmstate/nmstate"
@@ -49,13 +49,13 @@ get_download_info("nmstate")
 ### Discover what nmstatectl can do
 
 ```python
-list_subcommands("nmstate", "2.2")
+list_subcommands("nmstatectl", "2.2")
 ```
 
 ```json
 {
   "status": "success",
-  "tool": "nmstate",
+  "tool": "nmstatectl",
   "version": "2.2",
   "subcommands": [
     "apply",    "autoconf", "commit",   "edit",
@@ -89,7 +89,7 @@ nmstatectl show --json
 The flags available for `show`:
 
 ```python
-get_flags("nmstate", "2.2", "show")
+get_flags("nmstatectl", "2.2", "show")
 ```
 
 | Flag | Description |
@@ -102,7 +102,7 @@ get_flags("nmstate", "2.2", "show")
 Validate before running:
 
 ```python
-validate_command("nmstate", "2.2", "nmstatectl show eth0")
+validate_command("nmstatectl", "2.2", "nmstatectl show eth0")
 ```
 ```json
 { "valid": true, "errors": [] }
@@ -146,7 +146,7 @@ This YAML is the *desired state* format. You can capture it, edit it, and apply 
 The `apply` subcommand is the heart of nmstate. Available flags:
 
 ```python
-get_flags("nmstate", "2.2", "apply")
+get_flags("nmstatectl", "2.2", "apply")
 ```
 
 | Flag | Description |
@@ -189,7 +189,7 @@ dns-resolver:
 Before applying, validate the command:
 
 ```python
-validate_command("nmstate", "2.2", "nmstatectl apply /tmp/eth0-static.yaml")
+validate_command("nmstatectl", "2.2", "nmstatectl apply /tmp/eth0-static.yaml")
 ```
 ```json
 { "valid": true, "errors": [] }
@@ -236,7 +236,7 @@ interfaces:
 Use `--no-commit` to test before finalising:
 
 ```python
-validate_command("nmstate", "2.2", "nmstatectl apply /tmp/bond0-active-backup.yaml --no-commit")
+validate_command("nmstatectl", "2.2", "nmstatectl apply /tmp/bond0-active-backup.yaml --no-commit")
 ```
 ```json
 { "valid": true, "errors": [] }
@@ -259,8 +259,8 @@ nmstatectl rollback
 Both `commit` and `rollback` validate correctly:
 
 ```python
-validate_command("nmstate", "2.2", "nmstatectl commit")   # valid: true
-validate_command("nmstate", "2.2", "nmstatectl rollback") # valid: true
+validate_command("nmstatectl", "2.2", "nmstatectl commit")   # valid: true
+validate_command("nmstatectl", "2.2", "nmstatectl rollback") # valid: true
 ```
 
 ---
@@ -288,7 +288,7 @@ interfaces:
 Test without rebooting to verify persistence:
 
 ```python
-validate_command("nmstate", "2.2", "nmstatectl apply /tmp/vlan100.yaml --memory-only")
+validate_command("nmstatectl", "2.2", "nmstatectl apply /tmp/vlan100.yaml --memory-only")
 ```
 ```json
 { "valid": true, "errors": [] }
@@ -347,7 +347,7 @@ interfaces:
 ```
 
 ```python
-validate_command("nmstate", "2.2", "nmstatectl apply /tmp/remove-vlan100.yaml")
+validate_command("nmstatectl", "2.2", "nmstatectl apply /tmp/remove-vlan100.yaml")
 ```
 ```json
 { "valid": true, "errors": [] }
@@ -365,7 +365,7 @@ Use `nmstatectl validate` to check a YAML file without touching the network — 
 pipelines before pushing network configs to nodes.
 
 ```python
-validate_command("nmstate", "2.2", "nmstatectl validate /tmp/eth0-static.yaml")
+validate_command("nmstatectl", "2.2", "nmstatectl validate /tmp/eth0-static.yaml")
 ```
 ```json
 { "valid": true, "errors": [] }
@@ -412,10 +412,10 @@ committing."*
 **Step 1 — LLM discovers what nmstate can do**
 
 ```python
-list_subcommands("nmstate", "2.2")
+list_subcommands("nmstatectl", "2.2")
 # → apply, validate, show, commit, rollback, ...
 
-get_flags("nmstate", "2.2", "apply")
+get_flags("nmstatectl", "2.2", "apply")
 # → --no-commit, --memory-only, --no-verify, --kernel, ...
 ```
 
@@ -458,7 +458,7 @@ routes:
 **Step 3 — Level 1: MCP validates the validate command**
 
 ```python
-validate_command("nmstate", "2.2", "nmstatectl validate /tmp/bond-lacp.yaml")
+validate_command("nmstatectl", "2.2", "nmstatectl validate /tmp/bond-lacp.yaml")
 ```
 ```json
 { "valid": true, "errors": [] }
@@ -479,7 +479,7 @@ before any network change is attempted.
 **Step 5 — MCP validates the apply command**
 
 ```python
-validate_command("nmstate", "2.2", "nmstatectl apply /tmp/bond-lacp.yaml --no-commit")
+validate_command("nmstatectl", "2.2", "nmstatectl apply /tmp/bond-lacp.yaml --no-commit")
 ```
 ```json
 { "valid": true, "errors": [] }
@@ -526,8 +526,8 @@ Commit permanently or roll back?"*
 **Step 8 — Commit or rollback**
 
 ```python
-validate_command("nmstate", "2.2", "nmstatectl commit")   # valid: true
-validate_command("nmstate", "2.2", "nmstatectl rollback") # valid: true
+validate_command("nmstatectl", "2.2", "nmstatectl commit")   # valid: true
+validate_command("nmstatectl", "2.2", "nmstatectl rollback") # valid: true
 ```
 
 ```bash
@@ -558,7 +558,7 @@ def configure_network(llm, yaml_content, target_version="2.2"):
         f.write(yaml_content)
 
     # Level 1: MCP validates the validate command
-    r = validate_command("nmstate", target_version,
+    r = validate_command("nmstatectl", target_version,
                          "nmstatectl validate /tmp/net-config.yaml")
     assert r["valid"], f"Invalid command: {r['errors']}"
 
@@ -567,7 +567,7 @@ def configure_network(llm, yaml_content, target_version="2.2"):
     assert result.returncode == 0, "Invalid YAML schema"
 
     # Level 1: MCP validates the apply command
-    r = validate_command("nmstate", target_version,
+    r = validate_command("nmstatectl", target_version,
                          "nmstatectl apply /tmp/net-config.yaml --no-commit")
     assert r["valid"], f"Invalid command: {r['errors']}"
 
@@ -580,10 +580,10 @@ def configure_network(llm, yaml_content, target_version="2.2"):
     answer = input("Commit? (y/n): ")
 
     if answer.lower() == "y":
-        validate_command("nmstate", target_version, "nmstatectl commit")
+        validate_command("nmstatectl", target_version, "nmstatectl commit")
         subprocess.run(["nmstatectl", "commit"], check=True)
     else:
-        validate_command("nmstate", target_version, "nmstatectl rollback")
+        validate_command("nmstatectl", target_version, "nmstatectl rollback")
         subprocess.run(["nmstatectl", "rollback"], check=True)
 ```
 

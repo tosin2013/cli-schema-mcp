@@ -309,7 +309,7 @@ For system-package CLIs (like `nmstate`) with no automated download:
 ```json
 {
   "status": "success",
-  "tool": "nmstate",
+  "tool": "nmstatectl",
   "install_method": "system_package",
   "install_notes": "Install via your package manager (e.g. dnf install nmstate) or see https://github.com/nmstate/nmstate"
 }
