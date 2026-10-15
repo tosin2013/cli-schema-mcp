@@ -15,6 +15,7 @@ from typing import Any
 
 _MAX_NODES = 8000
 _WORKERS = 8
+_MAX_DESC_LEN = 200  # cap flag descriptions to keep schema JSON size bounded
 
 _KUBE_FLAG = re.compile(r"^\s+(?:-(\w),\s+)?(--[\w.-]+)(?:=(.*))?:\s*$")
 _COBRA_FLAG = re.compile(r"^\s+(?:-(\w),\s+)?(--[\w.-]+)(?:\s+(\S+))?\s{2,}(.*)$")
@@ -150,7 +151,7 @@ def _parse_help_flags(help_text: str) -> dict[str, dict[str, Any]]:
             "shorthand": f"-{shorthand}" if shorthand else None,
             "type": ftype,
             "default": default,
-            "description": description,
+            "description": description[:_MAX_DESC_LEN],
             "deprecated": "DEPRECATED" in description.upper(),
         }
     return meta
@@ -215,7 +216,7 @@ def _flags_from_completion(
             continue
         seen.add(name)
         meta = help_meta.get(name, {})
-        description = meta.get("description") or desc
+        description = (meta.get("description") or desc)[:_MAX_DESC_LEN]
         default = meta.get("default")
         ftype = meta.get("type") or _infer_type(description, default)
         flags.append(
