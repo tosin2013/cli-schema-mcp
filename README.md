@@ -16,7 +16,7 @@ A vendor-neutral, community-maintained MCP server that provides version-pinned C
 | `podman` | 5.2 – 5.4 | Cobra |
 | `tkn` (Tekton CLI) | 0.45 – 0.46 | Cobra |
 | `virtctl` (KubeVirt) | 1.8 – 1.9 | Cobra |
-| `helm` | 3.21 – 3.22 | Cobra |
+| `helm` | 4.2 – 4.3 | Cobra |
 | `nmstatectl` (nmstate) | 2.2 | help-parser |
 
 Adding a new CLI requires only a YAML config file — no Python code changes.

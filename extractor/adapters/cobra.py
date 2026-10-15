@@ -13,7 +13,7 @@ import threading
 from concurrent.futures import ThreadPoolExecutor
 from typing import Any
 
-_MAX_NODES = 8000
+_MAX_NODES = 500  # keeps schema JSON under ~20 MB even for large CLIs like helm
 _WORKERS = 8
 _MAX_DESC_LEN = 200  # cap flag descriptions to keep schema JSON size bounded
 
