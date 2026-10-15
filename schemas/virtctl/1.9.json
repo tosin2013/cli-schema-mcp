@@ -1,5 +1,5 @@
 {
-  "name": "/tmp/extractor-refresh-d0wogf_2/virtctl/1.9/bin/virtctl",
+  "name": "virtctl",
   "flags": [
     {
       "name": "--as",

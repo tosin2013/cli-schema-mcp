@@ -249,6 +249,9 @@ def main() -> None:
                     tool_ok = False
                     continue
 
+                schema["name"] = (
+                    config.name
+                )  # override binary path set by cobra adapter
                 schema["version"] = version
                 out_json = version_tmp / f"{version}.json"
                 out_json.write_text(json.dumps(schema, indent=2))
