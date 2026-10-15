@@ -1,6 +1,6 @@
 # Declarative Network Management with nmstate — Guided by cli-schema-mcp
 
-**Date**: 2026-10-15  
+**Date**: 2026-10-15
 **Tags**: nmstate, networking, MCP, OpenShift, RHEL, declarative
 
 ---
@@ -388,32 +388,208 @@ done
 
 ---
 
-## The MCP-guided agent workflow
+## LLM-guided network configuration with two-level validation
 
-When an AI agent is helping configure network state, the MCP server provides the guardrails:
+You can describe the network you want in plain English to an LLM (Claude, etc.) and have
+it generate the nmstate YAML, validate the commands through the MCP server, and apply the
+config — all with automatic rollback protection.
 
+The key is that validation happens at **two levels**:
+
+| Level | Tool | What it catches |
+|-------|------|----------------|
+| **1 — Command shape** | `validate_command` via MCP | Wrong flags (`--force`), wrong subcommand (`nmstatectl set`), typos in flag names |
+| **2 — YAML content** | `nmstatectl validate` | Wrong bond mode name, unsupported field, invalid IP format, missing required fields |
+
+Together they catch every class of error before anything touches your network.
+
+### Full example: LACP bond from a natural language request
+
+**User asks**: *"I need a LACP bond between eth0 and eth1 with a static IP of
+192.168.10.5/24 and gateway 192.168.10.1 — apply it safely so I can check it before
+committing."*
+
+**Step 1 — LLM discovers what nmstate can do**
+
+```python
+list_subcommands("nmstate", "2.2")
+# → apply, validate, show, commit, rollback, ...
+
+get_flags("nmstate", "2.2", "apply")
+# → --no-commit, --memory-only, --no-verify, --kernel, ...
 ```
-User: "Set a static IP of 10.0.1.50/24 on eth0 with gateway 10.0.1.1"
 
-Agent → list_subcommands("nmstate", "2.2")
-     ← subcommands: [apply, show, validate, commit, rollback, ...]
+**Step 2 — LLM generates the YAML**
 
-Agent → get_flags("nmstate", "2.2", "apply")
-     ← --no-commit (apply without committing), --memory-only, --no-verify
-
-Agent generates eth0-static.yaml (YAML above)
-
-Agent → validate_command("nmstate", "2.2", "nmstatectl apply /tmp/eth0-static.yaml --no-commit")
-     ← valid: true, errors: []
-
-Agent → executes: nmstatectl apply /tmp/eth0-static.yaml --no-commit
-Agent → executes: nmstatectl show eth0  (verify it looks right)
-Agent → asks user: "Configuration looks correct. Commit permanently? (y/n)"
-User → y
-Agent → executes: nmstatectl commit
+```yaml
+# bond-lacp.yaml
+---
+interfaces:
+- name: bond0
+  type: bond
+  state: up
+  ipv4:
+    enabled: true
+    dhcp: false
+    address:
+    - ip: 192.168.10.5
+      prefix-length: 24
+  link-aggregation:
+    mode: 802.3ad          # LACP — note: NOT "lacp", that would fail nmstatectl validate
+    port:
+    - eth0
+    - eth1
+    options:
+      miimon: "100"
+      lacp-rate: fast
+- name: eth0
+  type: ethernet
+  state: up
+- name: eth1
+  type: ethernet
+  state: up
+routes:
+  config:
+  - destination: 0.0.0.0/0
+    next-hop-address: 192.168.10.1
+    next-hop-interface: bond0
 ```
 
-At no point does the agent invent a flag or subcommand that doesn't exist.
+**Step 3 — Level 1: MCP validates the validate command**
+
+```python
+validate_command("nmstate", "2.2", "nmstatectl validate /tmp/bond-lacp.yaml")
+```
+```json
+{ "valid": true, "errors": [] }
+```
+
+MCP confirms `validate` is a real subcommand with no extra flags needed here.
+
+**Step 4 — Level 2: nmstatectl validates the YAML content**
+
+```bash
+nmstatectl validate /tmp/bond-lacp.yaml
+# exits 0 — YAML schema is correct, bond mode "802.3ad" is valid
+```
+
+If the LLM had written `mode: lacp` (a common mistake), nmstatectl would catch it here —
+before any network change is attempted.
+
+**Step 5 — MCP validates the apply command**
+
+```python
+validate_command("nmstate", "2.2", "nmstatectl apply /tmp/bond-lacp.yaml --no-commit")
+```
+```json
+{ "valid": true, "errors": [] }
+```
+
+`--no-commit` is a real flag for `apply`. If the LLM had hallucinated `--dry-run` or
+`--test`, MCP would reject it here.
+
+**Step 6 — Apply with a safety checkpoint**
+
+```bash
+nmstatectl apply /tmp/bond-lacp.yaml --no-commit
+```
+
+nmstate applies the bond configuration, verifies it converged (LACP negotiated, IP
+reachable), and holds a rollback checkpoint. No changes are permanent yet.
+
+**Step 7 — Verify**
+
+```bash
+nmstatectl show bond0
+```
+
+```yaml
+interfaces:
+- name: bond0
+  type: bond
+  state: up
+  ipv4:
+    enabled: true
+    address:
+    - ip: 192.168.10.5
+      prefix-length: 24
+  link-aggregation:
+    mode: 802.3ad
+    port:
+    - eth0
+    - eth1
+```
+
+The LLM presents this to the user: *"Bond is up, LACP negotiated, IP is 192.168.10.5/24.
+Commit permanently or roll back?"*
+
+**Step 8 — Commit or rollback**
+
+```python
+validate_command("nmstate", "2.2", "nmstatectl commit")   # valid: true
+validate_command("nmstate", "2.2", "nmstatectl rollback") # valid: true
+```
+
+```bash
+# User says yes:
+nmstatectl commit
+
+# User says no:
+nmstatectl rollback
+```
+
+### What each layer caught in this example
+
+| Error | Where caught |
+|-------|-------------|
+| LLM uses `nmstatectl --dry-run` | MCP: `--dry-run` not a valid flag for `apply` |
+| LLM uses wrong bond mode `lacp` | `nmstatectl validate`: mode must be `802.3ad` |
+| Physical link not up at apply time | `nmstatectl apply` verification → auto-rollback |
+| User doesn't want the change | `nmstatectl rollback` → previous state restored |
+
+### Simple agent loop in code
+
+```python
+import subprocess, json
+
+def configure_network(llm, yaml_content, target_version="2.2"):
+    # Write YAML
+    with open("/tmp/net-config.yaml", "w") as f:
+        f.write(yaml_content)
+
+    # Level 1: MCP validates the validate command
+    r = validate_command("nmstate", target_version,
+                         "nmstatectl validate /tmp/net-config.yaml")
+    assert r["valid"], f"Invalid command: {r['errors']}"
+
+    # Level 2: nmstatectl validates the YAML content
+    result = subprocess.run(["nmstatectl", "validate", "/tmp/net-config.yaml"])
+    assert result.returncode == 0, "Invalid YAML schema"
+
+    # Level 1: MCP validates the apply command
+    r = validate_command("nmstate", target_version,
+                         "nmstatectl apply /tmp/net-config.yaml --no-commit")
+    assert r["valid"], f"Invalid command: {r['errors']}"
+
+    # Apply with checkpoint
+    subprocess.run(["nmstatectl", "apply", "/tmp/net-config.yaml", "--no-commit"],
+                   check=True)
+
+    # Show result and ask user
+    subprocess.run(["nmstatectl", "show"])
+    answer = input("Commit? (y/n): ")
+
+    if answer.lower() == "y":
+        validate_command("nmstate", target_version, "nmstatectl commit")
+        subprocess.run(["nmstatectl", "commit"], check=True)
+    else:
+        validate_command("nmstate", target_version, "nmstatectl rollback")
+        subprocess.run(["nmstatectl", "rollback"], check=True)
+```
+
+At no point does the agent invent a flag or subcommand that doesn't exist. The combination
+of MCP command validation + nmstatectl YAML validation + automatic rollback means every step
+is covered before it reaches the network.
 
 ---
 
