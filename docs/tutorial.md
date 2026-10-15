@@ -405,6 +405,7 @@ The reviewer sees the schema diff and approves. No manual extraction step.
 
 | Topic | Link |
 |-------|-------|
+| End-to-end demo workflows | [Demos](demos.md) |
 | Full `obtain` block field reference | [CONTRIBUTING.md](../CONTRIBUTING.md) |
 | Architecture and schema registry | [Architecture](architecture.md) |
 | CI workflows | [CI/CD](ci-cd.md) |
