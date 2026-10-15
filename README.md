@@ -150,6 +150,7 @@ See [docs/authentication.md](docs/authentication.md) for OAuth setup.
 | Guide | Description |
 |-------|-------------|
 | [Demos](docs/demos.md) | End-to-end walkthroughs: download → validate → run YAML, hallucination prevention, air-gapped OCP |
+| [Blog](docs/blog/README.md) | Real-world guides: nmstate declarative networking, more to come |
 | [Contributing](CONTRIBUTING.md) | Adding CLIs, development workflow, PR process |
 | [Development](docs/development.md) | Setup, running locally, testing |
 | [Deployment](docs/deployment.md) | Podman, OpenShift, container configuration |
