@@ -122,10 +122,10 @@ spec:
 The agent can now parse this YAML to answer questions about the deployment (replica count,
 image version, resource requests) without any further schema lookups.
 
-### Agent decision loop
+### Interactive agent decision loop
 
 ```python
-# Pseudocode for the agent
+# Pseudocode — for an agent with a human in the loop
 result = detect_version("oc")
 if result["status"] == "binary_not_found":
     info = get_download_info("oc", target_version)
@@ -141,6 +141,111 @@ if validation["valid"]:
 else:
     report_errors(validation["errors"])
 ```
+
+### Non-interactive containerized agent (no human, no sudo, ephemeral storage)
+
+When the agent runs inside a container with no human to course-correct, the loop must:
+1. Detect the container's actual CPU architecture — not assume amd64
+2. Download the correct binary via HTTP (not shell `curl`)
+3. Verify SHA-256 before executing
+4. Install to a path the agent controls (not `/usr/local/bin`)
+
+```python
+import hashlib
+import platform
+import shutil
+import tempfile
+import urllib.request
+from pathlib import Path
+
+def install_cli_in_container(tool: str, version: str, install_dir: Path) -> Path:
+    """Download, verify, and install a CLI binary for the current arch."""
+
+    # 1. Detect arch from the container's CPU
+    arch = {
+        "x86_64": "amd64", "amd64": "amd64",
+        "aarch64": "arm64", "arm64": "arm64",
+        "ppc64le": "ppc64le", "s390x": "s390x",
+    }.get(platform.machine().lower(), "amd64")
+
+    # 2. Get the arch-correct download URL from the MCP server
+    info = get_download_info(tool, version, arch=arch)
+    if info["status"] != "success":
+        raise RuntimeError(f"Could not get download info: {info}")
+
+    entry = info["versions"][0]
+    if not entry.get("arch_substituted", True):
+        raise RuntimeError(
+            f"No {arch} variant known for {tool}. "
+            f"Check {info['upstream_repo']} manually."
+        )
+
+    artifact_url = entry["artifact_url"]   # {resolved} still in URL if version pointer used
+    checksum_url = entry.get("checksum_url")
+
+    # 3. Download to a temp directory (not a shared path)
+    with tempfile.TemporaryDirectory(prefix="cli-install-") as tmp:
+        tmp_path = Path(tmp)
+        archive = tmp_path / "artifact"
+
+        with urllib.request.urlopen(artifact_url, timeout=300) as r:  # noqa: S310
+            archive.write_bytes(r.read())
+
+        # 4. Verify SHA-256 before extracting
+        if checksum_url:
+            with urllib.request.urlopen(checksum_url, timeout=30) as r:  # noqa: S310
+                checksum_body = r.read().decode()
+            actual = hashlib.sha256(archive.read_bytes()).hexdigest()
+            basename = artifact_url.split("/")[-1]
+            expected = next(
+                (line.split()[0] for line in checksum_body.splitlines()
+                 if basename in line), None
+            )
+            if expected and actual != expected.lower():
+                raise RuntimeError(f"SHA-256 mismatch for {tool} — aborting install")
+
+        # 5. Extract to install_dir (a volume or path the agent owns)
+        install_dir.mkdir(parents=True, exist_ok=True)
+        binary_name = Path(entry["binary"]).name
+
+        if entry["format"] == "raw":
+            shutil.copy2(archive, install_dir / binary_name)
+        elif entry["format"] in ("tar.gz", "zip"):
+            import tarfile, zipfile
+            if entry["format"] == "tar.gz":
+                with tarfile.open(archive) as tf:
+                    member = tf.getmember(entry["binary"])
+                    src = tf.extractfile(member)
+                    (install_dir / binary_name).write_bytes(src.read())
+            else:
+                with zipfile.ZipFile(archive) as zf:
+                    (install_dir / binary_name).write_bytes(zf.read(entry["binary"]))
+
+        binary = install_dir / binary_name
+        binary.chmod(binary.stat().st_mode | 0o111)
+        return binary
+
+# Usage in the agent
+install_dir = Path("/opt/agent-tools")   # a volume that persists across redeploys
+binary = install_cli_in_container("oc", "4.22", install_dir)
+
+cmd = f"{binary} get deployment {deployment_name} -o yaml -n {namespace}"
+validation = validate_command("oc", "4.22", cmd)
+if validation["valid"]:
+    import subprocess
+    yaml_output = subprocess.check_output(cmd.split(), text=True)
+    parse_and_answer(yaml_output)
+```
+
+**Key differences from the interactive loop:**
+
+| Concern | Interactive | Containerized |
+|---------|-------------|---------------|
+| Arch | Human selects right binary | `platform.machine()` → `arch=` param |
+| Download | Human runs `curl` in terminal | Agent downloads via HTTP client |
+| Checksum | Human may skip | Agent always verifies before executing |
+| Install path | `/usr/local/bin` (needs sudo) | Agent-owned volume (no sudo needed) |
+| Persistence | System PATH | Mounted volume survives redeploys |
 
 ---
 

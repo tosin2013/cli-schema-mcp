@@ -693,3 +693,103 @@ class TestGetDownloadInfoTool:
             result = get_download_info("anything")
 
         assert "status" in result
+
+    def test_arch_amd64_returns_default_url(self, tmp_path):
+        """arch=amd64 returns the default URL unchanged with arch_substituted=True."""
+        cfg = tmp_path / "mytool.yaml"
+        cfg.write_text(
+            "name: mytool\nbinary: mytool\nadapter: cobra\nversions: ['1.0']\n"
+            "version_command: 'mytool version'\nversion_parse: 'v{version}'\n"
+            "upstream_repo: 'https://github.com/example/mytool'\n"
+            "obtain:\n"
+            "  artifact_url: 'https://example.com/{version}/mytool-linux-amd64.tar.gz'\n"
+            "  checksum_url: 'https://example.com/{version}/sha256sum.txt'\n"
+            "  format: tar.gz\n"
+            "  binary: mytool\n"
+        )
+        with patch(
+            "cli_schema_mcp.src.tools.get_download_info_tool._CLIS_DIR", tmp_path
+        ):
+            from cli_schema_mcp.src.tools.get_download_info_tool import (
+                get_download_info,
+            )
+
+            result = get_download_info("mytool", "1.0", arch="amd64")
+
+        assert result["status"] == "success"
+        assert result["arch"] == "amd64"
+        entry = result["versions"][0]
+        assert entry["arch_substituted"] is True
+        assert "amd64" in entry["artifact_url"]
+
+    def test_arch_arm64_substitutes_url(self, tmp_path):
+        """arch=arm64 substitutes amd64 → arm64 in the artifact URL."""
+        cfg = tmp_path / "mytool.yaml"
+        cfg.write_text(
+            "name: mytool\nbinary: mytool\nadapter: cobra\nversions: ['1.0']\n"
+            "version_command: 'mytool version'\nversion_parse: 'v{version}'\n"
+            "upstream_repo: 'https://github.com/example/mytool'\n"
+            "obtain:\n"
+            "  artifact_url: 'https://example.com/{version}/mytool-linux-amd64.tar.gz'\n"
+            "  checksum_url: 'https://example.com/{version}/sha256sum.txt'\n"
+            "  format: tar.gz\n"
+            "  binary: mytool\n"
+        )
+        with patch(
+            "cli_schema_mcp.src.tools.get_download_info_tool._CLIS_DIR", tmp_path
+        ):
+            from cli_schema_mcp.src.tools.get_download_info_tool import (
+                get_download_info,
+            )
+
+            result = get_download_info("mytool", "1.0", arch="arm64")
+
+        assert result["status"] == "success"
+        assert result["arch"] == "arm64"
+        entry = result["versions"][0]
+        assert entry["arch_substituted"] is True
+        assert "arm64" in entry["artifact_url"]
+        assert "amd64" not in entry["artifact_url"]
+
+    def test_arch_no_substitution_adds_warning(self, tmp_path):
+        """When arch substitution is not possible, arch_warning is included."""
+        cfg = tmp_path / "mytool.yaml"
+        cfg.write_text(
+            "name: mytool\nbinary: mytool\nadapter: cobra\nversions: ['1.0']\n"
+            "version_command: 'mytool version'\nversion_parse: 'v{version}'\n"
+            "upstream_repo: 'https://github.com/example/mytool'\n"
+            "obtain:\n"
+            "  artifact_url: 'https://example.com/{version}/mytool.zip'\n"
+            "  checksum_url: 'https://example.com/{version}/sha256sum.txt'\n"
+            "  format: zip\n"
+            "  binary: mytool.exe\n"
+        )
+        with patch(
+            "cli_schema_mcp.src.tools.get_download_info_tool._CLIS_DIR", tmp_path
+        ):
+            from cli_schema_mcp.src.tools.get_download_info_tool import (
+                get_download_info,
+            )
+
+            result = get_download_info("mytool", "1.0", arch="arm64")
+
+        assert result["status"] == "success"
+        entry = result["versions"][0]
+        assert entry["arch_substituted"] is False
+        assert "arch_warning" in entry
+
+    def test_result_includes_arch_and_os(self, tmp_path):
+        """get_download_info result always includes arch and os fields."""
+        self._make_registration(tmp_path)
+        with patch(
+            "cli_schema_mcp.src.tools.get_download_info_tool._CLIS_DIR", tmp_path
+        ):
+            from cli_schema_mcp.src.tools.get_download_info_tool import (
+                get_download_info,
+            )
+
+            result = get_download_info("mytool", arch="amd64", os="linux")
+
+        assert result["status"] == "success"
+        assert result["arch"] == "amd64"
+        assert result["os"] == "linux"
