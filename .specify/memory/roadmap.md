@@ -1,6 +1,13 @@
 <!--
 SYNC IMPACT REPORT
 ==================
+Version change: 1.2.5 → 1.3.0 (this revision)
+Bump rationale: MINOR — new planned spec 006 (validate_command accepts bundled short flags),
+status specced with spec, plan and tasks in specs/006-bundled-short-flags/.
+Specs affected: 006 (new)
+Open questions added/resolved: none
+
+Prior SYNC IMPACT REPORT (1.2.3 → 1.2.4 / 1.2.5):
 Version change: 1.2.3 → 1.2.4
 Bump rationale: PATCH — registry destination decided for entry 003 (quay.io/takinosh/cli-schema-mcp);
 workflow updated from GHCR to quay.io. Entry 002 verified (previous revision).
@@ -193,6 +200,27 @@ parallel with equal weight.
   Status advances to `verified` after a real air-gapped pull + MCP server start is observed
   in a disconnected environment.
 
+### 006 — validate_command accepts bundled short flags  [status: specced]
+
+- **Description:** `validate_command` treats a bundled short-flag token such as `-it` as one
+  unknown flag, so `podman run -it fedora bash` is reported invalid although the schema has
+  both `-i` (`--interactive`) and `-t` (`--tty`). Agents that trust the tool then rewrite a
+  correct command. The fix expands a single-dash token into its letters when each letter is a
+  known shorthand of the matched subcommand.
+- **Outcome:** Correct commands that bundle known short flags validate as `valid=true`; a
+  bundle with any unknown letter is still `valid=false`, and the error names the unknown
+  letters. No other validation result changes.
+- **Scope (in):** `cli_schema_mcp/src/tools/validate_command_tool.py` flag parsing; unit tests
+  in `tests/test_tools.py`.
+- **Scope (out):** Shorthands with an attached value (`-p8080`, `-ojson`); flags placed before
+  the subcommand (`kubectl -n ns get pods`); deprecated-flag warnings; schema or extractor
+  changes.
+- **Depends on:** 001
+- **Governed by:** C-02, C-04, C-05
+- **Spec dir:** specs/006-bundled-short-flags/
+- **Notes:** Found 2026-11-17 while reading the code (no user report yet). Prepared as the first
+  item built by the specfoundry pilot; its hidden acceptance tests live outside this repository.
+
 ### Integrations
 
 ### 004 — OpenShift / Lightspeed Integration  [status: needs-info]
@@ -278,4 +306,4 @@ parallel with equal weight.
 
 ---
 
-**Version**: 1.2.5 | **Ratified**: 2026-10-12 | **Last Amended**: 2026-10-14
+**Version**: 1.3.0 | **Ratified**: 2026-10-12 | **Last Amended**: 2026-11-17
