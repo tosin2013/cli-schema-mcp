@@ -200,7 +200,7 @@ parallel with equal weight.
   Status advances to `verified` after a real air-gapped pull + MCP server start is observed
   in a disconnected environment.
 
-### 006 — validate_command accepts bundled short flags  [status: specced]
+### 006 — validate_command accepts bundled short flags  [status: verified]
 
 - **Description:** `validate_command` treats a bundled short-flag token such as `-it` as one
   unknown flag, so `podman run -it fedora bash` is reported invalid although the schema has
