@@ -126,16 +126,34 @@ def validate_command(
 
         valid_flag_names = {f.get("name") for f in node.get("flags", [])}  # type: ignore[union-attr]
         # Also include shorthands
+        shorthand_letters: set[str] = set()
         for f in node.get("flags", []):  # type: ignore[union-attr]
             if f.get("shorthand"):
                 valid_flag_names.add(f["shorthand"])
+                sh = f["shorthand"]
+                # Collect single-letter shorthands (e.g. "-i" → "i")
+                if sh.startswith("-") and len(sh) == 2:
+                    shorthand_letters.add(sh[1])
 
         used_flags = _parse_flags_from_string(command_string)
-        errors = [
-            f"{flag} is not a valid flag for '{tool}{' ' + path if path else ''}' in version {matched}"
-            for flag in used_flags
-            if flag not in valid_flag_names
-        ]
+        errors = []
+        for flag in used_flags:
+            if flag in valid_flag_names:
+                continue
+            # Check for a bundled short-flag token: single dash, >2 chars, not "--..."
+            if flag.startswith("-") and not flag.startswith("--") and len(flag) > 2:
+                unknown = [ch for ch in flag[1:] if ch not in shorthand_letters]
+                if not unknown:
+                    continue  # every letter is a known shorthand — bundle is valid
+                unknown_str = ", ".join(f"-{ch}" for ch in unknown)
+                errors.append(
+                    f"{flag} is not a valid flag for '{tool}{' ' + path if path else ''}'"
+                    f" in version {matched} (unknown: {unknown_str})"
+                )
+            else:
+                errors.append(
+                    f"{flag} is not a valid flag for '{tool}{' ' + path if path else ''}' in version {matched}"
+                )
 
         context = f"'{tool} {path}'" if path else f"'{tool}'"
         logger.info(

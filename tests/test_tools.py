@@ -511,6 +511,158 @@ class TestValidateCommandTool:
 
 
 # ---------------------------------------------------------------------------
+# Schema with -i and -t shorthands for bundled-flag tests
+# ---------------------------------------------------------------------------
+
+_BUNDLE_SCHEMA = {
+    "name": "podman",
+    "version": "5.4",
+    "flags": [],
+    "subcommands": [
+        {
+            "name": "run",
+            "flags": [
+                {
+                    "name": "--interactive",
+                    "shorthand": "-i",
+                    "type": "bool",
+                    "default": "false",
+                    "description": "Keep STDIN open",
+                    "deprecated": False,
+                },
+                {
+                    "name": "--tty",
+                    "shorthand": "-t",
+                    "type": "bool",
+                    "default": "false",
+                    "description": "Allocate a pseudo-TTY",
+                    "deprecated": False,
+                },
+            ],
+            "subcommands": [],
+        }
+    ],
+}
+
+
+class TestValidateCommandBundledFlags:
+    """Tests for bundled short-flag support in validate_command (FR-001 – FR-003)."""
+
+    @contextmanager
+    def _patched(self, schema, matched="5.4"):
+        with (
+            patch(
+                "cli_schema_mcp.src.tools.validate_command_tool.resolve_version",
+                return_value=matched,
+            ),
+            patch(
+                "cli_schema_mcp.src.tools.validate_command_tool.load_schema",
+                return_value=schema,
+            ),
+        ):
+            from cli_schema_mcp.src.tools.validate_command_tool import validate_command
+
+            yield validate_command
+
+    # T001 — US1: bundled known shorthands validate
+
+    def test_bundle_it_is_valid(self):
+        """-it (both letters known) validates as valid=True with no errors."""
+        with self._patched(_BUNDLE_SCHEMA) as fn:
+            result = fn("podman", "5.4", "podman run -it fedora bash")
+        assert result["status"] == "success"
+        assert result["valid"] is True
+        assert result["errors"] == []
+
+    def test_bundle_ti_is_valid(self):
+        """-ti (reverse order, both letters known) is also valid."""
+        with self._patched(_BUNDLE_SCHEMA) as fn:
+            result = fn("podman", "5.4", "podman run -ti fedora bash")
+        assert result["status"] == "success"
+        assert result["valid"] is True
+        assert result["errors"] == []
+
+    def test_bundle_with_additional_unknown_long_flag(self):
+        """-it with an extra unknown long flag gives exactly one error naming --bogus."""
+        with self._patched(_BUNDLE_SCHEMA) as fn:
+            result = fn("podman", "5.4", "podman run -it --bogus fedora bash")
+        assert result["status"] == "success"
+        assert result["valid"] is False
+        assert len(result["errors"]) == 1
+        assert "--bogus" in result["errors"][0]
+
+    # T003 — US2: unknown letters in a bundle are caught
+
+    def test_bundle_with_one_unknown_letter(self):
+        """-iZ gives exactly one error containing -iZ and -Z."""
+        with self._patched(_BUNDLE_SCHEMA) as fn:
+            result = fn("podman", "5.4", "podman run -iZ fedora bash")
+        assert result["status"] == "success"
+        assert result["valid"] is False
+        assert len(result["errors"]) == 1
+        assert "-iZ" in result["errors"][0]
+        assert "-Z" in result["errors"][0]
+
+    def test_bundle_with_multiple_unknown_letters(self):
+        """-iZQ gives exactly one error naming both -Z and -Q."""
+        with self._patched(_BUNDLE_SCHEMA) as fn:
+            result = fn("podman", "5.4", "podman run -iZQ fedora bash")
+        assert result["status"] == "success"
+        assert result["valid"] is False
+        assert len(result["errors"]) == 1
+        assert "-iZQ" in result["errors"][0]
+        assert "-Z" in result["errors"][0]
+        assert "-Q" in result["errors"][0]
+
+    # Edge cases
+
+    def test_plain_shorthand_still_valid(self):
+        """A two-character token like -i is accepted as a plain shorthand."""
+        with self._patched(_BUNDLE_SCHEMA) as fn:
+            result = fn("podman", "5.4", "podman run -i fedora bash")
+        assert result["status"] == "success"
+        assert result["valid"] is True
+        assert result["errors"] == []
+
+    def test_long_flag_unchanged(self):
+        """Long flags like --tty still work exactly as before."""
+        with self._patched(_BUNDLE_SCHEMA) as fn:
+            result = fn("podman", "5.4", "podman run --tty fedora bash")
+        assert result["status"] == "success"
+        assert result["valid"] is True
+        assert result["errors"] == []
+
+    def test_defined_long_flag_name_not_split(self):
+        """A single-dash token that is itself a defined flag name is never split as a bundle."""
+        schema_with_version_flag = {
+            "name": "mytool",
+            "version": "1.0",
+            "flags": [],
+            "subcommands": [
+                {
+                    "name": "sub",
+                    "flags": [
+                        {
+                            "name": "-version",
+                            "shorthand": None,
+                            "type": "bool",
+                            "default": "false",
+                            "description": "Print version",
+                            "deprecated": False,
+                        }
+                    ],
+                    "subcommands": [],
+                }
+            ],
+        }
+        with self._patched(schema_with_version_flag, matched="1.0") as fn:
+            result = fn("mytool", "1.0", "mytool sub -version")
+        assert result["status"] == "success"
+        assert result["valid"] is True
+        assert result["errors"] == []
+
+
+# ---------------------------------------------------------------------------
 # TestDetectVersionTool
 # ---------------------------------------------------------------------------
 
